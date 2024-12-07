@@ -15,7 +15,7 @@ namespace Delivery.Data
 	    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
 		    .AddDbContext<DeliveryDbContext>(opt =>
 			    {
-					var type = Configuration["type"];
+					var type = Configuration["Type"];
 
 					switch (type)
 					{

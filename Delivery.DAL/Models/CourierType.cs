@@ -1,14 +1,14 @@
-﻿using Delivery.DAL.Modals.Base;
+﻿using Delivery.DAL.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Delivery.DAL.Modals
+namespace Delivery.DAL.Models
 {
 	// реализация в абстрактном классе так как несколько однотипичных таблиц
-	public class CourierTypes: StatuseEntity
+	public class CourierType: StatuseEntity
 	{
 		//(несколько курьеров могут иметь один и тот же тип).
-		public virtual ICollection<Couriers> Couriers { get; set; }
+		public virtual ICollection<Courier>? Couriers { get; set; }
 	}
 }

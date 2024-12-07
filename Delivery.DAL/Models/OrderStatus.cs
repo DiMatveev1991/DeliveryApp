@@ -1,12 +1,12 @@
-﻿using Delivery.DAL.Modals.Base;
+﻿using Delivery.DAL.Models.Base;
 using System.Collections.Generic;
 
-namespace Delivery.DAL.Modals
+namespace Delivery.DAL.Models
 {
 	// реализация в абстрактном классе так как несколько однотипичных таблиц
-	public class OrderStatuses : StatuseEntity
+	public class OrderStatus : StatuseEntity
 	{
 		//(несколько заказов могут иметь один и тот же статус).
-		public virtual ICollection<Orders> Orders { get; set; }
+		public virtual ICollection<Order>? Orders { get; set; }
 	}
 }

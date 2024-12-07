@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
-using Delivery.DAL.Modals.Base;
+using Delivery.DAL.Models.Base;
 
-namespace Delivery.DAL.Modals
+namespace Delivery.DAL.Models
 {
-	public class Clients : PersonEntity
+	public class Client : PersonEntity
 	{
 		public Guid AddressId { get; set; }
-		public virtual Adresses Address { get; set; }
+		public virtual Address? Address { get; set; }
 		
 		//(один клиент может сделать несколько заказов)
-		public virtual ICollection<Orders> Orders { get; set; }
+		public virtual ICollection<Order>? Orders { get; set; }
 
 	}
 }

@@ -17,7 +17,7 @@ namespace Delivery
 		private static IHost _Host;
 
 		public static IHost Host => _Host 
-			??= Program.CreatHostBuilder(Environment.GetCommandLineArgs()).Build();
+			??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
 		public static IServiceProvider Services => Host.Services;
 		internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services

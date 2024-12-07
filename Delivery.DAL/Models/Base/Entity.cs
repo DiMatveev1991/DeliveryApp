@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Delivery.DAL.Modals.Base
+namespace Delivery.DAL.Models.Base
 {
 	public abstract class Entity
 	{

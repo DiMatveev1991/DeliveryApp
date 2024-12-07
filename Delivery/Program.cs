@@ -18,7 +18,7 @@ namespace Delivery
 			app.Run();
 		}
 
-		public static IHostBuilder CreatHostBuilder(string[] args) => Host
+		public static IHostBuilder CreateHostBuilder(string[] args) => Host
 			.CreateDefaultBuilder(args)
 			.ConfigureServices(App.ConfigureServices)
 		;

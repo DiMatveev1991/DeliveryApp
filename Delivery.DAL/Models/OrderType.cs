@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Delivery.DAL.Modals.Base;
+using Delivery.DAL.Models;
+using Delivery.DAL.Models.Base;
 
-namespace Delivery.DAL.Modals
+namespace Delivery.DAL.Models
 {
 	// реализация в абстрактном классе так как несколько однотипичных таблиц
-	public class OrderTypes: TypeEntity
+	public class OrderType: TypeEntity
 	{
 		//(несколько заказов могут иметь один и тот же тип).
-		public virtual ICollection<Orders> Orders { get; set; }
+		public virtual ICollection<Order>? Orders { get; set; }
 	}
 }
