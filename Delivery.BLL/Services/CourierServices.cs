@@ -14,25 +14,40 @@ namespace Delivery.BLL.Services
 
 		private readonly IUnitOfWork _unitOfWork;
 
-		public CourierServices (IUnitOfWork unitOfWork)
+		public CourierServices(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 		}
-		public async Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber, CourierType courierType)
+
+		public async Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber,
+			CourierType courierType, CourierStatus courierStatus)
 		{
-			var existCourierType = await _unitOfWork.CourierTypesRepository.GetByCourierType(courierType);
-			existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
-			//проверить на совпадения статуса курьера в базе
+
+			try
+			{
+				var existCourierType = await _unitOfWork.CourierTypesRepository.GetByCourierType(courierType);
+				existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
+
+				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetByCourierStatus(courierStatus);
+
+				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
+				{
+					FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber,
+					CourierType = await _unitOfWork.CourierTypesRepository.AddAsync(existCourierType),
+					CourierStatus = await _unitOfWork.CourierStatusesRepository.AddAsync(existCourierStatus)
+				});
+				
+				return client;
+			}
 			
-
-			var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier() 
-			        { FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, 
-				      CourierType = await _unitOfWork.CourierTypesRepository.AddAsync(existCourierType), 
-					  CourierStatus = await _unitOfWork.CourierStatusesRepository.AddAsync(new CourierStatus(){StatusName = "Готов выполнять заказы" })});
-			return client;
+			catch (ArgumentException ex)
+			{
+				throw  new ArgumentException("В статус курьера пришел не обрабатываемый тип");
+			}
 		}
+	
 
-		public Task<Courier> DeleteCourier(Guid id)
+	public Task<Courier> DeleteCourier(Guid id)
 		{
 			throw new NotImplementedException();
 		}
