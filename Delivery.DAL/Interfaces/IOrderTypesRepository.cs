@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface IOrderTypesRepository<OrderType>
+	public interface IOrderTypesRepository
 	{
 		IQueryable<OrderType> Items { get; }
 		OrderType Get(Guid id);
@@ -22,5 +22,6 @@ namespace Delivery.DAL.Interfaces
 
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
+
 	}
 }

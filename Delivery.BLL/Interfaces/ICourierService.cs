@@ -6,7 +6,7 @@ namespace Delivery.BLL.Interfaces
 {
 	internal interface ICourierService
 	{
-		Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber, Address address);
+		Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber, CourierType courierType);
 		Task<Courier> UpdateCourier(Courier courier);
 		Task<Courier> DeleteCourier(Guid id);
 		//назначить заказ курьеру

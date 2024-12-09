@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class CourierTypesRepository: ICourierTypesRepository<CourierType>
+	internal class CourierTypesRepository: ICourierTypesRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<CourierType> _Set;
@@ -79,6 +79,11 @@ namespace Delivery.DAL.Repositories
 			_db.Remove(new CourierType { Id = id });
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+		}
+
+		public async Task<CourierType> GetByCourierType (CourierType courierType)
+		{
+			return await _db.CourierTypes.FirstOrDefaultAsync(n =>  n.StatusName == courierType.StatusName);
 		}
 	}
 }

@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface ICourierTypesRepository<CourierType>
+	public interface ICourierTypesRepository
 	{
 		IQueryable<CourierType> Items { get; }
 		CourierType Get(Guid id);
@@ -22,5 +22,6 @@ namespace Delivery.DAL.Interfaces
 
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
+		public Task<CourierType> GetByCourierType(CourierType courierType)
 	}
 }

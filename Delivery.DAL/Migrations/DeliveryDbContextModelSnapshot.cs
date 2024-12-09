@@ -23,7 +23,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("ApartmentNumber")
                         .HasColumnType("nvarchar(256)")
@@ -62,7 +63,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
@@ -90,7 +92,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<Guid?>("CourierStatusId")
                         .HasColumnType("uniqueidentifier");
@@ -129,7 +132,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("StatusName")
                         .HasColumnType("nvarchar(256)")
@@ -144,7 +148,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("StatusName")
                         .HasColumnType("nvarchar(256)")
@@ -159,7 +164,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("CancelReason")
                         .HasColumnType("nvarchar(256)")
@@ -210,7 +216,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("ItemName")
                         .HasColumnType("nvarchar(256)")
@@ -239,7 +246,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("StatusName")
                         .HasColumnType("nvarchar(256)")
@@ -254,7 +262,8 @@ namespace Delivery.DAL.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
 
                     b.Property<string>("TypeName")
                         .HasColumnType("nvarchar(256)")

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class OrderStatusesRepository: IOrderStatusesRepository<OrderStatus>
+	internal class OrderStatusesRepository: IOrderStatusesRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<OrderStatus> _Set;

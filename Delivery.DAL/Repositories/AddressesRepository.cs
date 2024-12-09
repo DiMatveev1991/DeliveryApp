@@ -11,7 +11,7 @@ using Delivery.DAL.Models;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class AddressesRepository: IAddressesRepository <Address>
+	internal class AddressesRepository: IAddressesRepository
 
 	{
 		private readonly DeliveryDbContext _db;
@@ -81,6 +81,13 @@ namespace Delivery.DAL.Repositories
 			_db.Remove(new Address { Id = id });
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+		}
+
+		public async Task<Address> GetByAddress (Address address)
+		{
+			return await _db.Addresses.FirstOrDefaultAsync(n =>
+				n.City == address.City && n.Street == address.Street && n.HomeNumber == address.HomeNumber &&
+				n.HomeNumber == address.HomeNumber);
 		}
 	}
 

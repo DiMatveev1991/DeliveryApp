@@ -14,15 +14,15 @@ namespace Delivery.DAL.Registrator
 		public static IServiceCollection AddRepositoriesInDb(this IServiceCollection services)
 		{
 			return services
-					.AddTransient<ICouriersRepository<Courier>, CouriersRepository>()
-					.AddTransient<ICourierStatusesRepository<CourierStatus>, CourierStatusesRepository>()
-					.AddTransient<ICourierTypesRepository<CourierType>, CourierTypesRepository>()
-					.AddTransient<IOrdersRepository<Order>, OrdersRepository>()
-					.AddTransient<IOrderTypesRepository<OrderType>, OrderTypesRepository>()
-					.AddTransient<IOrderStatusesRepository<OrderStatus>, OrderStatusesRepository>()
-					.AddTransient<IOrderLinesRepository<OrderLine>, OrderLinesRepository>()
-					.AddTransient<IClientsRepository<Client>, ClientsRepository>()
-					.AddTransient<IAddressesRepository<Address>, AddressesRepository>()
+					.AddTransient<ICouriersRepository, CouriersRepository>()
+					.AddTransient<ICourierStatusesRepository, CourierStatusesRepository>()
+					.AddTransient<ICourierTypesRepository, CourierTypesRepository>()
+					.AddTransient<IOrdersRepository, OrdersRepository>()
+					.AddTransient<IOrderTypesRepository, OrderTypesRepository>()
+					.AddTransient<IOrderStatusesRepository, OrderStatusesRepository>()
+					.AddTransient<IOrderLinesRepository, OrderLinesRepository>()
+					.AddTransient<IClientsRepository, ClientsRepository>()
+					.AddTransient<IAddressesRepository, AddressesRepository>()
 				;
 		}
 		}

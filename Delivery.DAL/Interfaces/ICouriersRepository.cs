@@ -9,7 +9,7 @@ using Delivery.DAL.Models.Base;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface ICouriersRepository <Courier>
+	public interface ICouriersRepository 
 	{
 		IQueryable<Courier> Items { get; }
 		Courier Get(Guid id);

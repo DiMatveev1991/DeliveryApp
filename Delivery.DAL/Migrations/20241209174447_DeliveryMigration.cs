@@ -11,7 +11,7 @@ namespace Delivery.DAL.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     City = table.Column<string>(maxLength: 256, nullable: true),
                     Region = table.Column<string>(maxLength: 256, nullable: true),
                     PostalCode = table.Column<string>(maxLength: 256, nullable: true),
@@ -29,7 +29,7 @@ namespace Delivery.DAL.Migrations
                 name: "CourierStatuses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     StatusName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
@@ -41,7 +41,7 @@ namespace Delivery.DAL.Migrations
                 name: "CourierTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     StatusName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
@@ -53,7 +53,7 @@ namespace Delivery.DAL.Migrations
                 name: "OrderStatuses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     StatusName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
@@ -65,7 +65,7 @@ namespace Delivery.DAL.Migrations
                 name: "OrderTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     TypeName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
@@ -77,7 +77,7 @@ namespace Delivery.DAL.Migrations
                 name: "Clients",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     FistName = table.Column<string>(maxLength: 256, nullable: true),
                     SecondName = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
@@ -98,7 +98,7 @@ namespace Delivery.DAL.Migrations
                 name: "Couriers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     FistName = table.Column<string>(maxLength: 256, nullable: true),
                     SecondName = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
@@ -128,7 +128,7 @@ namespace Delivery.DAL.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     TargetAddressId = table.Column<Guid>(nullable: true),
                     FromAddressId = table.Column<Guid>(nullable: true),
                     TargetDateTime = table.Column<DateTime>(nullable: false),
@@ -182,7 +182,7 @@ namespace Delivery.DAL.Migrations
                 name: "OrderLines",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
                     OrderId = table.Column<Guid>(nullable: true),
                     ItemName = table.Column<string>(maxLength: 256, nullable: true),
                     Weight = table.Column<double>(nullable: false),

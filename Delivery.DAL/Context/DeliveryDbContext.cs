@@ -31,6 +31,15 @@ namespace Delivery.DAL.Context
 			.OnDelete(DeleteBehavior.NoAction);
 		modelBuilder.Entity<Order>().HasOne(o => o.TargetAddress).WithMany(a => a.TargetOrders)
 			.OnDelete(DeleteBehavior.NoAction);
+		modelBuilder.Entity<Client>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<Order>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<Address>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<Courier>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<CourierStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<CourierType>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<OrderType>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<OrderStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
+		modelBuilder.Entity<OrderLine>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		}
 	}
 }

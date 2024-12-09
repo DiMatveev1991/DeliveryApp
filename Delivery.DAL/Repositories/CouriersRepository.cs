@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class CouriersRepository: ICouriersRepository<Courier>
+	internal class CouriersRepository: ICouriersRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<Courier> _Set;

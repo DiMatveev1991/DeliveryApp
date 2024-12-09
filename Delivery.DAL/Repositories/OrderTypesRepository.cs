@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class OrderTypesRepository: IOrderTypesRepository<OrderType>
+	internal class OrderTypesRepository: IOrderTypesRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<OrderType> _Set;

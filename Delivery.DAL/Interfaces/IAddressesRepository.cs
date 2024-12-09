@@ -4,10 +4,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
+using Delivery.DAL.Models;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface IAddressesRepository<Address>
+	public interface IAddressesRepository
 	{
 		IQueryable<Address> Items { get; }
 		Address Get(Guid id);
@@ -21,6 +22,8 @@ namespace Delivery.DAL.Interfaces
 
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
+
+		Task<Address> GetByAddress(Address address);
 
 	}
 }

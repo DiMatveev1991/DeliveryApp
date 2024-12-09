@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface IOrdersRepository<Order>
+	public interface IOrdersRepository
 	{
 		IQueryable<Order> Items { get; }
 		Order Get(Guid id);

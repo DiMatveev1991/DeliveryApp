@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class ClientsRepository: IClientsRepository <Client>
+	internal class ClientsRepository: IClientsRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<Client> _Set;
