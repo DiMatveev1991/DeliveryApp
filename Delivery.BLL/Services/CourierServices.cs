@@ -23,9 +23,11 @@ namespace Delivery.BLL.Services
 			var existCourierType = await _unitOfWork.CourierTypesRepository.GetByCourierType(courierType);
 			existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
 			//проверить на совпадения статуса курьера в базе
+			
+
 			var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier() 
 			        { FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, 
-				      CourierType = await _unitOfWork.CourierTypesRepository.AddAsync(courierType), 
+				      CourierType = await _unitOfWork.CourierTypesRepository.AddAsync(existCourierType), 
 					  CourierStatus = await _unitOfWork.CourierStatusesRepository.AddAsync(new CourierStatus(){StatusName = "Готов выполнять заказы" })});
 			return client;
 		}

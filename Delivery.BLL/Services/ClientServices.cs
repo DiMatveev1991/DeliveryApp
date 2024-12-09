@@ -25,6 +25,7 @@ namespace Delivery.BLL.Services
 		{
 			var existAddress = await _unitOfWork.AddressRepository.GetByAddress(address);
 			existAddress ??= await _unitOfWork.AddressRepository.AddAsync(address);
+
 			var client = await _unitOfWork.ClientsRepository.AddAsync(new Client() 
 				{ FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, Address = existAddress });
 			return client;
