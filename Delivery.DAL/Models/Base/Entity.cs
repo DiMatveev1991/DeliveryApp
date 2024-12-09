@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Delivery.DAL.Interfaces;
 
 namespace Delivery.DAL.Models.Base
 {

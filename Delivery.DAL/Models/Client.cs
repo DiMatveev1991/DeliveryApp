@@ -8,7 +8,7 @@ namespace Delivery.DAL.Models
 {
 	public class Client : PersonEntity
 	{
-		public Guid AddressId { get; set; }
+		public Guid? AddressId { get; set; }
 		public virtual Address? Address { get; set; }
 		
 		//(один клиент может сделать несколько заказов)

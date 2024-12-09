@@ -12,7 +12,6 @@ namespace Delivery.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Country = table.Column<string>(maxLength: 256, nullable: true),
                     City = table.Column<string>(maxLength: 256, nullable: true),
                     Region = table.Column<string>(maxLength: 256, nullable: true),
                     PostalCode = table.Column<string>(maxLength: 256, nullable: true),
@@ -82,7 +81,7 @@ namespace Delivery.DAL.Migrations
                     FistName = table.Column<string>(maxLength: 256, nullable: true),
                     SecondName = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
-                    AddressId = table.Column<Guid>(nullable: false)
+                    AddressId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,7 +91,7 @@ namespace Delivery.DAL.Migrations
                         column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,8 +102,8 @@ namespace Delivery.DAL.Migrations
                     FistName = table.Column<string>(maxLength: 256, nullable: true),
                     SecondName = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
-                    TypeId = table.Column<Guid>(nullable: false),
-                    StatusId = table.Column<Guid>(nullable: false),
+                    TypeId = table.Column<Guid>(nullable: true),
+                    StatusId = table.Column<Guid>(nullable: true),
                     CourierTypeId = table.Column<Guid>(nullable: true),
                     CourierStatusId = table.Column<Guid>(nullable: true)
                 },
@@ -130,13 +129,13 @@ namespace Delivery.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    TargetAddressId = table.Column<Guid>(nullable: false),
-                    FromAddressId = table.Column<Guid>(nullable: false),
+                    TargetAddressId = table.Column<Guid>(nullable: true),
+                    FromAddressId = table.Column<Guid>(nullable: true),
                     TargetDateTime = table.Column<DateTime>(nullable: false),
-                    OrderTypeId = table.Column<Guid>(nullable: false),
-                    StatusId = table.Column<Guid>(nullable: false),
-                    ClientId = table.Column<Guid>(nullable: false),
-                    CourierId = table.Column<Guid>(nullable: false),
+                    OrderTypeId = table.Column<Guid>(nullable: true),
+                    StatusId = table.Column<Guid>(nullable: true),
+                    ClientId = table.Column<Guid>(nullable: true),
+                    CourierId = table.Column<Guid>(nullable: true),
                     OrderStatusId = table.Column<Guid>(nullable: true),
                     CancelReason = table.Column<string>(maxLength: 256, nullable: true)
                 },
@@ -148,13 +147,13 @@ namespace Delivery.DAL.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_Couriers_CourierId",
                         column: x => x.CourierId,
                         principalTable: "Couriers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_Addresses_FromAddressId",
                         column: x => x.FromAddressId,
@@ -171,7 +170,7 @@ namespace Delivery.DAL.Migrations
                         column: x => x.OrderTypeId,
                         principalTable: "OrderTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_Addresses_TargetAddressId",
                         column: x => x.TargetAddressId,
@@ -184,7 +183,7 @@ namespace Delivery.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    OrderId = table.Column<Guid>(nullable: false),
+                    OrderId = table.Column<Guid>(nullable: true),
                     ItemName = table.Column<string>(maxLength: 256, nullable: true),
                     Weight = table.Column<double>(nullable: false),
                     Length = table.Column<double>(nullable: false),
@@ -198,7 +197,7 @@ namespace Delivery.DAL.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

@@ -9,9 +9,6 @@ namespace Delivery.DAL.Models
 	public class Address : Entity
 	{
 		[MaxLength(256)]
-		public string? Country { get; set; }
-		
-		[MaxLength(256)]
 		public string? City { get; set; }
 		
 		[MaxLength(256)]

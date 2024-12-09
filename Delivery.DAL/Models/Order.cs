@@ -9,13 +9,13 @@ namespace Delivery.DAL.Models
 {
 	public class Order : Entity
 	{
-		public Guid TargetAddressId { get; set; }
-		public Guid FromAddressId { get; set; }
+		public Guid? TargetAddressId { get; set; }
+		public Guid? FromAddressId { get; set; }
 		public DateTime TargetDateTime { get; set; }
-		public Guid OrderTypeId { get; set; }
-		public Guid StatusId { get; set; }
-		public Guid ClientId { get; set; }
-		public Guid CourierId { get; set; }
+		public Guid? OrderTypeId { get; set; }
+		public Guid? StatusId { get; set; }
+		public Guid? ClientId { get; set; }
+		public Guid? CourierId { get; set; }
 		public virtual Address? TargetAddress { get; set; }
 		public virtual Address? FromAddress { get; set; }
 		public virtual OrderType? OrderType { get; set; }
@@ -26,6 +26,7 @@ namespace Delivery.DAL.Models
 		// (один заказ может содержать несколько строк с товарами).
 		public virtual ICollection<OrderLine>? OrderLines { get; set; }
 
+		// заполняется при отказе в остальных случаях в бд Null
 		[MaxLength(256)]
 		public string? CancelReason { get; set; }
 

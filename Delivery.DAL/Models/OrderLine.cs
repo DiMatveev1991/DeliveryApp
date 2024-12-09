@@ -7,7 +7,7 @@ namespace Delivery.DAL.Models
 	// реализация в абстрактном классе так как несколько однотипичных таблиц
 	public class OrderLine : Entity
 	{
-		public Guid OrderId { get; set; }
+		public Guid? OrderId { get; set; }
 		
 		[MaxLength(256)]
 		public string? ItemName { get; set; }

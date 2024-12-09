@@ -37,10 +37,6 @@ namespace Delivery.DAL.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
                     b.Property<string>("HomeNumber")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -68,7 +64,7 @@ namespace Delivery.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AddressId")
+                    b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FistName")
@@ -114,10 +110,10 @@ namespace Delivery.DAL.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<Guid>("StatusId")
+                    b.Property<Guid?>("StatusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TypeId")
+                    b.Property<Guid?>("TypeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -169,25 +165,25 @@ namespace Delivery.DAL.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid?>("ClientId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CourierId")
+                    b.Property<Guid?>("CourierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FromAddressId")
+                    b.Property<Guid?>("FromAddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OrderStatusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("OrderTypeId")
+                    b.Property<Guid?>("OrderTypeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("StatusId")
+                    b.Property<Guid?>("StatusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("TargetAddressId")
+                    b.Property<Guid?>("TargetAddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("TargetDateTime")
@@ -223,7 +219,7 @@ namespace Delivery.DAL.Migrations
                     b.Property<double>("Length")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("OrderId")
+                    b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Weight")
@@ -273,9 +269,7 @@ namespace Delivery.DAL.Migrations
                 {
                     b.HasOne("Delivery.DAL.Models.Address", "Address")
                         .WithMany("Clients")
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddressId");
                 });
 
             modelBuilder.Entity("Delivery.DAL.Models.Courier", b =>
@@ -293,21 +287,16 @@ namespace Delivery.DAL.Migrations
                 {
                     b.HasOne("Delivery.DAL.Models.Client", "Client")
                         .WithMany("Orders")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("Delivery.DAL.Models.Courier", "Courier")
                         .WithMany("Orders")
-                        .HasForeignKey("CourierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CourierId");
 
                     b.HasOne("Delivery.DAL.Models.Address", "FromAddress")
                         .WithMany("FromOrders")
                         .HasForeignKey("FromAddressId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Delivery.DAL.Models.OrderStatus", "OrderStatus")
                         .WithMany("Orders")
@@ -315,24 +304,19 @@ namespace Delivery.DAL.Migrations
 
                     b.HasOne("Delivery.DAL.Models.OrderType", "OrderType")
                         .WithMany("Orders")
-                        .HasForeignKey("OrderTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderTypeId");
 
                     b.HasOne("Delivery.DAL.Models.Address", "TargetAddress")
                         .WithMany("TargetOrders")
                         .HasForeignKey("TargetAddressId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("Delivery.DAL.Models.OrderLine", b =>
                 {
                     b.HasOne("Delivery.DAL.Models.Order", "Order")
                         .WithMany("OrderLines")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
                 });
 #pragma warning restore 612, 618
         }
