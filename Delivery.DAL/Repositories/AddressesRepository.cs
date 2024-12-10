@@ -83,7 +83,7 @@ namespace Delivery.DAL.Repositories
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
 
-		public async Task<Address> GetByAddress (Address address)
+		public async Task<Address> GetByAddressAsync (Address address)
 		{
 			return await _db.Addresses.FirstOrDefaultAsync(n =>
 				n.City == address.City && n.Street == address.Street && n.HomeNumber == address.HomeNumber &&

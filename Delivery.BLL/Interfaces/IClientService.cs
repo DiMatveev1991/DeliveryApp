@@ -6,9 +6,9 @@ namespace Delivery.BLL.Interfaces
 {
 	internal interface IClientService
 	{
-		Task<Client> AddClient(string fistName, string secondName, string phoneNumber, Address address);
-		Task<Client> UpdateClient(Client client);
-		Task DeleteClient(Guid id);
+		Task<Client> AddClientAsync(string fistName, string secondName, string phoneNumber, Address address);
+		Task<Client> UpdateClientAsync(Client client);
+		Task DeleteClientAsync(Guid id);
 
 	}
 }

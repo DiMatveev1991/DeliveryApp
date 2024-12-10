@@ -81,7 +81,7 @@ namespace Delivery.DAL.Repositories
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
 
-		public async Task<CourierType> GetType (CourierType courierType)
+		public async Task<CourierType> GetTypeAsync (CourierType courierType)
 		{
 			return await _db.CourierTypes.FirstOrDefaultAsync(n =>  n.StatusName == courierType.StatusName);
 		}

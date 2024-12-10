@@ -23,7 +23,7 @@ namespace Delivery.DAL.Interfaces
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
 
-		Task<Address> GetByAddress(Address address);
+		Task<Address> GetByAddressAsync(Address address);
 
 	}
 }

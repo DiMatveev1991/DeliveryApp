@@ -81,7 +81,7 @@ namespace Delivery.DAL.Repositories
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
 
-		public async Task<CourierStatus> GetStatus(CourierStatus courierStatus)
+		public async Task<CourierStatus> GetStatusAsync(CourierStatus courierStatus)
 		{
 			return await _db.CourierStatuses.FirstOrDefaultAsync(n => n.StatusName == courierStatus.StatusName);
 		}

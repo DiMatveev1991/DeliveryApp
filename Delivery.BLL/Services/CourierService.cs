@@ -20,16 +20,16 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber,
+		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber,
 			CourierType courierType, CourierStatus courierStatus)
 		{
 
 			try
 			{
-				var existCourierType = await _unitOfWork.CourierTypesRepository.GetType(courierType);
+				var existCourierType = await _unitOfWork.CourierTypesRepository.GetTypeAsync(courierType);
 				existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
 
-				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatus(courierStatus);
+				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courierStatus);
 
 				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
 				{
@@ -48,13 +48,13 @@ namespace Delivery.BLL.Services
 		}
 	
 
-	public async Task DeleteCourier(Guid id)
+	public async Task DeleteCourierAsync(Guid id)
 	{
-		var  activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrders(id);
-		if (activeOrders.Any()) _unitOfWork.CouriersRepository.RemoveAsync(id);
+		var  activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
+		if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
 	}
 
-		public Task<Courier> UpdateCourier(Courier courier)
+		public Task<Courier> UpdateCourierAsync(Courier courier)
 		{
 			throw new NotImplementedException();
 		}

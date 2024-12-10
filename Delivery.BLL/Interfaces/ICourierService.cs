@@ -6,10 +6,10 @@ namespace Delivery.BLL.Interfaces
 {
 	internal interface ICourierService
 	{
-		Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber, CourierType courierType, CourierStatus courierStatus);
-		Task<Courier> UpdateCourier(Courier courier);
-		Task DeleteCourier(Guid id);
-		//назначить заказ курьеру
+		Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierType courierType, CourierStatus courierStatus);
+		Task<Courier> UpdateCourierAsync(Courier courier);
+		Task DeleteCourierAsync(Guid id);
+		
 	
 	}
 }

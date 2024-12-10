@@ -21,9 +21,9 @@ namespace Delivery.BLL.Services
 		}
 
 
-		public async Task<Client> AddClient(string fistName, string secondName, string phoneNumber, Address address)
+		public async Task<Client> AddClientAsync(string fistName, string secondName, string phoneNumber, Address address)
 		{
-			var existAddress = await _unitOfWork.AddressRepository.GetByAddress(address);
+			var existAddress = await _unitOfWork.AddressRepository.GetByAddressAsync(address);
 			existAddress ??= await _unitOfWork.AddressRepository.AddAsync(address);
 
 			var client = await _unitOfWork.ClientsRepository.AddAsync(new Client() 
@@ -31,12 +31,12 @@ namespace Delivery.BLL.Services
 			return client;
 		}
 
-		public Task DeleteClient(Guid id)
+		public Task DeleteClientAsync(Guid id)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<Client> UpdateClient(Client client)
+		public Task<Client> UpdateClientAsync(Client client)
 		{
 			throw new NotImplementedException();
 		}

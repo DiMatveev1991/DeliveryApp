@@ -18,7 +18,7 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Order> AddOrder(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines)
+		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines)
 		{
 			var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Новая");
 
@@ -36,12 +36,12 @@ namespace Delivery.BLL.Services
 			return order;
 		}
         // получить заказ по Id, поставить статус отменен и заполнить поле причина
-		public Task CancelOrder(Guid id, string reason)
+		public Task CancelOrderAsync(Guid id, string reason)
 		{
 			throw new NotImplementedException();
 		}
 		// получить заказ по Id, поставить статус выполнено
-		public Task CompleteOrder(Guid id)
+		public Task CompleteOrderAsync(Guid id)
 		{
 			throw new NotImplementedException();
 		}
@@ -51,12 +51,12 @@ namespace Delivery.BLL.Services
 			throw new NotImplementedException();
 		}
 		// получить заказ по Id, поставить статус выполнено
-		public Task TakeInProgress(Guid orderId, Guid courierId)
+		public Task TakeInProgressAsync(Guid orderId, Guid courierId)
 		{
 			throw new NotImplementedException();
 		}
 		// проверить статус заявки если новая изменить
-		public Task UpdateOrder(Order order)
+		public Task UpdateOrderAsync(Order order)
 		{
 			throw new NotImplementedException();
 		}

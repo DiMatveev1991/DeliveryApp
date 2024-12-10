@@ -7,12 +7,12 @@ namespace Delivery.BLL.Interfaces
 {
 	internal interface IOrderService
 	{
-		Task<Order> AddOrder(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines);
+		Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines);
 		// перевести статус заказа - в работе
-		Task TakeInProgress(Guid orderId, Guid courierId);
-		Task CancelOrder (Guid id, string reason);
-		Task CompleteOrder (Guid id);
-		Task UpdateOrder (Order order);
+		Task TakeInProgressAsync(Guid orderId, Guid courierId);
+		Task CancelOrderAsync (Guid id, string reason);
+		Task CompleteOrderAsync (Guid id);
+		Task UpdateOrderAsync (Order order);
 		Task DeleteOrderAsync (Guid id);
 	}
 }
