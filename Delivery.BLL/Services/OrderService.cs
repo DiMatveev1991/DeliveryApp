@@ -23,7 +23,6 @@ namespace Delivery.BLL.Services
 		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines)
 		{
 			var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Новая");
-			orderStatus ??= await _unitOfWork.OrderStatusesRepository.AddAsync(new OrderStatus(){StatusName = "Новая"});
 
 			var order = await _unitOfWork.OrdersRepository.AddAsync(new Order()
 			{
@@ -49,14 +48,14 @@ namespace Delivery.BLL.Services
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
-				orderStatus ??= await _unitOfWork.OrderStatusesRepository.AddAsync(new OrderStatus() { StatusName = "Выполнено" });
-				
+				order.OrderStatus=orderStatus;
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 			}
 			catch (EntryPointNotFoundException e)
 			{
 				throw new EntryPointNotFoundException("По данному Id заказ не найден");
 			}
+			
 			
 		}
 		//если заказ не в работе

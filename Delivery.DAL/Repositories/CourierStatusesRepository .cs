@@ -85,7 +85,5 @@ namespace Delivery.DAL.Repositories
 		{
 			return await _db.CourierStatuses.FirstOrDefaultAsync(n => n.StatusName == courierStatus.StatusName);
 		}
-
-		
 	}
 }
