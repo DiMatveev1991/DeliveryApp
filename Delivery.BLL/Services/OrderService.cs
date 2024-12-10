@@ -3,6 +3,8 @@ using Delivery.DAL.Interfaces;
 using Delivery.DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +23,7 @@ namespace Delivery.BLL.Services
 		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines)
 		{
 			var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Новая");
-
+			orderStatus ??= await _unitOfWork.OrderStatusesRepository.AddAsync(new OrderStatus(){StatusName = "Новая"});
 
 			var order = await _unitOfWork.OrdersRepository.AddAsync(new Order()
 			{
@@ -41,16 +43,28 @@ namespace Delivery.BLL.Services
 			throw new NotImplementedException();
 		}
 		// получить заказ по Id, поставить статус выполнено
-		public Task CompleteOrderAsync(Guid id)
+		public async Task CompleteOrderAsync(Guid id)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
+				orderStatus ??= await _unitOfWork.OrderStatusesRepository.AddAsync(new OrderStatus() { StatusName = "Выполнено" });
+				
+				await _unitOfWork.OrdersRepository.UpdateAsync(order);
+			}
+			catch (EntryPointNotFoundException e)
+			{
+				throw new EntryPointNotFoundException("По данному Id заказ не найден");
+			}
+			
 		}
 		//если заказ не в работе
 		public Task DeleteOrderAsync(Guid id)
 		{
 			throw new NotImplementedException();
 		}
-		// получить заказ по Id, поставить статус выполнено
+		// получить заказ по Id, поставить статус в процессе выполнения
 		public Task TakeInProgressAsync(Guid orderId, Guid courierId)
 		{
 			throw new NotImplementedException();

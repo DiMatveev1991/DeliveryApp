@@ -133,10 +133,9 @@ namespace Delivery.DAL.Migrations
                     FromAddressId = table.Column<Guid>(nullable: true),
                     TargetDateTime = table.Column<DateTime>(nullable: false),
                     OrderTypeId = table.Column<Guid>(nullable: true),
-                    StatusId = table.Column<Guid>(nullable: true),
+                    OrderStatusId = table.Column<Guid>(nullable: true),
                     ClientId = table.Column<Guid>(nullable: true),
                     CourierId = table.Column<Guid>(nullable: true),
-                    OrderStatusId = table.Column<Guid>(nullable: true),
                     CancelReason = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>

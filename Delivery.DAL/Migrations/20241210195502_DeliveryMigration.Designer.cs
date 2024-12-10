@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delivery.DAL.Migrations
 {
     [DbContext(typeof(DeliveryDbContext))]
-    [Migration("20241209174447_DeliveryMigration")]
+    [Migration("20241210195502_DeliveryMigration")]
     partial class DeliveryMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,9 +186,6 @@ namespace Delivery.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OrderTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("StatusId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TargetAddressId")

@@ -186,9 +186,6 @@ namespace Delivery.DAL.Migrations
                     b.Property<Guid?>("OrderTypeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("StatusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("TargetAddressId")
                         .HasColumnType("uniqueidentifier");
 

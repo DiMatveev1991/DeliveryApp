@@ -13,7 +13,7 @@ namespace Delivery.DAL.Models
 		public Guid? FromAddressId { get; set; }
 		public DateTime TargetDateTime { get; set; }
 		public Guid? OrderTypeId { get; set; }
-		public Guid? StatusId { get; set; }
+		public Guid? OrderStatusId { get; set; }
 		public Guid? ClientId { get; set; }
 		public Guid? CourierId { get; set; }
 		public virtual Address? TargetAddress { get; set; }
