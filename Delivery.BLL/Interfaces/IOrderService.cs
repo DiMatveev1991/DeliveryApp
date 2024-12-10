@@ -13,6 +13,6 @@ namespace Delivery.BLL.Interfaces
 		Task CancelOrder (Guid id, string reason);
 		Task CompleteOrder (Guid id);
 		Task UpdateOrder (Order order);
-		Task DeleteOrder (Guid id);
+		Task DeleteOrderAsync (Guid id);
 	}
 }

@@ -8,8 +8,8 @@ namespace Delivery.BLL.Interfaces
 	{
 		Task<Courier> AddCourier(string fistName, string secondName, string phoneNumber, CourierType courierType, CourierStatus courierStatus);
 		Task<Courier> UpdateCourier(Courier courier);
-		Task<Courier> DeleteCourier(Guid id);
+		Task DeleteCourier(Guid id);
 		//назначить заказ курьеру
-		Task TakeOrderInProgress(Guid orderId, Guid courierId);
+	
 	}
 }

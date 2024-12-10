@@ -23,5 +23,7 @@ namespace Delivery.DAL.Interfaces
 
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
+
+		Task<IEnumerable<Order>> GetActiveOrders(Guid courierId);
 	}
 }

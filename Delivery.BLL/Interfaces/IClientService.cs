@@ -8,7 +8,7 @@ namespace Delivery.BLL.Interfaces
 	{
 		Task<Client> AddClient(string fistName, string secondName, string phoneNumber, Address address);
 		Task<Client> UpdateClient(Client client);
-		Task<Client> DeleteClient(Guid id);
+		Task DeleteClient(Guid id);
 
 	}
 }

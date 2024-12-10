@@ -90,5 +90,10 @@ namespace Delivery.DAL.Repositories
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
+
+		public async Task <OrderStatus> GetOrderStatusAsync(string statusName)
+		{
+			return await _db.OrderStatuses.FirstOrDefaultAsync(n=> n.StatusName == statusName);
+		}
 	}
 }

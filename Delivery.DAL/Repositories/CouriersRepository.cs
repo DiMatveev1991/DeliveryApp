@@ -83,5 +83,11 @@ namespace Delivery.DAL.Repositories
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
+
+		public async Task<IEnumerable<Order>> GetActiveOrders(Guid courierId)
+		{
+			return await _db.Orders.Where(n => n.OrderStatus.StatusName == "Передано на выполнение" && n.CourierId == courierId).ToListAsync();
+		}
+
 	}
 }

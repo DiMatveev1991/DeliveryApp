@@ -23,6 +23,6 @@ namespace Delivery.DAL.Interfaces
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
 
-		public Task<CourierStatus> GetByCourierStatus(CourierStatus courierStatus);
+		public Task<CourierStatus> GetStatus(CourierStatus courierStatus);
 	}
 }

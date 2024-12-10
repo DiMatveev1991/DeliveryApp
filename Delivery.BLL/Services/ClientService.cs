@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.BLL.Services
 {
-	internal class ClientServices : IClientService
+	internal class ClientService : IClientService
 
 	{
 		private readonly IUnitOfWork _unitOfWork;
 
-		public ClientServices(IUnitOfWork unitOfWork)
+		public ClientService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork=unitOfWork;
 		}
@@ -31,7 +31,7 @@ namespace Delivery.BLL.Services
 			return client;
 		}
 
-		public Task<Client> DeleteClient(Guid id)
+		public Task DeleteClient(Guid id)
 		{
 			throw new NotImplementedException();
 		}

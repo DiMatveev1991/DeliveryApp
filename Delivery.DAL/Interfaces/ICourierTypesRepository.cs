@@ -22,6 +22,6 @@ namespace Delivery.DAL.Interfaces
 
 		void Remove(Guid id);
 		Task RemoveAsync(Guid id, CancellationToken cancel = default);
-		public Task<CourierType> GetByCourierType(CourierType courierType);
+		public Task<CourierType> GetType(CourierType courierType);
 	}
 }

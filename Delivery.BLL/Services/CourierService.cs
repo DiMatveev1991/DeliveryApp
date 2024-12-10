@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,12 @@ using Delivery.DAL.Models;
 
 namespace Delivery.BLL.Services
 {
-	internal class CourierServices : ICourierService
+	internal class CourierService : ICourierService
 	{
 
 		private readonly IUnitOfWork _unitOfWork;
 
-		public CourierServices(IUnitOfWork unitOfWork)
+		public CourierService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 		}
@@ -25,10 +26,10 @@ namespace Delivery.BLL.Services
 
 			try
 			{
-				var existCourierType = await _unitOfWork.CourierTypesRepository.GetByCourierType(courierType);
+				var existCourierType = await _unitOfWork.CourierTypesRepository.GetType(courierType);
 				existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
 
-				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetByCourierStatus(courierStatus);
+				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatus(courierStatus);
 
 				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
 				{
@@ -47,15 +48,11 @@ namespace Delivery.BLL.Services
 		}
 	
 
-	public Task<Courier> DeleteCourier(Guid id)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task TakeOrderInProgress(Guid orderId, Guid courierId)
-		{
-			throw new NotImplementedException();
-		}
+	public async Task DeleteCourier(Guid id)
+	{
+		var  activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrders(id);
+		if (activeOrders.Any()) _unitOfWork.CouriersRepository.RemoveAsync(id);
+	}
 
 		public Task<Courier> UpdateCourier(Courier courier)
 		{
