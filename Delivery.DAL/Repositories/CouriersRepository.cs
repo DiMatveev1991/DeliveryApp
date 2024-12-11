@@ -88,6 +88,9 @@ namespace Delivery.DAL.Repositories
 		{
 			return await _db.Orders.Where(n => n.OrderStatus.StatusName == "Передано на выполнение" && n.CourierId == courierId).ToListAsync();
 		}
-
-	}
+        public async Task<CourierStatus> GetCourierStatusAsync(string statusName)
+        {
+            return await _db.CourierStatuses.FirstOrDefaultAsync(n => n.StatusName == statusName);
+        }
+    }
 }

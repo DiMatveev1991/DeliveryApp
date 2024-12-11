@@ -33,6 +33,7 @@ namespace Delivery.BLL.Services
 
 		public Task DeleteClientAsync(Guid id)
 		{
+			
 			throw new NotImplementedException();
 		}
 

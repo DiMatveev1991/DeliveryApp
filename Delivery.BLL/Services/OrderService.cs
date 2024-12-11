@@ -49,25 +49,33 @@ namespace Delivery.BLL.Services
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
 				order.OrderStatus=orderStatus;
+
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 			}
 			catch (EntryPointNotFoundException e)
 			{
 				throw new EntryPointNotFoundException("По данному Id заказ не найден");
 			}
-			
-			
 		}
-		//если заказ не в работе
-		public Task DeleteOrderAsync(Guid id)
+		public async Task DeleteOrderAsync(Guid id)
 		{
-			throw new NotImplementedException();
-		}
-		// получить заказ по Id, поставить статус в процессе выполнения
-		public Task TakeInProgressAsync(Guid orderId, Guid courierId)
+            var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+            var orderStatusComplite = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+			if (order.OrderStatus != orderStatusComplite) { await _unitOfWork.OrdersRepository.RemoveAsync(order.Id); }
+			else return;
+        }
+		public async Task TakeInProgressAsync(Guid orderId, Guid courierId)
 		{
-			throw new NotImplementedException();
-		}
+            var order = await _unitOfWork.OrdersRepository.GetAsync(orderId);
+            var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+			order.OrderStatus = orderStatus;
+			var courier = await _unitOfWork.CouriersRepository.GetAsync(courierId);
+			var courierStatus = await _unitOfWork.CouriersRepository.GetCourierStatusAsync("Выполняет заказ");
+			order.Courier = courier;
+			courier.CourierStatus = courierStatus;
+            await _unitOfWork.OrdersRepository.UpdateAsync(order);
+            await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+        }
 		// проверить статус заявки если новая изменить
 		public Task UpdateOrderAsync(Order order)
 		{
