@@ -26,7 +26,7 @@ namespace Delivery.DAL.Repositories
 
 		public IQueryable<Courier> Items => _Set
 			.Include(item => item.CourierStatus)
-		;
+		    ;
 
 		public Courier Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 
