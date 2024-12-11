@@ -25,12 +25,9 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<Order> Items => _Set
-			.Include(item => item.OrderType)
 			.Include( item => item.OrderLines)
 			.Include(item => item.Courier)
 			.ThenInclude(item => item.CourierStatus)
-			.Include(item => item.Courier)
-			.ThenInclude(item => item.CourierType)
 			.Include(item =>item.FromAddress)
 			.Include(item => item.TargetAddress)
 			.Include(item => item.Client)

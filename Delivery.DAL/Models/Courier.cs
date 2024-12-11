@@ -7,9 +7,7 @@ namespace Delivery.DAL.Models
 {
 	public class Courier: PersonEntity
 	{
-		public Guid? TypeId { get; set; }
-		public Guid? StatusId { get; set; }
-		public virtual CourierType? CourierType { get; set; }
+		public Guid? CourierStatusId { get; set; }
 		public virtual CourierStatus? CourierStatus { get; set; }
 
 		//(несколько заказов могут быть назначены одному курьеру).

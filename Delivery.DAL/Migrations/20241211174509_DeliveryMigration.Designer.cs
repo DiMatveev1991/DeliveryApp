@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delivery.DAL.Migrations
 {
     [DbContext(typeof(DeliveryDbContext))]
-    [Migration("20241210195502_DeliveryMigration")]
+    [Migration("20241211174509_DeliveryMigration")]
     partial class DeliveryMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,9 +100,6 @@ namespace Delivery.DAL.Migrations
                     b.Property<Guid?>("CourierStatusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourierTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("FistName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -115,17 +112,9 @@ namespace Delivery.DAL.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<Guid?>("StatusId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourierStatusId");
-
-                    b.HasIndex("CourierTypeId");
 
                     b.ToTable("Couriers");
                 });
@@ -144,22 +133,6 @@ namespace Delivery.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CourierStatuses");
-                });
-
-            modelBuilder.Entity("Delivery.DAL.Models.CourierType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
-                    b.Property<string>("StatusName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CourierTypes");
                 });
 
             modelBuilder.Entity("Delivery.DAL.Models.Order", b =>
@@ -185,9 +158,6 @@ namespace Delivery.DAL.Migrations
                     b.Property<Guid?>("OrderStatusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OrderTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("TargetAddressId")
                         .HasColumnType("uniqueidentifier");
 
@@ -203,8 +173,6 @@ namespace Delivery.DAL.Migrations
                     b.HasIndex("FromAddressId");
 
                     b.HasIndex("OrderStatusId");
-
-                    b.HasIndex("OrderTypeId");
 
                     b.HasIndex("TargetAddressId");
 
@@ -257,22 +225,6 @@ namespace Delivery.DAL.Migrations
                     b.ToTable("OrderStatuses");
                 });
 
-            modelBuilder.Entity("Delivery.DAL.Models.OrderType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
-                    b.Property<string>("TypeName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderTypes");
-                });
-
             modelBuilder.Entity("Delivery.DAL.Models.Client", b =>
                 {
                     b.HasOne("Delivery.DAL.Models.Address", "Address")
@@ -285,10 +237,6 @@ namespace Delivery.DAL.Migrations
                     b.HasOne("Delivery.DAL.Models.CourierStatus", "CourierStatus")
                         .WithMany("Couriers")
                         .HasForeignKey("CourierStatusId");
-
-                    b.HasOne("Delivery.DAL.Models.CourierType", "CourierType")
-                        .WithMany("Couriers")
-                        .HasForeignKey("CourierTypeId");
                 });
 
             modelBuilder.Entity("Delivery.DAL.Models.Order", b =>
@@ -309,10 +257,6 @@ namespace Delivery.DAL.Migrations
                     b.HasOne("Delivery.DAL.Models.OrderStatus", "OrderStatus")
                         .WithMany("Orders")
                         .HasForeignKey("OrderStatusId");
-
-                    b.HasOne("Delivery.DAL.Models.OrderType", "OrderType")
-                        .WithMany("Orders")
-                        .HasForeignKey("OrderTypeId");
 
                     b.HasOne("Delivery.DAL.Models.Address", "TargetAddress")
                         .WithMany("TargetOrders")

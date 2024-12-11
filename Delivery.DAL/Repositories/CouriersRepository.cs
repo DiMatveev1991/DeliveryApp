@@ -25,7 +25,6 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<Courier> Items => _Set
-			.Include(item => item.CourierType)
 			.Include(item => item.CourierStatus)
 		;
 

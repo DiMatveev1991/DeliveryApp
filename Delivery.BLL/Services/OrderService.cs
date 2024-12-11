@@ -60,8 +60,8 @@ namespace Delivery.BLL.Services
 		public async Task DeleteOrderAsync(Guid id)
 		{
             var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-            var orderStatusComplite = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
-			if (order.OrderStatus != orderStatusComplite) { await _unitOfWork.OrdersRepository.RemoveAsync(order.Id); }
+            var orderStatusComplete = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+			if (order.OrderStatus != orderStatusComplete) { await _unitOfWork.OrdersRepository.RemoveAsync(order.Id); }
 			else return;
         }
 		public async Task TakeInProgressAsync(Guid orderId, Guid courierId)

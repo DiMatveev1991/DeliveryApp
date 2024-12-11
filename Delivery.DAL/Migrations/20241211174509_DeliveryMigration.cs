@@ -38,18 +38,6 @@ namespace Delivery.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CourierTypes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
-                    StatusName = table.Column<string>(maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CourierTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderStatuses",
                 columns: table => new
                 {
@@ -59,18 +47,6 @@ namespace Delivery.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderStatuses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderTypes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false, defaultValueSql: "newid()"),
-                    TypeName = table.Column<string>(maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -102,9 +78,6 @@ namespace Delivery.DAL.Migrations
                     FistName = table.Column<string>(maxLength: 256, nullable: true),
                     SecondName = table.Column<string>(maxLength: 256, nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 256, nullable: true),
-                    TypeId = table.Column<Guid>(nullable: true),
-                    StatusId = table.Column<Guid>(nullable: true),
-                    CourierTypeId = table.Column<Guid>(nullable: true),
                     CourierStatusId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -114,12 +87,6 @@ namespace Delivery.DAL.Migrations
                         name: "FK_Couriers_CourierStatuses_CourierStatusId",
                         column: x => x.CourierStatusId,
                         principalTable: "CourierStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Couriers_CourierTypes_CourierTypeId",
-                        column: x => x.CourierTypeId,
-                        principalTable: "CourierTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -132,7 +99,6 @@ namespace Delivery.DAL.Migrations
                     TargetAddressId = table.Column<Guid>(nullable: true),
                     FromAddressId = table.Column<Guid>(nullable: true),
                     TargetDateTime = table.Column<DateTime>(nullable: false),
-                    OrderTypeId = table.Column<Guid>(nullable: true),
                     OrderStatusId = table.Column<Guid>(nullable: true),
                     ClientId = table.Column<Guid>(nullable: true),
                     CourierId = table.Column<Guid>(nullable: true),
@@ -162,12 +128,6 @@ namespace Delivery.DAL.Migrations
                         name: "FK_Orders_OrderStatuses_OrderStatusId",
                         column: x => x.OrderStatusId,
                         principalTable: "OrderStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_OrderTypes_OrderTypeId",
-                        column: x => x.OrderTypeId,
-                        principalTable: "OrderTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -210,11 +170,6 @@ namespace Delivery.DAL.Migrations
                 column: "CourierStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Couriers_CourierTypeId",
-                table: "Couriers",
-                column: "CourierTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderLines_OrderId",
                 table: "OrderLines",
                 column: "OrderId");
@@ -240,11 +195,6 @@ namespace Delivery.DAL.Migrations
                 column: "OrderStatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_OrderTypeId",
-                table: "Orders",
-                column: "OrderTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_TargetAddressId",
                 table: "Orders",
                 column: "TargetAddressId");
@@ -268,16 +218,10 @@ namespace Delivery.DAL.Migrations
                 name: "OrderStatuses");
 
             migrationBuilder.DropTable(
-                name: "OrderTypes");
-
-            migrationBuilder.DropTable(
                 name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "CourierStatuses");
-
-            migrationBuilder.DropTable(
-                name: "CourierTypes");
         }
     }
 }

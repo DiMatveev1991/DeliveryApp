@@ -16,9 +16,7 @@ namespace Delivery.DAL.Registrator
 			return services
 					.AddTransient<ICouriersRepository, CouriersRepository>()
 					.AddTransient<ICourierStatusesRepository, CourierStatusesRepository>()
-					.AddTransient<ICourierTypesRepository, CourierTypesRepository>()
 					.AddTransient<IOrdersRepository, OrdersRepository>()
-					.AddTransient<IOrderTypesRepository, OrderTypesRepository>()
 					.AddTransient<IOrderStatusesRepository, OrderStatusesRepository>()
 					.AddTransient<IOrderLinesRepository, OrderLinesRepository>()
 					.AddTransient<IClientsRepository, ClientsRepository>()

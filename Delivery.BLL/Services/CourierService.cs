@@ -20,21 +20,16 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber,
-			CourierType courierType, CourierStatus courierStatus)
+		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierStatus courierStatus)
 		{
 
 			try
 			{
-				var existCourierType = await _unitOfWork.CourierTypesRepository.GetTypeAsync(courierType);
-				existCourierType ??= await _unitOfWork.CourierTypesRepository.AddAsync(courierType);
 
 				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courierStatus);
-
 				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
 				{
 					FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber,
-					CourierType = await _unitOfWork.CourierTypesRepository.AddAsync(existCourierType),
 					CourierStatus = await _unitOfWork.CourierStatusesRepository.AddAsync(existCourierStatus)
 				});
 				

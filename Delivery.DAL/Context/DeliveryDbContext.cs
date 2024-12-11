@@ -13,10 +13,8 @@ namespace Delivery.DAL.Context
 		public DbSet<Address> Addresses { get; set; }
 		public DbSet<Client> Clients { get; set; }
 		public DbSet<Courier> Couriers { get; set; }
-		public DbSet<CourierType> CourierTypes { get; set; }
 		public DbSet<CourierStatus> CourierStatuses { get; set; }
 		public DbSet<Order> Orders { get; set; }
-		public DbSet<OrderType> OrderTypes { get; set; }
 		public DbSet<OrderStatus> OrderStatuses { get; set; }
 		public DbSet<OrderLine> OrderLines { get; set; }
 
@@ -36,8 +34,6 @@ namespace Delivery.DAL.Context
 		modelBuilder.Entity<Address>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<Courier>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<CourierStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
-		modelBuilder.Entity<CourierType>().Property(s => s.Id).HasDefaultValueSql("newid()");
-		modelBuilder.Entity<OrderType>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<OrderStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<OrderLine>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		}
