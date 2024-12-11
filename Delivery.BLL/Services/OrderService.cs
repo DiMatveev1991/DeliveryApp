@@ -15,12 +15,13 @@ namespace Delivery.BLL.Services
 
 		private readonly IUnitOfWork _unitOfWork;
 
-		public OrderService (IUnitOfWork unitOfWork)
+		public OrderService(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines)
+		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress,
+			IEnumerable<OrderLine> orderLines)
 		{
 			try
 			{
@@ -46,19 +47,31 @@ namespace Delivery.BLL.Services
 		}
 
 
-        // получить заказ по Id, поставить статус отменен и заполнить поле причина
-		public Task CancelOrderAsync(Guid id, string reason)
+
+		public async Task CancelOrderAsync(Guid id, string reason)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Отменена");
+				order.CancelReason = reason;
+				order.OrderStatus = orderStatus;
+				await _unitOfWork.OrdersRepository.UpdateAsync(order);
+			}
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
+			
 		}
-		
+
 		public async Task CompleteOrderAsync(Guid id)
 		{
 			try
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
-				order.OrderStatus=orderStatus;
+				order.OrderStatus = orderStatus;
 
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 			}
@@ -73,14 +86,18 @@ namespace Delivery.BLL.Services
 			try
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-				var orderStatusComplete = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
-				if (order.OrderStatus != orderStatusComplete) { await _unitOfWork.OrdersRepository.RemoveAsync(order.Id); }
+				var orderStatusComplete =
+					await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+				if (order.OrderStatus != orderStatusComplete)
+				{
+					await _unitOfWork.OrdersRepository.RemoveAsync(order.Id);
+				}
 			}
 			catch (Exception e)
 			{
 				throw new Exception("По данному Id заказ не найден");
 			}
-        }
+		}
 
 		public async Task TakeInProgressAsync(Guid orderId, Guid courierId)
 		{
@@ -103,10 +120,15 @@ namespace Delivery.BLL.Services
 		}
 
 
-		// проверить статус заявки если новая изменить
-		public Task UpdateOrderAsync(Order order)
+		public async Task<Order> UpdateOrderAsync(Order order)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync((Guid)order.OrderStatusId);
+				if (orderStatus.StatusName == "Новая") { await _unitOfWork.OrdersRepository.UpdateAsync(order);}
+				return order;
+			}
+			catch (Exception e) {throw new Exception(e.Message); }
 		}
 	}
 }

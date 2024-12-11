@@ -25,7 +25,6 @@ namespace Delivery.BLL.Services
 
 			try
 			{
-
 				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courierStatus);
 				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
 				{
@@ -45,13 +44,32 @@ namespace Delivery.BLL.Services
 
 	public async Task DeleteCourierAsync(Guid id)
 	{
-		var  activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
-		if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
+		try
+		{
+			var activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
+			if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
+		}
+		catch (Exception ex)
+		{
+			throw new Exception(ex.Message);
+		}
 	}
 
-		public Task<Courier> UpdateCourierAsync(Courier courier)
+		public async Task<Courier> UpdateCourierAsync(Courier courier)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courier.CourierStatus);
+			if (existCourierStatus.StatusName != "Выполняет заказ")
+			{
+				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+			}
+			return courier;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace Delivery.BLL.Interfaces
 		Task TakeInProgressAsync(Guid orderId, Guid courierId);
 		Task CancelOrderAsync (Guid id, string reason);
 		Task CompleteOrderAsync (Guid id);
-		Task UpdateOrderAsync (Order order);
+		Task <Order> UpdateOrderAsync (Order order);
 		Task DeleteOrderAsync (Guid id);
 	}
 }
