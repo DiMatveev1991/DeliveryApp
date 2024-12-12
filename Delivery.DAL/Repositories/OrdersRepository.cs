@@ -31,6 +31,7 @@ namespace Delivery.DAL.Repositories
 			.Include(item => item.FromAddress)
 			.Include(item => item.TargetAddress)
 			.Include(item => item.Client)
+			.Include(item => item.OrderStatus)
 		;
 
 		public Order Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
