@@ -17,7 +17,6 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		//TODO Не надо передавать статус заказа, надо сразу искать статус "Готов к работе" и ставить его
 		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierStatus courierStatus)
 		{
 
