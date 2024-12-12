@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Delivery.BLL\Delivery.BLL.csproj" />
     <ProjectReference Include="..\Delivery.DAL\Delivery.DAL.csproj" />
   </ItemGroup>
 

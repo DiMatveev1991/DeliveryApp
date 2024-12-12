@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Delivery.BLL.Interfaces;
-using Delivery.DAL.Context;
 using Delivery.DAL.Interfaces;
 using Delivery.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
@@ -18,7 +18,7 @@ namespace Delivery.BLL.Services
 
 		public ClientService(IUnitOfWork unitOfWork)
 		{
-			_unitOfWork=unitOfWork;
+			_unitOfWork = unitOfWork;
 		}
 
 
@@ -30,7 +30,7 @@ namespace Delivery.BLL.Services
 				existAddress ??= await _unitOfWork.AddressRepository.AddAsync(address);
 
 				var client = await _unitOfWork.ClientsRepository.AddAsync(new Client()
-					{ FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, Address = existAddress });
+				{ FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, Address = existAddress });
 				return client;
 			}
 			catch (Exception ex)
@@ -43,9 +43,12 @@ namespace Delivery.BLL.Services
 		{
 			try
 			{
-				var order = await _unitOfWork.OrdersRepository.Items.Where(o => o.ClientId == id).FirstOrDefaultAsync();
-				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync((Guid)order.OrderStatusId);
-				if (orderStatus.StatusName != "Передано на выполнение") { await _unitOfWork.ClientsRepository.RemoveAsync(id); }
+				var order = await _unitOfWork.OrdersRepository.Items.FirstOrDefaultAsync(o => o.ClientId == id && o.OrderStatus.StatusName == "Передано на выполнение");
+				if (order == null) { await _unitOfWork.ClientsRepository.RemoveAsync(id); }
+				else
+				{
+					throw new Exception("Удаление не выполнен, у клиента есть активные заказы");
+				}
 			}
 			catch (Exception ex)
 			{
@@ -57,15 +60,23 @@ namespace Delivery.BLL.Services
 		{
 			try
 			{
-				var order = await _unitOfWork.OrdersRepository.Items.Where(o => o.Client == client).FirstOrDefaultAsync();
-				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync((Guid)order.OrderStatusId);
-				if (orderStatus.StatusName != "Передано на выполнение") { await _unitOfWork.ClientsRepository.UpdateAsync(client); }
-				return client;
+				var order = await _unitOfWork.OrdersRepository.Items.FirstOrDefaultAsync(o =>
+					o.ClientId == client.Id && o.OrderStatus.StatusName == "Передано на выполнение");
+				if (order == null)
+				{
+					await _unitOfWork.ClientsRepository.UpdateAsync(client);
+					return client;
+				}
+				else
+				{
+					throw new Exception("Удаление не выполнен, у клиента есть активные заказы");
+				}
 			}
 			catch (Exception ex)
 			{
 				throw new Exception(ex.Message);
 			}
 		}
+
 	}
 }

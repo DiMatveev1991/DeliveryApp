@@ -3,9 +3,6 @@ using Delivery.DAL.Interfaces;
 using Delivery.DAL.Models;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
@@ -29,7 +26,10 @@ namespace Delivery.BLL.Services
 
 				var order = await _unitOfWork.OrdersRepository.AddAsync(new Order()
 				{
-					Client = client, FromAddress = fromAddress, TargetAddress = targetAddress, OrderStatus = orderStatus
+					Client = client,
+					FromAddress = fromAddress,
+					TargetAddress = targetAddress,
+					OrderStatus = orderStatus
 				});
 
 				foreach (var orderLine in orderLines)
@@ -40,29 +40,39 @@ namespace Delivery.BLL.Services
 
 				return order;
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				throw new Exception("В БД нет  статуса заказа Новая");
+				throw new Exception("В БД нет статуса заказа Новая");
 			}
 		}
-
-
 
 		public async Task CancelOrderAsync(Guid id, string reason)
 		{
 			try
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+				if (order is null) { throw new Exception("Такого заказа нет");}
+
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Отменена");
+				if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
+
+				var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
+				if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
+				
+				if (!order.CourierId.HasValue) throw new Exception("Отсутствует статус заказа");
+				var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
 				order.CancelReason = reason;
 				order.OrderStatus = orderStatus;
+				courier.CourierStatus=statusCourier;
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
+				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+
 			}
 			catch (Exception e)
 			{
 				throw new Exception(e.Message);
 			}
-			
+
 		}
 
 		public async Task CompleteOrderAsync(Guid id)
@@ -70,12 +80,25 @@ namespace Delivery.BLL.Services
 			try
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
-				order.OrderStatus = orderStatus;
+				if (order is null) { throw new Exception("Такого заказа нет"); }
 
+
+				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
+				if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
+
+				var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
+				if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
+
+				if (!order.CourierId.HasValue) throw new Exception("Отсутствует статус заказа");
+				var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
+
+				courier.CourierStatus = statusCourier;
+				order.OrderStatus = orderStatus;
+				
+				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				throw new Exception("По данному Id заказ не найден");
 			}
@@ -83,19 +106,26 @@ namespace Delivery.BLL.Services
 
 		public async Task DeleteOrderAsync(Guid id)
 		{
-			try
-			{
-				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-				var orderStatusComplete =
-					await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
-				if (order.OrderStatus != orderStatusComplete)
-				{
-					await _unitOfWork.OrdersRepository.RemoveAsync(order.Id);
-				}
-			}
-			catch (Exception e)
+			var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+
+			if (order is null)
 			{
 				throw new Exception("По данному Id заказ не найден");
+			}
+
+			var orderStatusComplete = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+			if (orderStatusComplete is null)
+			{
+				throw new Exception("Такого статуса нет в БД");
+			}
+
+			if (order.OrderStatus.Id != orderStatusComplete.Id)
+			{
+				await _unitOfWork.OrdersRepository.RemoveAsync(order.Id);
+			}
+			else
+			{
+				throw new Exception("Заказ нельзя удалить, т.к. он в работе");
 			}
 		}
 
@@ -104,31 +134,52 @@ namespace Delivery.BLL.Services
 			try
 			{
 				var order = await _unitOfWork.OrdersRepository.GetAsync(orderId);
+
+				if (order is null)
+				{
+					throw new Exception("По данному Id заказ не найден");
+				}
+
+				var courier = await _unitOfWork.CouriersRepository.GetAsync(courierId);
+
+				if (courier is null)
+				{
+					throw new Exception("Такого курьера не существует");
+				}
+
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
 				order.OrderStatus = orderStatus;
-				var courier = await _unitOfWork.CouriersRepository.GetAsync(courierId);
+
 				var courierStatus = await _unitOfWork.CouriersRepository.GetCourierStatusAsync("Выполняет заказ");
 				order.Courier = courier;
 				courier.CourierStatus = courierStatus;
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
 			}
-			catch (Exception e)
+			catch (Exception e) 
 			{
 				throw new Exception(e.Message);
 			}
 		}
 
-
 		public async Task<Order> UpdateOrderAsync(Order order)
 		{
 			try
 			{
-				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync((Guid)order.OrderStatusId);
-				if (orderStatus.StatusName == "Новая") { await _unitOfWork.OrdersRepository.UpdateAsync(order);}
+				if (!order.OrderStatusId.HasValue) throw new Exception("Отсутствует статус заказа");
+				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync(order.OrderStatusId.Value);
+				if (orderStatus.StatusName == "Новая")
+				{
+					await _unitOfWork.OrdersRepository.UpdateAsync(order);
+				}
+
 				return order;
+
 			}
-			catch (Exception e) {throw new Exception(e.Message); }
+			catch (Exception e)
+			{
+				throw new Exception(e.Message);
+			}
 		}
 	}
 }

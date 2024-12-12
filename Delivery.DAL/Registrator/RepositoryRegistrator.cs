@@ -11,9 +11,7 @@ namespace Delivery.DAL.Registrator
 	
 		public static class RepositoryRegistrator
 		{
-		public static IServiceCollection AddRepositoriesInDb(this IServiceCollection services)
-		{
-			return services
+		public static IServiceCollection AddRepositoriesInDb(this IServiceCollection services) => services
 					.AddTransient<ICouriersRepository, CouriersRepository>()
 					.AddTransient<ICourierStatusesRepository, CourierStatusesRepository>()
 					.AddTransient<IOrdersRepository, OrdersRepository>()
@@ -21,8 +19,9 @@ namespace Delivery.DAL.Registrator
 					.AddTransient<IOrderLinesRepository, OrderLinesRepository>()
 					.AddTransient<IClientsRepository, ClientsRepository>()
 					.AddTransient<IAddressesRepository, AddressesRepository>()
+					.AddTransient<IUnitOfWork, UnitOfWork>()
 				;
-		}
+		
 		}
 
 }

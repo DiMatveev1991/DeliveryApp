@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Delivery.BLL.Interfaces;
+﻿using Delivery.BLL.Interfaces;
 using Delivery.DAL.Interfaces;
 using Delivery.DAL.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
@@ -20,55 +17,58 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
+		//TODO Не надо передавать статус заказа, надо сразу искать статус "Готов к работе" и ставить его
 		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierStatus courierStatus)
 		{
 
 			try
 			{
-				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courierStatus);
-				var client = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
-				{
-					FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber,
-					CourierStatus = await _unitOfWork.CourierStatusesRepository.AddAsync(existCourierStatus)
-				});
 				
-				return client;
-			}
-			
-			catch (ArgumentException ex)
-			{
-				throw  new ArgumentException("В статус курьера пришел не обрабатываемый тип");
-			}
-		}
-	
+				var courier = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
+				{
+					FistName = fistName,
+					SecondName = secondName,
+					PhoneNumber = phoneNumber,
+					CourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа")
+				});
 
-	public async Task DeleteCourierAsync(Guid id)
-	{
-		try
-		{
-			var activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
-			if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
+				return courier;
+			}
+
+			catch (ArgumentException)
+			{
+				throw new ArgumentException("В статус курьера пришел не обрабатываемый тип");
+			}
 		}
-		catch (Exception ex)
+
+
+		public async Task DeleteCourierAsync(Guid id)
 		{
-			throw new Exception(ex.Message);
+			try
+			{
+				var activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
+				if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Нет свободных курьеров");
+			}
 		}
-	}
 
 		public async Task<Courier> UpdateCourierAsync(Courier courier)
 		{
 			try
 			{
 				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courier.CourierStatus);
-			if (existCourierStatus.StatusName != "Выполняет заказ")
-			{
-				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
-			}
-			return courier;
+				if (existCourierStatus.StatusName != "Выполняет заказ")
+				{
+					await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+				}
+				return courier;
 			}
 			catch (Exception ex)
 			{
-				throw new Exception(ex.Message);
+				throw new Exception("Не удалось обновить, все курьеры на доставке");
 			}
 		}
 	}

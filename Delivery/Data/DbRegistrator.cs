@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Delivery.BLL;
 using Delivery.DAL.Context;
+using Delivery.DAL.Registrator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Delivery.WPF.Data;
 
 namespace Delivery.Data
 {
@@ -27,7 +30,9 @@ namespace Delivery.Data
 					}
 			    }
 			    
-			    )
-	    ;
+			    ).AddTransient<DbInitializer> ()
+		         .AddRepositoriesInDb()
+		         .AddServicesRegistrator()
+		;
     }
 }

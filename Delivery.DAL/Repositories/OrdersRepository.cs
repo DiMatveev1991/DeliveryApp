@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class OrdersRepository: IOrdersRepository 
+	internal class OrdersRepository : IOrdersRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<Order> _Set;
@@ -25,10 +25,10 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<Order> Items => _Set
-			.Include( item => item.OrderLines)
+			.Include(item => item.OrderLines)
 			.Include(item => item.Courier)
 			.ThenInclude(item => item.CourierStatus)
-			.Include(item =>item.FromAddress)
+			.Include(item => item.FromAddress)
 			.Include(item => item.TargetAddress)
 			.Include(item => item.Client)
 		;
@@ -36,6 +36,7 @@ namespace Delivery.DAL.Repositories
 		public Order Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 
 		public async Task<Order> GetAsync(Guid id, CancellationToken cancel = default) => await Items
+			.Include(o => o.OrderStatus)
 			.SingleOrDefaultAsync(item => item.Id == id, cancel)
 			.ConfigureAwait(false);
 
@@ -88,9 +89,9 @@ namespace Delivery.DAL.Repositories
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
 
-		public async Task <OrderStatus> GetOrderStatusAsync(string statusName)
+		public async Task<OrderStatus> GetOrderStatusAsync(string statusName)
 		{
-			return await _db.OrderStatuses.FirstOrDefaultAsync(n=> n.StatusName == statusName);
+			return await _db.OrderStatuses.FirstOrDefaultAsync(n => n.StatusName == statusName);
 		}
 
 	}
