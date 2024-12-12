@@ -42,7 +42,7 @@ namespace Delivery.BLL.Services
 			}
 			catch (Exception ex)
 			{
-				throw new Exception("В БД нет  статуса заказа Новая");
+				throw new Exception("В БД нет статуса заказа Новая");
 			}
 		}
 
