@@ -3,10 +3,11 @@ using Microsoft.Extensions.Hosting;
 using System.Configuration;
 using System.Data;
 using System.Windows;
+using Delivery.BLL;
 using Delivery.Data;
-using Delivery.Services;
-using Delivery.ViewModels;
 using Delivery.WPF.Data;
+using Delivery.BLL.ServicesRegistrator;
+using Delivery.WPF.ViewModels;
 
 namespace Delivery
 {
@@ -23,7 +24,7 @@ namespace Delivery
 		public static IServiceProvider Services => Host.Services;
 		internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
 			.AddDatabase(host.Configuration.GetSection("Database"))
-			.AddServices()
+			.AddServicesRegistrator()
 			.AddViewModels()
 		;
 		

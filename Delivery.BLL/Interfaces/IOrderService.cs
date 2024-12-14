@@ -5,7 +5,7 @@ using Delivery.DAL.Models;
 
 namespace Delivery.BLL.Interfaces
 {
-	internal interface IOrderService
+	public interface IOrderService
 	{
 		Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines);
 		// перевести статус заказа - в работе

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Delivery.BLL;
+using Delivery.BLL.ServicesRegistrator;
 using Delivery.DAL.Context;
 using Delivery.DAL.Registrator;
 using Microsoft.Extensions.Configuration;

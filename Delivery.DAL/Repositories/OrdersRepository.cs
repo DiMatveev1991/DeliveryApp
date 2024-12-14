@@ -37,7 +37,6 @@ namespace Delivery.DAL.Repositories
 		public Order Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 
 		public async Task<Order> GetAsync(Guid id, CancellationToken cancel = default) => await Items
-			.Include(o => o.OrderStatus)
 			.SingleOrDefaultAsync(item => item.Id == id, cancel)
 			.ConfigureAwait(false);
 

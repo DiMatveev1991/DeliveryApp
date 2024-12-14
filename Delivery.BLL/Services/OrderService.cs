@@ -56,16 +56,20 @@ namespace Delivery.BLL.Services
 				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Отменена");
 				if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
 
-				var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
-				if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
-				
-				if (!order.CourierId.HasValue) throw new Exception("Отсутствует статус заказа");
-				var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
+				if (order.CourierId.HasValue)
+				{
+					var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
+					if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
+					var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
+					if (courier is null) { throw new Exception("В бд отсутствуют курьеры или нет свободных курьеров"); }
+					courier.CourierStatus = statusCourier;
+					await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+				}
+
 				order.CancelReason = reason;
 				order.OrderStatus = orderStatus;
-				courier.CourierStatus=statusCourier;
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
-				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+				
 
 			}
 			catch (Exception e)
@@ -89,7 +93,7 @@ namespace Delivery.BLL.Services
 				var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
 				if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
 
-				if (!order.CourierId.HasValue) throw new Exception("Отсутствует статус заказа");
+				if (!order.CourierId.HasValue) throw new Exception("Отсутствует курьер");
 				var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
 
 				courier.CourierStatus = statusCourier;

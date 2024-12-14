@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Delivery.ViewModels
+namespace Delivery.WPF.ViewModels
 {
 	internal class ViewModelLocator
 	{

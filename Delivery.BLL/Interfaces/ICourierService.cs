@@ -4,7 +4,7 @@ using System;
 
 namespace Delivery.BLL.Interfaces
 {
-	internal interface ICourierService
+	public interface ICourierService
 	{
 		Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierStatus courierStatus);
 		Task<Courier> UpdateCourierAsync(Courier courier);

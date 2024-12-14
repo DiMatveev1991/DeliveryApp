@@ -5,7 +5,7 @@ using Delivery.DAL.Interfaces;
 
 namespace Delivery.DAL
 {
-	public class UnitOfWork : IUnitOfWork
+	internal class UnitOfWork : IUnitOfWork
 	{
 		
 		public IAddressesRepository _addressRepository;

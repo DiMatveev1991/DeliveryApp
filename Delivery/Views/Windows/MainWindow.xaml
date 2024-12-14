@@ -6,7 +6,17 @@
         xmlns:local="clr-namespace:Delivery"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+  <DockPanel>
+        <Menu IsMainMenu="True">
+            <MenuItem Header="Заказы" Command="{Binding ShowOrdersViewCommand}"/>
+            <MenuItem Header="Курьеры" Command="{Binding ShowCouriersViewCommand}"/>
+            <MenuItem Header="Клиенты" Command="{Binding ShowClientsViewCommand}"/>
+        </Menu>
+      <StatusBar>
+            <StatusBarItem>Готов</StatusBarItem>
+      </StatusBar>
+        <Grid>
+             <ContentControl  Content="{Binding CurrentModel}"/>
+        </Grid>
+  </DockPanel>
 </Window>

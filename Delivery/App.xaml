@@ -2,11 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Delivery"
-             xmlns:viewModels="clr-namespace:Delivery.ViewModels"
+             xmlns:viewModels="clr-namespace:Delivery.WPF.ViewModels"
              StartupUri="/Views/Windows/MainWindow.xaml">
     <Application.Resources>
          <ResourceDictionary>
-            <viewModels:ViewModelLocator x:Key="Locator"/>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceDictionary Source="Styles/Main.xaml"/>
+                 <ResourceDictionary Source="Templates/ModelMainView.xaml"/>
+             </ResourceDictionary.MergedDictionaries>
+             <viewModels:ViewModelLocator x:Key="Locator"/>
          </ResourceDictionary>
     </Application.Resources>
 </Application>

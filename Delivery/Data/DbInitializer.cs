@@ -13,11 +13,9 @@ namespace Delivery.WPF.Data
 	internal class DbInitializer
 	{
 		private readonly DeliveryDbContext _db;
-		private readonly ILogger<DbInitializer> _logger;
-		public DbInitializer(DeliveryDbContext db, ILogger<DbInitializer> Loger)
+		public DbInitializer(DeliveryDbContext db)
 		{
 			_db = db;
-			_logger = Loger;
 		}
 		public async Task InitializeAsync()
 		{
