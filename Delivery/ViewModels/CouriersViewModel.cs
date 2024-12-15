@@ -128,13 +128,21 @@ namespace Delivery.WPF.ViewModels
 
 		private async Task OnUpdateCourierCommandExecuted(Courier? p)
 		{
-			var courierToUpdate = p ?? CachedSelectedCourier;
-			await _CourierService.UpdateCourierAsync(courierToUpdate);
-			// Ошибка изменения одного и того же курьера два раза подряд, завтра покопаться....
-			SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
-			await OnLoadDataCommandExecuted();
-			_changedCommitted = true;
+			try
+			{
+				var courierToUpdate = p ?? CachedSelectedCourier;
+				await _CourierService.UpdateCourierAsync(courierToUpdate);
+				// Ошибка изменения одного и того же курьера два раза подряд, завтра покопаться....
+				SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
+				await OnLoadDataCommandExecuted();
+				_changedCommitted = true;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
+
 		#endregion
 
 		#region Command RemoveCourierCommand : Courier - Удаление указанного курьера
