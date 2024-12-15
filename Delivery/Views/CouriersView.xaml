@@ -26,23 +26,23 @@
                     <CollectionViewSource x:Key="CourierView" 
                                             Source="{Binding Couriers}">
                         <CollectionViewSource.SortDescriptions>
-                                                <cm:SortDescription PropertyName="FirstName"/>
-                                                <cm:SortDescription PropertyName="SecondName"/>
+                            <cm:SortDescription PropertyName="FirstName"/>
+                            <cm:SortDescription PropertyName="SecondName"/>
                         </CollectionViewSource.SortDescriptions>
-                                            </CollectionViewSource>
-                   
+                    </CollectionViewSource>
+
                 </GroupBox.Resources>
                 <DockPanel>
                     <TextBox DockPanel.Dock="Top" Text="{Binding CouriersFilter, UpdateSourceTrigger=PropertyChanged}"/>
-                        <DataGrid ItemsSource="{Binding Source={StaticResource CourierView}}" SelectedItem="{Binding SelectedCourier}" IsReadOnly="True">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Имя"  Binding="{Binding FirstName}"/>
-                        <DataGridTextColumn Header="Фамилия"  Binding="{Binding SecondName}"/>
-                        <DataGridTextColumn Header="Телефон"  Binding="{Binding PhoneNumber}"/>
-                        <DataGridTextColumn Header="Статус курьера" Width="*" Binding="{Binding  CourierStatus.StatusName}"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-                    </DockPanel>
+                    <DataGrid ItemsSource="{Binding Source={StaticResource CourierView}}" SelectedItem="{Binding SelectedCourier}" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Имя"  Binding="{Binding FirstName}"/>
+                            <DataGridTextColumn Header="Фамилия"  Binding="{Binding SecondName}"/>
+                            <DataGridTextColumn Header="Телефон"  Binding="{Binding PhoneNumber}"/>
+                            <DataGridTextColumn Header="Статус курьера" Width="*" Binding="{Binding  CourierStatus.StatusName}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
             </GroupBox>
             <StackPanel  Grid.Column="1">
                 <TextBlock Text="Выбранный Курьер"/>
@@ -54,7 +54,7 @@
                 <TextBox Text="{Binding CachedSelectedCourier.PhoneNumber}" />
                 <DockPanel>
                     <Button Command="{Binding UpdateCourierCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
-                    <Button Command="{Binding RemoveCourierCommand, UpdateSourceTrigger=PropertyChanged}">Удалить курьера </Button>
+                    <Button Command="{Binding RemoveCourierCommand, UpdateSourceTrigger=PropertyChanged}">Удалить курьера</Button>
                     <Button >Нанять курьера</Button>
                 </DockPanel>
             </StackPanel>

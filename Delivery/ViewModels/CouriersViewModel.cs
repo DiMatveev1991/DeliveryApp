@@ -130,6 +130,7 @@ namespace Delivery.WPF.ViewModels
 		{
 			var courierToUpdate = p ?? CachedSelectedCourier;
 			await _CourierService.UpdateCourierAsync(courierToUpdate);
+			// Ошибка изменения одного и того же курьера два раза подряд, завтра покопаться....
 			SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
 			await OnLoadDataCommandExecuted();
 			_changedCommitted = true;
@@ -149,7 +150,6 @@ namespace Delivery.WPF.ViewModels
 			var courierToRemove = p ?? SelectedCourier;
 			await _CourierService.DeleteCourierAsync(courierToRemove.Id);
 
-			//Ошибка удаления была тут.
 			_Couriers.Remove(courierToRemove);
 
 			if (ReferenceEquals(SelectedCourier, courierToRemove))
