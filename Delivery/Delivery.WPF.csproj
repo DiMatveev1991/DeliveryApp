@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastucture\Command\" />
+    <Folder Include="Infrastructure\Command\" />
+    <Folder Include="Models\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

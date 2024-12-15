@@ -30,7 +30,7 @@ namespace Delivery.BLL.Services
 				existAddress ??= await _unitOfWork.AddressRepository.AddAsync(address);
 
 				var client = await _unitOfWork.ClientsRepository.AddAsync(new Client()
-				{ FistName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, Address = existAddress });
+				{ FirstName = fistName, SecondName = secondName, PhoneNumber = phoneNumber, Address = existAddress });
 				return client;
 			}
 			catch (Exception ex)

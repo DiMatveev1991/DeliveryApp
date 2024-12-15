@@ -16,6 +16,7 @@ namespace Delivery
 	/// </summary>
 	public partial class App : Application
 	{
+
 		private static IHost _Host;
 
 		public static IHost Host => _Host 
@@ -34,6 +35,7 @@ namespace Delivery
 			var host =Host;
 			using (var scope = Services.CreateScope()) 
 				await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
+
 			base.OnStartup(e);
 			await host.StartAsync();
 		}

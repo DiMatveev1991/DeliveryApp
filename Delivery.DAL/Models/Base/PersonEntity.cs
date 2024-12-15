@@ -5,7 +5,7 @@ namespace Delivery.DAL.Models.Base
 	public abstract class PersonEntity : Entity
 	{
 		[MaxLength(256)]
-		public string? FistName { get; set; }
+		public string? FirstName { get; set; }
 		
 		[MaxLength(256)]
 		public string? SecondName { get; set;}

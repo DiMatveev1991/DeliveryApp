@@ -14,7 +14,7 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class MainWindowViewModel: ViewModel
 	{
-	
+
 		private readonly IUnitOfWork _UnitOfWork;
 		private readonly IClientService _ClientService;
 		private readonly ICourierService _CourierService;
@@ -43,7 +43,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowCouriersCommandExecute() => true;
 		private void OnShowCouriersCommandExecuted()
 		{
-			CurrentModel = new CouriersViewModel(_UnitOfWork, _CourierService);
+			CurrentModel = new CouriersViewModel(_UnitOfWork);
 		}
 		#endregion
 
@@ -68,7 +68,7 @@ namespace Delivery.WPF.ViewModels
 		public MainWindowViewModel(IUnitOfWork unitWork, IClientService clientService, ICourierService courierService, IOrderService orderService)
 		{
 			_UnitOfWork=unitWork;
-			_ClientService=clientService;
+			_ClientService = clientService;
 			_CourierService = courierService;
 			_OrderService=orderService;
 		}

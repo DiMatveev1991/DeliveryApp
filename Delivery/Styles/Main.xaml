@@ -10,5 +10,11 @@
     <Style TargetType="StatusBar">
         <Setter Property="DockPanel.Dock" Value="Bottom"></Setter>
     </Style>
+    
+    <Style TargetType="DataGrid">
+      <Setter Property="CanUserAddRows" Value="False"/>
+      <Setter Property="CanUserDeleteRows" Value="False"/>
+      <Setter Property="AutoGenerateColumns" Value="False"/>
+    </Style>
 
 </ResourceDictionary>

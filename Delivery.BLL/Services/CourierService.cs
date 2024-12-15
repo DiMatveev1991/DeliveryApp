@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
-	internal class CourierService : ICourierService
+	public class CourierService : ICourierService
 	{
 
 		private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +17,7 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber, CourierStatus courierStatus)
+		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber)
 		{
 
 			try
@@ -25,7 +25,7 @@ namespace Delivery.BLL.Services
 				
 				var courier = await _unitOfWork.CouriersRepository.AddAsync(new Courier()
 				{
-					FistName = fistName,
+					FirstName = fistName,
 					SecondName = secondName,
 					PhoneNumber = phoneNumber,
 					CourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа")
@@ -46,7 +46,7 @@ namespace Delivery.BLL.Services
 			try
 			{
 				var activeOrders = await _unitOfWork.CouriersRepository.GetActiveOrdersAsync(id);
-				if (activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
+				if (!activeOrders.Any()) await _unitOfWork.CouriersRepository.RemoveAsync(id);
 			}
 			catch (Exception ex)
 			{

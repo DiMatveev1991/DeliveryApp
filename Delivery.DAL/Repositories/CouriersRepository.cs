@@ -78,7 +78,8 @@ namespace Delivery.DAL.Repositories
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
 		{
-			_db.Remove(new Courier { Id = id });
+			var item = _Set.Local.FirstOrDefault(i => i.Id == id) ?? new Courier { Id = id };
+			_db.Remove(item);
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}
