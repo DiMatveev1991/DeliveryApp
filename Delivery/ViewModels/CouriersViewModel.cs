@@ -21,7 +21,7 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class CouriersViewModel : ViewModel
 	{
-		private readonly ICourierService _CourierService;
+		private ICourierService _CourierService => new CourierService(_UnitOfWork);
 		private readonly IUnitOfWork _UnitOfWork;
 		private ObservableCollection<Courier> _Couriers;
 		private CollectionViewSource _CouriersViewSource;
@@ -64,6 +64,7 @@ namespace Delivery.WPF.ViewModels
 			{
 				if (Set(ref _CouriersFilter, value))
 					_CouriersViewSource.View.Refresh();
+
 			}
 		}
 		#endregion
@@ -83,7 +84,6 @@ namespace Delivery.WPF.ViewModels
 		private async Task OnLoadDataCommandExecuted()
 		{
 			Couriers = new ObservableCollection<Courier>(await _UnitOfWork.CouriersRepository.Items.ToArrayAsync());
-			OnPropertyChanged(nameof(Couriers));
 		}
 		#endregion
 
@@ -101,7 +101,7 @@ namespace Delivery.WPF.ViewModels
 			await _CourierService.UpdateCourierAsync(courierToUpdate);
 			if (ReferenceEquals(SelectedCourier, courierToUpdate))
 				SelectedCourier = courierToUpdate;
-
+			await OnLoadDataCommandExecuted();
 		}
 		
 		#endregion
@@ -119,21 +119,18 @@ namespace Delivery.WPF.ViewModels
 		{
 			var courierToRemove = p ?? SelectedCourier;
 			await _CourierService.DeleteCourierAsync(courierToRemove.Id);
-			
 			if (ReferenceEquals(SelectedCourier, courierToRemove))
 				SelectedCourier = null;
-			
+			await OnLoadDataCommandExecuted();
+
 		}
 
 		#endregion
 		#region Конструктор
 		public CouriersViewModel(IUnitOfWork unitOfWork)
 		{
-			_CourierService = new CourierService(unitOfWork);
 			_UnitOfWork = unitOfWork;
 		}
-
-
 
 		#endregion
 
@@ -141,7 +138,7 @@ namespace Delivery.WPF.ViewModels
 		{
 			if (!(E.Item is Courier courier) || string.IsNullOrEmpty(CouriersFilter)) return;
 
-			if (!courier.FirstName.Contains(CouriersFilter))
+			if (!courier.PhoneNumber.Contains(CouriersFilter))
 				E.Accepted = false;
 		}
 
