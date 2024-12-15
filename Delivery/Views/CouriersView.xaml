@@ -47,11 +47,11 @@
             <StackPanel  Grid.Column="1">
                 <TextBlock Text="Выбранный Курьер"/>
                 <TextBlock Text="Имя" />
-                <TextBox Text="{Binding SelectedCourier.FirstName}" />
+                <TextBox Text="{Binding CachedSelectedCourier.FirstName}" />
                 <TextBlock Text="Фамилия" />
-                <TextBox Text="{Binding SelectedCourier.SecondName}" />
+                <TextBox Text="{Binding CachedSelectedCourier.SecondName}" />
                 <TextBlock Text="размерность" />
-                <TextBox Text="{Binding SelectedCourier.PhoneNumber}" />
+                <TextBox Text="{Binding CachedSelectedCourier.PhoneNumber}" />
                 <DockPanel>
                     <Button Command="{Binding UpdateCourierCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
                     <Button Command="{Binding RemoveCourierCommand, UpdateSourceTrigger=PropertyChanged}">Удалить курьера </Button>

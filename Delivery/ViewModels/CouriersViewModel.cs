@@ -68,11 +68,41 @@ namespace Delivery.WPF.ViewModels
 			}
 		}
 		#endregion
-		
-		
+
+
 		#region SelectedCourier : Courier - Выбранный курьер
 		private Courier _SelectedCourier;
-		public Courier SelectedCourier { get => _SelectedCourier; set => Set(ref _SelectedCourier, value); }
+		public Courier SelectedCourier
+		{
+			get => _SelectedCourier;
+			set
+			{
+				//Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
+				if (!_changedCommitted && !_firstSelect)
+				{
+					//Set(ref _SelectedCourier, _cachedSelectedCourier);
+				}
+				_SelectedCourier = value;
+				CachedSelectedCourier = new Courier()
+				{
+					Id = value.Id,
+					FirstName = value.FirstName,
+					SecondName = value.SecondName,
+					PhoneNumber = value.PhoneNumber,
+					CourierStatus = value.CourierStatus,
+					CourierStatusId = value.CourierStatusId,
+				};
+				Set(ref _SelectedCourier, value);
+				_changedCommitted = false;
+				_firstSelect = false;
+			}
+		}
+
+		private bool _firstSelect = true;
+		private bool _changedCommitted;
+		private Courier _cachedSelectedCourier;
+		public Courier CachedSelectedCourier { get => _cachedSelectedCourier; set => Set(ref _cachedSelectedCourier, value); }
+
 		#endregion
 
 		#region Command LoadDataCommand - Команда загрузки данных из репозитория
@@ -84,6 +114,7 @@ namespace Delivery.WPF.ViewModels
 		private async Task OnLoadDataCommandExecuted()
 		{
 			Couriers = new ObservableCollection<Courier>(await _UnitOfWork.CouriersRepository.Items.ToArrayAsync());
+			OnPropertyChanged(nameof(Couriers));
 		}
 		#endregion
 
@@ -97,17 +128,15 @@ namespace Delivery.WPF.ViewModels
 
 		private async Task OnUpdateCourierCommandExecuted(Courier? p)
 		{
-			var courierToUpdate = p ?? SelectedCourier;
+			var courierToUpdate = p ?? CachedSelectedCourier;
 			await _CourierService.UpdateCourierAsync(courierToUpdate);
-			if (ReferenceEquals(SelectedCourier, courierToUpdate))
-				SelectedCourier = courierToUpdate;
+			SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
 			await OnLoadDataCommandExecuted();
+			_changedCommitted = true;
 		}
-		
 		#endregion
 
 		#region Command RemoveCourierCommand : Courier - Удаление указанного курьера
-
 		private ICommand _RemoveCourierCommand;
 
 		public ICommand RemoveCourierCommand => _RemoveCourierCommand
@@ -119,13 +148,15 @@ namespace Delivery.WPF.ViewModels
 		{
 			var courierToRemove = p ?? SelectedCourier;
 			await _CourierService.DeleteCourierAsync(courierToRemove.Id);
+
+			//Ошибка удаления была тут.
+			_Couriers.Remove(courierToRemove);
+
 			if (ReferenceEquals(SelectedCourier, courierToRemove))
 				SelectedCourier = null;
-			await OnLoadDataCommandExecuted();
-
 		}
-
 		#endregion
+
 		#region Конструктор
 		public CouriersViewModel(IUnitOfWork unitOfWork)
 		{
