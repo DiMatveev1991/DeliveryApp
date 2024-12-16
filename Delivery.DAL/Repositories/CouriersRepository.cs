@@ -59,6 +59,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Deleted;
 		}
 
 		public async Task UpdateAsync(Courier item, CancellationToken cancel = default)
@@ -67,6 +68,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Deleted;
 		}
 
 		public void Remove(Guid id)
