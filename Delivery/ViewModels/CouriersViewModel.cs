@@ -25,7 +25,7 @@ namespace Delivery.WPF.ViewModels
 		private readonly IUnitOfWork _UnitOfWork;
 		private ObservableCollection<Courier> _Couriers;
 		private CollectionViewSource _CouriersViewSource;
-		public ICollectionView CouriersView => _CouriersViewSource.View;
+		public ICollectionView CouriersView => _CouriersViewSource?.View;
 
 		#region Couriers : ObservableCollection<Courier> - Коллекция курьеров
 
@@ -41,7 +41,10 @@ namespace Delivery.WPF.ViewModels
 						Source = value,
 						SortDescriptions =
 						{
-							new SortDescription(nameof(Delivery.DAL.Models.Courier.FirstName), ListSortDirection.Ascending)
+							new SortDescription(nameof(Delivery.DAL.Models.Courier.FirstName), ListSortDirection.Ascending),
+							new SortDescription(nameof(Delivery.DAL.Models.Courier.SecondName), ListSortDirection.Ascending),
+							new SortDescription(nameof(Delivery.DAL.Models.Courier.PhoneNumber), ListSortDirection.Ascending),
+							new SortDescription(nameof(Delivery.DAL.Models.Courier.CourierStatus.StatusName), ListSortDirection.Ascending)
 						}
 					};
 
@@ -177,7 +180,11 @@ namespace Delivery.WPF.ViewModels
 		{
 			if (!(E.Item is Courier courier) || string.IsNullOrEmpty(CouriersFilter)) return;
 
-			if (!courier.PhoneNumber.Contains(CouriersFilter))
+			if (!courier.PhoneNumber.Contains(CouriersFilter)&& 
+			    !courier.FirstName.Contains(CouriersFilter) && 
+			    !courier.SecondName.Contains(CouriersFilter) &&
+			    !courier.CourierStatus.StatusName.Contains(CouriersFilter)
+				)
 				E.Accepted = false;
 		}
 
