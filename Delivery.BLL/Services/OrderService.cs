@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
-	internal class OrderService : IOrderService
+	public class OrderService : IOrderService
 	{
 
 		private readonly IUnitOfWork _unitOfWork;

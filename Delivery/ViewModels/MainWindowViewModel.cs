@@ -57,7 +57,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowOrdersCommandExecute() => true;
 		private void OnShowOrdersCommandExecuted()
 		{
-			CurrentModel = new OrdersViewModel(_UnitOfWork, _OrderService);
+			CurrentModel = new OrdersViewModel(_UnitOfWork);
 		}
 		#endregion
 

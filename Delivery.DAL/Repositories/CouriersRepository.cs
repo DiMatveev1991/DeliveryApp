@@ -29,6 +29,10 @@ namespace Delivery.DAL.Repositories
 			.AsNoTracking()
 		    ;
 
+        public async Task<IEnumerable<Courier>> GetFiltered(string filter)
+        {
+            return await Items.Where(x => x.FirstName.ToLower().Contains(filter)).ToListAsync();
+        }
 		public Courier Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 
 		public async Task<Courier> GetAsync(Guid id, CancellationToken cancel = default) => await Items

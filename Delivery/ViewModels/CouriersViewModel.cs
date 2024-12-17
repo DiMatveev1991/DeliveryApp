@@ -81,7 +81,12 @@ namespace Delivery.WPF.ViewModels
 		{
 			get => _SelectedCourier;
 			set
-			{
+            {
+                if (value is null)
+                {
+                    _SelectedCourier = value;
+					return;
+                }
 				//Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
 				if (!_changedCommitted && !_firstSelect)
 				{
@@ -185,7 +190,7 @@ namespace Delivery.WPF.ViewModels
 			var new_courier = new Courier();
 			if (!_UserDialog.Edit(new_courier))
                 return;
-           new_courier = await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
+            new_courier = await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
 			await OnLoadDataCommandExecuted();
                      SelectedCourier = new_courier;
 
