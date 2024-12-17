@@ -172,14 +172,11 @@ namespace Delivery.WPF.ViewModels
 		}
         #endregion
 
-        #region Command AddNewCourierCommand - Добавление новой книги
+        #region Command AddNewCourierCommand - Добавление нового курьера
         private ICommand _AddNewCourierCommand;
 
-        /// <summary>Добавление новой книги</summary>
         public ICommand AddNewCourierCommand => _AddNewCourierCommand
             ??= new LambdaCommandAsync(OnAddNewCourierCommandExecuted, CanAddNewCourierCommandExecute);
-
-        /// <summary>Проверка возможности выполнения - Добавление новой книги</summary>
         private bool CanAddNewCourierCommandExecute() => true;
 
         /// <summary>Логика выполнения - Добавление новой книги</summary>
@@ -188,9 +185,9 @@ namespace Delivery.WPF.ViewModels
 			var new_courier = new Courier();
 			if (!_UserDialog.Edit(new_courier))
                 return;
-            await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
-            _Couriers.Add(new_courier);
-            SelectedCourier = new_courier;
+           new_courier = await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
+			await OnLoadDataCommandExecuted();
+                     SelectedCourier = new_courier;
 
         }
 

@@ -8,7 +8,7 @@ namespace Delivery.WPF.ViewModels
     {
         #region CourierId : - Идентификатор Courier
 
-        public Guid CourierId { get; }
+      //  public Guid CourierId { get; }
       //  public Guid? CourierStatusId{ get; }
 
         #endregion
@@ -22,7 +22,7 @@ namespace Delivery.WPF.ViewModels
         public string SecondName { get => _SecondName; set => Set(ref _SecondName, value); }
 
         private string _PhoneNumber;
-        public string PhoneNumber { get => _SecondName; set => Set(ref _SecondName, value); }
+        public string PhoneNumber { get => _PhoneNumber; set => Set(ref _PhoneNumber, value); }
 
      //   private CourierStatus _CourierStatus;
       //  public CourierStatus CourierStatus { get => _CourierStatus; set => Set(ref _CourierStatus, value); }
@@ -32,7 +32,7 @@ namespace Delivery.WPF.ViewModels
 
         public CourierEditorViewModel (Courier courier)
         {
-            CourierId = courier.Id;
+           // CourierId = courier.Id;
           //  CourierStatusId = courier.CourierStatusId;
             _FirstName = courier.FirstName;
             _SecondName = courier.SecondName;

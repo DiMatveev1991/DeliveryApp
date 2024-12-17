@@ -41,8 +41,10 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
-			return item;
-		}
+            _db.Entry(item).State = EntityState.Deleted;
+            return item;
+           
+        }
 
 		public async Task<Courier> AddAsync(Courier item, CancellationToken cancel = default)
 		{
@@ -50,8 +52,10 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-			return item;
-		}
+            _db.Entry(item).State = EntityState.Deleted;
+            return item;
+
+        }
 
 		public void Update(Courier item)
 		{
