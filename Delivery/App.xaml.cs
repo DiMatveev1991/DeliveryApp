@@ -8,16 +8,26 @@ using Delivery.Data;
 using Delivery.WPF.Data;
 using Delivery.BLL.ServicesRegistrator;
 using Delivery.WPF.ViewModels;
+using Delivery.WPF.Services;
 
-namespace Delivery
+namespace Delivery.WPF
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
+
 	public partial class App : Application
 	{
+        public static Window ActiveWindow => Application.Current.Windows
+              .OfType<Window>()
+              .FirstOrDefault(w => w.IsActive);
 
-		private static IHost _Host;
+        public static Window FocusedWindow => Application.Current.Windows
+           .OfType<Window>()
+           .FirstOrDefault(w => w.IsFocused);
+
+        public static Window CurrentWindow => FocusedWindow ?? ActiveWindow;
+
+        public static bool IsDesignTime { get; private set; } = true;
+
+        private static IHost _Host;
 
 		public static IHost Host => _Host 
 			??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
@@ -27,12 +37,13 @@ namespace Delivery
 			.AddDatabase(host.Configuration.GetSection("Database"))
 			.AddServicesRegistrator()
 			.AddViewModels()
-		;
+			.AddServicesDialog()
+        ;
 		
-
 		protected override async void OnStartup(StartupEventArgs e)
-		{
-			var host =Host;
+        {
+            IsDesignTime = false;
+            var host =Host;
 			using (var scope = Services.CreateScope()) 
 				await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
 

@@ -16,12 +16,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using Microsoft.EntityFrameworkCore;
+using Delivery.WPF.Services.Services.Interfaces;
 
 namespace Delivery.WPF.ViewModels
 {
 	internal class CouriersViewModel : ViewModel
 	{
-		private ICourierService _CourierService => new CourierService(_UnitOfWork);
+        private readonly IUserDialog _UserDialog;
+        private ICourierService _CourierService => new CourierService(_UnitOfWork);
 		private readonly IUnitOfWork _UnitOfWork;
 		private ObservableCollection<Courier> _Couriers;
 		private CollectionViewSource _CouriersViewSource;
@@ -135,7 +137,6 @@ namespace Delivery.WPF.ViewModels
 			{
 				var courierToUpdate = p ?? CachedSelectedCourier;
 				await _CourierService.UpdateCourierAsync(courierToUpdate);
-				// Ошибка изменения одного и того же курьера два раза подряд, завтра покопаться....
 				SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
 				await OnLoadDataCommandExecuted();
 				_changedCommitted = true;
@@ -159,20 +160,49 @@ namespace Delivery.WPF.ViewModels
 		private async Task OnRemoveCourierCommandExecuted(Courier? p)
 		{
 			var courierToRemove = p ?? SelectedCourier;
-			await _CourierService.DeleteCourierAsync(courierToRemove.Id);
+           
+			if (!_UserDialog.ConfirmWarning($"Вы хотите удалить курьера {courierToRemove.FirstName}?", "Удаление курьера"))
+                return;
+            await _CourierService.DeleteCourierAsync(courierToRemove.Id);
 
 			_Couriers.Remove(courierToRemove);
 
 			if (ReferenceEquals(SelectedCourier, courierToRemove))
 				SelectedCourier = null;
 		}
-		#endregion
+        #endregion
 
-		#region Конструктор
-		public CouriersViewModel(IUnitOfWork unitOfWork)
+        #region Command AddNewCourierCommand - Добавление новой книги
+        private ICommand _AddNewCourierCommand;
+
+        /// <summary>Добавление новой книги</summary>
+        public ICommand AddNewCourierCommand => _AddNewCourierCommand
+            ??= new LambdaCommandAsync(OnAddNewCourierCommandExecuted, CanAddNewCourierCommandExecute);
+
+        /// <summary>Проверка возможности выполнения - Добавление новой книги</summary>
+        private bool CanAddNewCourierCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Добавление новой книги</summary>
+        private async Task OnAddNewCourierCommandExecuted()
+		{
+			var new_courier = new Courier();
+			if (!_UserDialog.Edit(new_courier))
+                return;
+            await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
+            _Couriers.Add(new_courier);
+            SelectedCourier = new_courier;
+
+        }
+
+        #endregion
+
+        #region Конструктор
+        public CouriersViewModel(IUnitOfWork unitOfWork, IUserDialog userDialog)
 		{
 			_UnitOfWork = unitOfWork;
-		}
+			_UserDialog = userDialog;
+
+        }
 
 		#endregion
 

@@ -55,7 +55,7 @@
                 <DockPanel>
                     <Button Command="{Binding UpdateCourierCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
                     <Button Command="{Binding RemoveCourierCommand, UpdateSourceTrigger=PropertyChanged}">Удалить курьера</Button>
-                    <Button >Нанять курьера</Button>
+                    <Button  Command="{Binding AddNewCourierCommand,UpdateSourceTrigger=PropertyChanged }" >Нанять курьера</Button>
                 </DockPanel>
             </StackPanel>
         </Grid>

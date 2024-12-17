@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Delivery.BLL.Interfaces;
 using Delivery.DAL.Interfaces;
+using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
+using MathCore.WPF;
 using MathCore.WPF.Commands;
 using MathCore.WPF.ViewModels;
 
@@ -14,8 +16,8 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class MainWindowViewModel: ViewModel
 	{
-
-		private readonly IUnitOfWork _UnitOfWork;
+        private readonly IUserDialog _UserDialog;
+        private readonly IUnitOfWork _UnitOfWork;
 		private readonly IClientService _ClientService;
 		private readonly ICourierService _CourierService;
 		private readonly IOrderService _OrderService;
@@ -43,7 +45,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowCouriersCommandExecute() => true;
 		private void OnShowCouriersCommandExecuted()
 		{
-			CurrentModel = new CouriersViewModel(_UnitOfWork);
+			CurrentModel = new CouriersViewModel(_UnitOfWork, _UserDialog);
 		}
 		#endregion
 
@@ -65,12 +67,13 @@ namespace Delivery.WPF.ViewModels
 		public string Title { get => _Title; set => Set(ref _Title, value);}
 
 
-		public MainWindowViewModel(IUnitOfWork unitWork, IClientService clientService, ICourierService courierService, IOrderService orderService)
+		public MainWindowViewModel(IUnitOfWork unitWork, IClientService clientService, ICourierService courierService, IOrderService orderService, IUserDialog UserDialog)
 		{
 			_UnitOfWork=unitWork;
 			_ClientService = clientService;
 			_CourierService = courierService;
 			_OrderService=orderService;
-		}
+            _UserDialog = UserDialog;
+        }
 	}
 }

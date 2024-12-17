@@ -6,13 +6,18 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <StartupObject>Delivery.Program</StartupObject>
+    <StartupObject>Delivery.WPF.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Command\" />
-    <Folder Include="Models\" />
-    <Folder Include="Services\Interfaces\" />
+    <Compile Remove="Models\**" />
+    <Compile Remove="Services\Interfaces\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <EmbeddedResource Remove="Services\Interfaces\**" />
+    <None Remove="Models\**" />
+    <None Remove="Services\Interfaces\**" />
+    <Page Remove="Models\**" />
+    <Page Remove="Services\Interfaces\**" />
   </ItemGroup>
 
   <ItemGroup>
