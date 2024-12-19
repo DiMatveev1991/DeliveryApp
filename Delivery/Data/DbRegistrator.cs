@@ -11,10 +11,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Delivery.WPF.Data;
+using Delivery.WPF.Services;
 
 namespace Delivery.Data
 {
-    static class DbRegistrator
+    public static class DbRegistrator
     {
 	    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
 		    .AddDbContext<DeliveryDbContext>(opt =>
@@ -33,7 +34,7 @@ namespace Delivery.Data
 			    
 			    ).AddTransient<DbInitializer> ()
 		         .AddRepositoriesInDb()
-		         .AddServicesRegistrator()
-		;
+		        
+        ;
     }
 }

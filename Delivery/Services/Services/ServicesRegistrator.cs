@@ -7,7 +7,8 @@ namespace Delivery.WPF.Services
     static class ServicesRegistrator
     {
         public static IServiceCollection AddServicesDialog(this IServiceCollection services) => services
-           .AddTransient<IUserDialog, UserDialogService>()
-        ;
+           .AddTransient<IUserDialogCouriers, UserDialogCouriersService>()
+           .AddTransient<IUserDialogClients, UserDialogClientService>()
+		;
     }
 }

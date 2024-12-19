@@ -45,7 +45,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
-            _db.Entry(item).State = EntityState.Deleted;
+            _db.Entry(item).State = EntityState.Detached;
             return item;
            
         }
@@ -56,7 +56,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-            _db.Entry(item).State = EntityState.Deleted;
+            _db.Entry(item).State = EntityState.Detached;
             return item;
 
         }
@@ -67,7 +67,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
-			_db.Entry(item).State = EntityState.Deleted;
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public async Task UpdateAsync(Courier item, CancellationToken cancel = default)
@@ -76,7 +76,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-			_db.Entry(item).State = EntityState.Deleted;
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public void Remove(Guid id)

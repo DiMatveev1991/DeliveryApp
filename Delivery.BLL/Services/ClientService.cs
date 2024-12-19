@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
-	internal class ClientService : IClientService
+	public class ClientService : IClientService
 
 	{
 		private readonly IUnitOfWork _unitOfWork;

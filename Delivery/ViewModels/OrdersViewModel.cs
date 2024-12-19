@@ -18,10 +18,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.WPF.ViewModels
 {
-	internal class OrdersViewModel: ViewModel
-	{
-		private readonly IUnitOfWork _unitOfWork;
-		private readonly IOrderService _orderService;
+    internal class OrdersViewModel : ViewModel
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderService _orderService;
         private ObservableCollection<Order> _orders;
         private CollectionViewSource _ordersViewSource;
         public ICollectionView OrdersView => _ordersViewSource?.View;
@@ -147,9 +147,9 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
         public OrdersViewModel(IUnitOfWork unitOfWork)
-		{
-	      _unitOfWork = unitOfWork;
-          _orderService = new OrderService(_unitOfWork);
+        {
+            _unitOfWork = unitOfWork;
+            _orderService = new OrderService(_unitOfWork);
 
         }
 

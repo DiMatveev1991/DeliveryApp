@@ -7,7 +7,7 @@ using Delivery.WPF.ViewModels;
 
 namespace Delivery.WPF.Services.Services
 {
-    internal class UserDialogService : IUserDialog
+    internal class UserDialogCouriersService : IUserDialogCouriers
     {
         public bool Edit(Courier courier)
         {

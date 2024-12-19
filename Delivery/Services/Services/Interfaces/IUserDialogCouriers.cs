@@ -2,7 +2,7 @@
 
 namespace Delivery.WPF.Services.Services.Interfaces
 {
-    internal interface IUserDialog
+    internal interface IUserDialogCouriers
     {
         bool Edit(Courier courier);
 

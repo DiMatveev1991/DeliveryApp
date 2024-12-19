@@ -13,8 +13,14 @@ using Delivery.WPF.Services;
 namespace Delivery.WPF
 {
 
-	public partial class App : Application
-	{
+    public partial class App : Application
+    {
+
+        public App()
+        {
+            Startup += PreStart;
+        }
+
         public static Window ActiveWindow => Application.Current.Windows
               .OfType<Window>()
               .FirstOrDefault(w => w.IsActive);
@@ -29,34 +35,42 @@ namespace Delivery.WPF
 
         private static IHost _Host;
 
-		public static IHost Host => _Host 
-			??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
+        public static IHost Host => _Host
+            ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
-		public static IServiceProvider Services => Host.Services;
-		internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
-			.AddDatabase(host.Configuration.GetSection("Database"))
-			.AddServicesRegistrator()
-			.AddViewModels()
-			.AddServicesDialog()
+        public static IServiceProvider Services => Host.Services;
+        internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
+            .AddDatabase(host.Configuration.GetSection("Database"))
+            .AddServicesRegistrator()
+            .AddViewModels()
+            .AddServicesRegistrator()
+            .AddServicesDialog()
+
         ;
-		
-		protected override async void OnStartup(StartupEventArgs e)
+
+        private async void PreStart(object sender, StartupEventArgs e)
+        {
+            //using var scope = Services.CreateScope();
+            //var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+            //await dbInitializer.InitializeAsync();
+        }
+
+        protected override async void OnStartup(StartupEventArgs e)
         {
             IsDesignTime = false;
-            var host =Host;
-			using (var scope = Services.CreateScope()) 
-				await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
+            var host = Host;
+            //using (var scope = Services.CreateAsyncScope())
+            //    await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
+            base.OnStartup(e);
+            host.Start();
+        }
 
-			base.OnStartup(e);
-			await host.StartAsync();
-		}
-
-		protected override async void OnExit(ExitEventArgs e)
-		{
-			using var host =Host;
-			base.OnExit(e);
-			await host.StartAsync();
-		}
-	}
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            using var host = Host;
+            base.OnExit(e);
+            host.StopAsync().GetAwaiter().GetResult();
+        }
+    }
 
 }

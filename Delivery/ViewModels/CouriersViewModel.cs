@@ -22,7 +22,7 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class CouriersViewModel : ViewModel
 	{
-        private readonly IUserDialog _UserDialog;
+        private readonly IUserDialogCouriers _userDialogCouriers;
         private ICourierService _CourierService => new CourierService(_UnitOfWork);
 		private readonly IUnitOfWork _UnitOfWork;
 		private ObservableCollection<Courier> _Couriers;
@@ -166,7 +166,7 @@ namespace Delivery.WPF.ViewModels
 		{
 			var courierToRemove = p ?? SelectedCourier;
            
-			if (!_UserDialog.ConfirmWarning($"Вы хотите удалить курьера {courierToRemove.FirstName}?", "Удаление курьера"))
+			if (!_userDialogCouriers.ConfirmWarning($"Вы хотите удалить курьера {courierToRemove.FirstName}?", "Удаление курьера"))
                 return;
             await _CourierService.DeleteCourierAsync(courierToRemove.Id);
 
@@ -188,7 +188,7 @@ namespace Delivery.WPF.ViewModels
         private async Task OnAddNewCourierCommandExecuted()
 		{
 			var new_courier = new Courier();
-			if (!_UserDialog.Edit(new_courier))
+			if (!_userDialogCouriers.Edit(new_courier))
                 return;
             new_courier = await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
 			await OnLoadDataCommandExecuted();
@@ -199,10 +199,10 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
         #region Конструктор
-        public CouriersViewModel(IUnitOfWork unitOfWork, IUserDialog userDialog)
+        public CouriersViewModel(IUnitOfWork unitOfWork, IUserDialogCouriers userDialogCouriers)
 		{
 			_UnitOfWork = unitOfWork;
-			_UserDialog = userDialog;
+			_userDialogCouriers = userDialogCouriers;
 
         }
 

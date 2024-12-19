@@ -16,8 +16,9 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class MainWindowViewModel: ViewModel
 	{
-        private readonly IUserDialog _UserDialog;
-        private readonly IUnitOfWork _UnitOfWork;
+        private readonly IUserDialogCouriers _userDialogCouriers;
+        private readonly IUserDialogClients _userDialogClients;
+		private readonly IUnitOfWork _UnitOfWork;
 		private readonly IClientService _ClientService;
 		private readonly ICourierService _CourierService;
 		private readonly IOrderService _OrderService;
@@ -34,7 +35,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowClientsCommandExecute() => true;
 		private void OnShowClientsCommandExecuted()
 		{
-			CurrentModel = new ClientsViewModel(_UnitOfWork, _ClientService);
+			CurrentModel = new ClientsViewModel(_UnitOfWork, _userDialogClients);
 		}
 		#endregion
 
@@ -45,7 +46,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowCouriersCommandExecute() => true;
 		private void OnShowCouriersCommandExecuted()
 		{
-			CurrentModel = new CouriersViewModel(_UnitOfWork, _UserDialog);
+			CurrentModel = new CouriersViewModel(_UnitOfWork, _userDialogCouriers);
 		}
 		#endregion
 
@@ -67,13 +68,19 @@ namespace Delivery.WPF.ViewModels
 		public string Title { get => _Title; set => Set(ref _Title, value);}
 
 
-		public MainWindowViewModel(IUnitOfWork unitWork, IClientService clientService, ICourierService courierService, IOrderService orderService, IUserDialog UserDialog)
+		public MainWindowViewModel(IUnitOfWork unitWork,
+			                       IClientService clientService, 
+			                       ICourierService courierService, 
+			                       IOrderService orderService, 
+			                       IUserDialogCouriers userDialogCouriers, 
+			                       IUserDialogClients userDialogClients)
 		{
 			_UnitOfWork=unitWork;
 			_ClientService = clientService;
 			_CourierService = courierService;
 			_OrderService=orderService;
-            _UserDialog = UserDialog;
-        }
+            _userDialogCouriers = userDialogCouriers;
+            _userDialogClients = userDialogClients;
+		}
 	}
 }
