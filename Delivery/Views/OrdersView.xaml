@@ -36,16 +36,49 @@
                     <TextBox DockPanel.Dock="Top" Text="{Binding OrdersFilter, UpdateSourceTrigger=PropertyChanged}"/>
                     <DataGrid ItemsSource="{Binding OrdersView}" SelectedItem="{Binding SelectedOrder}" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Адрес доставки"  Binding="{Binding Path=TargetAddress.City}"/>
-                        </DataGrid.Columns>
+                            <DataGridTextColumn Header="Статус"  Binding="{Binding Path=OrderStatus.StatusName}"/>
+                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=TargetAddress.City}"/>
+                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=TargetAddress.Street}"/>
+                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=TargetAddress.HomeNumber}"/>
+                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=TargetAddress.ApartmentNumber}"/>
+                            <DataGridTextColumn Header="Дата и время забора заказа"  Binding="{Binding Path=TargetDateTime}"/>
+                            
+
+
+</DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </GroupBox>
             <StackPanel  Grid.Column="1">
+               <DockPanel>
+                <Button Command="{Binding AddNewOrderCommand}">Добавить заказ</Button>
+                <Button Command="{Binding UpdateOrderCommand}">Редактировать заказ</Button>
+                <Button Command="{Binding TakeToJobOrderCommand}">Передать в доставку</Button>
+               </DockPanel>
                 <DockPanel>
-                    <DataGrid ItemsSource="{Binding OrdersLinesView}" IsReadOnly="True">
+                    <Button Command="{Binding CompleteOrderCommand}">Завершить</Button>
+                <Button Command="{Binding UpdateOrderCommand}">Отменить</Button>
+                <Button Command="{Binding RemoveOrderCommand}">Удалить</Button>
+                </DockPanel>
+                <GroupBox Header="Курьер">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CachedSelectedOrder.Courier.FirstName}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.Courier.PhoneNumber}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Заказчик">
+                        <StackPanel>
+                        <TextBlock Text="{Binding CachedSelectedOrder.Client.FirstName}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.Client.PhoneNumber}"/>
+                        </StackPanel>
+                    </GroupBox>
+                <DockPanel>
+                    <DataGrid ItemsSource="{Binding OrdersLinesView}" IsReadOnly="True" AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Продукт"  Binding="{Binding Path=ItemName}"/>
+                            <DataGridTextColumn Header="Продукт" Width="Auto" Binding="{Binding Path=ItemName}"/>
+                            <DataGridTextColumn Header="длина"  Binding="{Binding Path=Length}"/>
+                            <DataGridTextColumn Header="Ширина"  Binding="{Binding Path=Width}"/>
+                            <DataGridTextColumn Header="Вес"  Binding="{Binding Path=Weight}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

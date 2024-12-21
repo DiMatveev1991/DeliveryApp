@@ -25,6 +25,7 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<Order> Items => _Set
+            .AsNoTracking()
 			.Include(item => item.OrderLines)
 			.Include(item => item.Courier)
 			.ThenInclude(item => item.CourierStatus)
@@ -46,15 +47,18 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
 		public async Task<Order> AddAsync(Order item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
+			//item.IsDeleted = false
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
@@ -64,6 +68,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public async Task UpdateAsync(Order item, CancellationToken cancel = default)
@@ -72,6 +77,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public void Remove(Guid id)
@@ -84,6 +90,7 @@ namespace Delivery.DAL.Repositories
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
 		{
+			//TODO сделать мягкое удаление 
 			_db.Remove(new Order { Id = id });
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);

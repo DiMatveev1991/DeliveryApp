@@ -25,8 +25,9 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<Courier> Items => _Set
-			.Include(item => item.CourierStatus)
 			.AsNoTracking()
+			.Include(item => item.CourierStatus)
+			
 		    ;
 
         public async Task<IEnumerable<Courier>> GetFiltered(string filter)

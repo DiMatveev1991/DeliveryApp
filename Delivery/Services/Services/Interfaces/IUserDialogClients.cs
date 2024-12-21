@@ -11,8 +11,8 @@ namespace Delivery.WPF.Services.Services.Interfaces
 	{
 		bool Edit(Client client);
 
-		bool ConfirmInformation(string Information, string Caption);
-		bool ConfirmWarning(string Warning, string Caption);
-		bool ConfirmError(string Error, string Caption);
+		bool ConfirmInformation(string information, string caption);
+		bool ConfirmWarning(string warning, string caption);
+		bool ConfirmError(string error, string caption);
 	}
 }

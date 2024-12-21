@@ -21,6 +21,7 @@ namespace Delivery.WPF.Data
         private readonly CourierService _courierService;
         private readonly ClientService _clientService;
         private readonly OrderService _orderService;
+        private readonly IUnitOfWork _unitOfWork;
         OrderStatus[] orderStatuses = new OrderStatus[4];
         CourierStatus[] courierStatuses = new CourierStatus[2];
         Address[] addressArray = new Address[5];
@@ -29,6 +30,7 @@ namespace Delivery.WPF.Data
         public DbInitializer(DeliveryDbContext db, IUnitOfWork unitOfWork)
         {
             _db = db;
+            _unitOfWork = unitOfWork;
             _courierService = new CourierService(unitOfWork);
             _clientService = new ClientService(unitOfWork);
             _orderService = new OrderService(unitOfWork);
@@ -116,14 +118,11 @@ namespace Delivery.WPF.Data
 
         public async Task InitializerClients()
         {
-            Client client1 = await _clientService.AddClientAsync("Dmitry", "Pupkin", "89295501278", addressArray[0]);
+            Client client1 = await _clientService.AddClientAsync("Dmitry", "Pupkin1", "89295501278", addressArray[0]);
             Client client2 = await _clientService.AddClientAsync("Dmitry2", "Pupkin2", "89295501279", addressArray[1]);
             Client client3 = await _clientService.AddClientAsync("Dmitry3", "Pupkin3", "89295501289", addressArray[2]);
             Client client4 = await _clientService.AddClientAsync("Dmitry4", "Pupkin4", "89295511289", addressArray[3]);
-            Client client5 = await _clientService.AddClientAsync("Dmitry5", "Pupkin", "89295501278", addressArray[4]);
-            Client client6 = await _clientService.AddClientAsync("Dmitry6", "Pupkin2", "89295501279", addressArray[1]);
-            Client client7 = await _clientService.AddClientAsync("Dmitry7", "Pupkin3", "89295501276", addressArray[3]);
-            Client client8 = await _clientService.AddClientAsync("Dmitry8", "Pupkin4", "89295511289", addressArray[0]);
+            Client client5 = await _clientService.AddClientAsync("Dmitry5", "Pupkin0", "89295501278", addressArray[4]);
         }
 
         public async Task InicializerORder()
@@ -132,7 +131,7 @@ namespace Delivery.WPF.Data
             orderLines[0] = new OrderLine() { ItemName = "Компьютер" };
             orderLines[1] = new OrderLine() { ItemName = "Lopata" };
 
-            Order order1 = await _orderService.AddOrderAsync(await _clientService.AddClientAsync("Dmitry8", "Pupkin4", "89295511289", addressArray[0]), addressArray[0], addressArray[3], orderLines);
+            Order order1 = await _orderService.AddOrderAsync(await _unitOfWork.ClientsRepository.Items.FirstOrDefaultAsync(), addressArray[0], addressArray[3], orderLines);
         }
     }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Delivery.BLL.Interfaces;
 using Delivery.DAL.Interfaces;
+using Delivery.WPF.Services.Services;
 using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 using MathCore.WPF;
@@ -18,6 +19,8 @@ namespace Delivery.WPF.ViewModels
 	{
         private readonly IUserDialogCouriers _userDialogCouriers;
         private readonly IUserDialogClients _userDialogClients;
+        private readonly IUserDialogOrder _userDialogOrder;
+        private readonly IUserDialogOrderLine _dialogOrderLine;
 		private readonly IUnitOfWork _UnitOfWork;
 		private readonly IClientService _ClientService;
 		private readonly ICourierService _CourierService;
@@ -58,11 +61,9 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowOrdersCommandExecute() => true;
 		private void OnShowOrdersCommandExecuted()
 		{
-			CurrentModel = new OrdersViewModel(_UnitOfWork);
+			CurrentModel = new OrdersViewModel(_UnitOfWork, _userDialogOrder);
 		}
 		#endregion
-
-
 
 		private string _Title ="Главное окно";
 		public string Title { get => _Title; set => Set(ref _Title, value);}
@@ -73,7 +74,9 @@ namespace Delivery.WPF.ViewModels
 			                       ICourierService courierService, 
 			                       IOrderService orderService, 
 			                       IUserDialogCouriers userDialogCouriers, 
-			                       IUserDialogClients userDialogClients)
+			                       IUserDialogClients userDialogClients,
+                                   IUserDialogOrder userDialogOrder,
+                                   IUserDialogOrderLine dialogOrderLine)
 		{
 			_UnitOfWork=unitWork;
 			_ClientService = clientService;
@@ -81,6 +84,8 @@ namespace Delivery.WPF.ViewModels
 			_OrderService=orderService;
             _userDialogCouriers = userDialogCouriers;
             _userDialogClients = userDialogClients;
-		}
+            _userDialogOrder = userDialogOrder;
+            _dialogOrderLine = dialogOrderLine;
+        }
 	}
 }

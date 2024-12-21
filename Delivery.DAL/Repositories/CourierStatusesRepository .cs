@@ -25,6 +25,7 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public IQueryable<CourierStatus> Items => _Set
+			.AsNoTracking()
 			.Include(Items => Items.Couriers);
 
 		public CourierStatus Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
@@ -39,6 +40,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
@@ -48,6 +50,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
@@ -57,6 +60,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public async Task UpdateAsync(CourierStatus item, CancellationToken cancel = default)
@@ -65,6 +69,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public void Remove(Guid id)

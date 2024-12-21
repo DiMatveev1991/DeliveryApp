@@ -41,11 +41,14 @@ namespace Delivery.WPF.ViewModels
                         Source = value,
                         SortDescriptions =
                         {
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.FirstName), ListSortDirection.Ascending),
+	                        new SortDescription(nameof(Delivery.DAL.Models.Client.FirstName), ListSortDirection.Ascending),
                             new SortDescription(nameof(Delivery.DAL.Models.Client.SecondName), ListSortDirection.Ascending),
                             new SortDescription(nameof(Delivery.DAL.Models.Client.PhoneNumber), ListSortDirection.Ascending),
-
-                        }
+                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.City), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.Street), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.HomeNumber), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.ApartmentNumber), ListSortDirection.Ascending),
+						}
                     };
 
                     _ClientsViewSource.Filter += OnClientsFilter;
@@ -97,6 +100,8 @@ namespace Delivery.WPF.ViewModels
                     FirstName = value.FirstName,
                     SecondName = value.SecondName,
                     PhoneNumber = value.PhoneNumber,
+                    AddressId = value.AddressId,
+                    Address = value.Address,    
                 };
                 Set(ref _SelectedClient, value);
                 _changedCommitted = false;
@@ -119,7 +124,7 @@ namespace Delivery.WPF.ViewModels
         private bool CanLoadDataCommandExecute() => true;
         private async Task OnLoadDataCommandExecuted()
         {
-            Clients = new ObservableCollection<Client>(await _UnitOfWork.ClientsRepository.Items.ToArrayAsync());
+	        Clients = new ObservableCollection<Client>(await _UnitOfWork.ClientsRepository.Items.ToArrayAsync());
             OnPropertyChanged(nameof(Clients));
         }
         #endregion
@@ -179,12 +184,12 @@ namespace Delivery.WPF.ViewModels
             ??= new LambdaCommandAsync(OnAddNewClientCommandExecuted, CanAddNewClientCommandExecute);
         private bool CanAddNewClientCommandExecute() => true;
 
-        /// <summary>Логика выполнения - Добавление новой книги</summary>
         private async Task OnAddNewClientCommandExecuted()
         {
             var new_Client = new Client();
             if (!_UserDialogClients.Edit(new_Client))
                 return;
+            //TODO проверка полей адреса
             new_Client = await _ClientService.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
             await OnLoadDataCommandExecuted();
             SelectedClient = new_Client;
@@ -209,8 +214,12 @@ namespace Delivery.WPF.ViewModels
 
             if (!Client.PhoneNumber.Contains(ClientsFilter) &&
                 !Client.FirstName.Contains(ClientsFilter) &&
-                !Client.SecondName.Contains(ClientsFilter)
-                )
+                !Client.SecondName.Contains(ClientsFilter) &&
+                !Client.Address.HomeNumber.Contains(ClientsFilter) &&
+                !Client.Address.ApartmentNumber.Contains(ClientsFilter) &&
+                !Client.Address.City.Contains(ClientsFilter) &&
+                !Client.Address.Street.Contains(ClientsFilter) 
+				)
                 E.Accepted = false;
         }
 

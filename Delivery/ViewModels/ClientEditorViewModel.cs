@@ -7,13 +7,6 @@ namespace Delivery.WPF.ViewModels
 {
 	internal class ClientEditorViewModel : ViewModel
 	{
-		#region ClientId : - Идентификатор Client
-
-		//  public Guid ClientId { get; }
-		//  public Guid? ClientStatusId{ get; }
-
-		#endregion
-
 		#region Name : string - Название клиента
 
 		private string _FirstName;
@@ -36,13 +29,13 @@ namespace Delivery.WPF.ViewModels
 		public ClientEditorViewModel(Client client)
 		{
 			Client = client;
-			ClientAddress = client.Address;
 
-			_FirstName = Client.FirstName;
+            client.Address ??= new Address();
+            ClientAddress = client.Address;
+
+            _FirstName = Client.FirstName;
 			_SecondName = Client.SecondName;
 			_PhoneNumber = Client.PhoneNumber;
-			_Address = new Address();
-			Client.Address = _Address;
 		}
 	}
 }

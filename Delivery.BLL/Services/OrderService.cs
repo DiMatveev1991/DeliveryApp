@@ -156,6 +156,7 @@ namespace Delivery.BLL.Services
 
 				var courierStatus = await _unitOfWork.CouriersRepository.GetCourierStatusAsync("Выполняет заказ");
 				order.Courier = courier;
+				order.CourierId = courier.Id;
 				courier.CourierStatus = courierStatus;
 				await _unitOfWork.OrdersRepository.UpdateAsync(order);
 				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
@@ -176,7 +177,7 @@ namespace Delivery.BLL.Services
 				{
 					await _unitOfWork.OrdersRepository.UpdateAsync(order);
 				}
-
+				//TODO переделать на обновление через EntryState
 				return order;
 
 			}

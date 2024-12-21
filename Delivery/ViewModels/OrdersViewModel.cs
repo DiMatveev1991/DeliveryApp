@@ -11,6 +11,7 @@ using Delivery.BLL.Interfaces;
 using Delivery.BLL.Services;
 using Delivery.DAL.Interfaces;
 using Delivery.DAL.Models;
+using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.Views;
 using MathCore.WPF.Commands;
 using MathCore.WPF.ViewModels;
@@ -20,6 +21,7 @@ namespace Delivery.WPF.ViewModels
 {
     internal class OrdersViewModel : ViewModel
     {
+        private readonly IUserDialogOrder _userDialogOrders;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderService _orderService;
         private ObservableCollection<Order> _orders;
@@ -44,10 +46,10 @@ namespace Delivery.WPF.ViewModels
                         Source = value,
                         SortDescriptions =
                         {
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.FirstName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.SecondName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.PhoneNumber), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.CourierStatus.StatusName), ListSortDirection.Ascending)
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.FirstName), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.SecondName), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.PhoneNumber), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus.StatusName), ListSortDirection.Ascending)
                         }
                     };
 
@@ -60,7 +62,7 @@ namespace Delivery.WPF.ViewModels
         }
         #endregion
 
-        #region Orders : ObservableCollection<Courier> - Коллекция курьеров
+        #region Orders : ObservableCollection<Order> - Коллекция курьеров
 
         public ObservableCollection<OrderLine> OrdersLines
         {
@@ -74,10 +76,10 @@ namespace Delivery.WPF.ViewModels
                         Source = value,
                         SortDescriptions =
                         {
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.FirstName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.SecondName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.PhoneNumber), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Courier.CourierStatus.StatusName), ListSortDirection.Ascending)
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.FirstName), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.SecondName), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.PhoneNumber), ListSortDirection.Ascending),
+                            //new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus.StatusName), ListSortDirection.Ascending)
                         }
                     };
 
@@ -105,7 +107,7 @@ namespace Delivery.WPF.ViewModels
         }
         #endregion
 
-        #region SelectedOrder : Courier - Выбранный курьер
+        #region SelectedOrder : Order - Выбранный курьер
         private Order _selectedOrder;
         public Order SelectedOrder
         {
@@ -120,18 +122,25 @@ namespace Delivery.WPF.ViewModels
                 //Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
                 if (!_changedCommitted && !_firstSelect)
                 {
-                    //Set(ref _selectedOrder, _cachedSelectedCourier);
+                    //Set(ref _selectedOrder, _cachedSelectedOrder);
                 }
                 _selectedOrder = value;
                 OrdersLines = value.OrderLines.ToObservableCollection();
-                CachedSelectedCourier = new Order()
+                CachedSelectedOrder = new Order()
                 {
                     Id = value.Id,
-                    //FirstName = value.FirstName,
-                    //SecondName = value.SecondName,
-                    //PhoneNumber = value.PhoneNumber,
-                    //CourierStatus = value.CourierStatus,
-                    //CourierStatusId = value.CourierStatusId,
+                    Client = value.Client,
+                    ClientId = value.ClientId,
+                    Courier = value.Courier,
+                    CourierId = value.CourierId,
+                    FromAddress = value.FromAddress,
+                    FromAddressId = value.FromAddressId,
+                    TargetAddress = value.TargetAddress,
+                    TargetAddressId = value.TargetAddressId,
+                    CancelReason = value.CancelReason,
+                    OrderLines = value.OrderLines,
+                    OrderStatus = value.OrderStatus,
+                    OrderStatusId = value.OrderStatusId,
                 };
                 Set(ref _selectedOrder, value);
                 _changedCommitted = false;
@@ -141,15 +150,171 @@ namespace Delivery.WPF.ViewModels
 
         private bool _firstSelect = true;
         private bool _changedCommitted;
-        private Order _cachedSelectedCourier;
-        public Order CachedSelectedCourier { get => _cachedSelectedCourier; set => Set(ref _cachedSelectedCourier, value); }
+        private Order _cachedSelectedOrder;
+        public Order CachedSelectedOrder { get => _cachedSelectedOrder; set => Set(ref _cachedSelectedOrder, value); }
 
         #endregion
 
-        public OrdersViewModel(IUnitOfWork unitOfWork)
+        #region Command UpdateOrderCommand  - команда измененияданных курьера в БД
+
+        private ICommand _UpdateOrderCommand;
+        public ICommand UpdateOrderCommand => _UpdateOrderCommand
+            ??= new LambdaCommandAsync<Order>(OnUpdateOrderCommandExecuted, CanUpdateOrderCommandExecute);
+        //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
+        private bool CanUpdateOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName == "Новая";
+
+        private async Task OnUpdateOrderCommandExecuted(Order? p)
+        {
+            try
+            {
+                var OrderToUpdate = p ?? CachedSelectedOrder;
+                if (!_userDialogOrders.Edit(OrderToUpdate))
+                    return;
+                await _orderService.UpdateOrderAsync(OrderToUpdate);
+                await OnLoadDataCommandExecuted();
+                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                _changedCommitted = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Command RemoveOrderCommand : Order - Удаление указанного курьера
+        private ICommand _RemoveOrderCommand;
+
+        public ICommand RemoveOrderCommand => _RemoveOrderCommand
+            ??= new LambdaCommandAsync<Order>(OnRemoveOrderCommandExecuted, CanRemoveOrderCommandExecute);
+
+        //TODO проверка статуса
+        private bool CanRemoveOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName != "Готов к выполнению заказа";
+
+        private async Task OnRemoveOrderCommandExecuted(Order? p)
+        {
+            var OrderToRemove = p ?? SelectedOrder;
+
+            if (!_userDialogOrders.ConfirmWarning($"Вы хотите удалить заказа {OrderToRemove.Id}?", "Удаление заказа"))
+                return;
+            await _orderService.DeleteOrderAsync(OrderToRemove.Id);
+
+            _orders.Remove(OrderToRemove);
+
+            if (ReferenceEquals(SelectedOrder, OrderToRemove))
+                SelectedOrder = null;
+        }
+        #endregion
+
+        #region Command AddNewOrderCommand - Добавление нового курьера
+        private ICommand _AddNewOrderCommand;
+
+        public ICommand AddNewOrderCommand => _AddNewOrderCommand
+            ??= new LambdaCommandAsync(OnAddNewOrderCommandExecuted, CanAddNewOrderCommandExecute);
+        private bool CanAddNewOrderCommandExecute() => true;
+
+        /// <summary>Логика выполнения - Добавление новой книги</summary>
+        private async Task OnAddNewOrderCommandExecuted()
+        {
+            var new_Order = new Order();
+            if (!_userDialogOrders.Edit(new_Order))
+                return;
+            new_Order = await _orderService.AddOrderAsync(new_Order.Client, new_Order.FromAddress, new_Order.TargetAddress, new_Order.OrderLines);
+            await OnLoadDataCommandExecuted();
+            SelectedOrder = new_Order;
+
+        }
+
+        #endregion
+
+        #region Command TakeToJobOrderCommand  - команда передачи заказа в работу
+
+        private ICommand _TakeToJobOrderCommand;
+        public ICommand TakeToJobOrderCommand => _TakeToJobOrderCommand
+            ??= new LambdaCommandAsync<Order>(OnTakeToJobOrderCommandExecuted, CanTakeToJobOrderCommandExecute);
+        //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
+        private bool CanTakeToJobOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName == "Новая";
+
+        private async Task OnTakeToJobOrderCommandExecuted(Order? p)
+        {
+            try
+            {
+                var OrderToUpdate = p ?? CachedSelectedOrder;
+                var courier = _unitOfWork.CouriersRepository.Items.FirstOrDefault(x => x.CourierStatus.StatusName == "Готов к выполнению заказа");
+
+                await _orderService.TakeInProgressAsync(OrderToUpdate.Id, courier.Id);
+                await OnLoadDataCommandExecuted();
+                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                _changedCommitted = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Command CancelOrderCommand  - команда передачи заказа в работу
+
+        private ICommand _CancelOrderCommand;
+        public ICommand CancelOrderCommand => _CancelOrderCommand
+            ??= new LambdaCommandAsync<Order>(OnCancelOrderOrderCommandExecuted, CanCancelOrderCommandExecute);
+        //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
+        private bool CanCancelOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName == "Новая";
+
+        private async Task OnCancelOrderOrderCommandExecuted(Order? p)
+        {
+            try
+            {
+                var OrderToUpdate = p ?? CachedSelectedOrder;
+                //TODO сделать окошко с причиной отмены
+                //await _orderService.CancelOrderAsync(OrderToUpdate.Id);
+                await OnLoadDataCommandExecuted();
+                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                _changedCommitted = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Command CompleteOrderCommand  - команда смены статуса на заказ выполнен
+
+        private ICommand _CompleteOrderCommand;
+        public ICommand CompleteOrderCommand => _CompleteOrderCommand
+            ??= new LambdaCommandAsync<Order>(OnCompleteOrderOrderCommandExecuted, CanCompleteOrderOrderCommandExecute);
+        //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
+        private bool CanCompleteOrderOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName == "Передано на выполнение";
+
+        private async Task OnCompleteOrderOrderCommandExecuted(Order? p)
+        {
+            try
+            {
+                var OrderToUpdate = p ?? CachedSelectedOrder;
+				await _orderService.CompleteOrderAsync(OrderToUpdate.Id);
+				await OnLoadDataCommandExecuted();
+				SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+				
+                _changedCommitted = true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        #endregion
+
+        public OrdersViewModel(IUnitOfWork unitOfWork, IUserDialogOrder userDialogOrder)
         {
             _unitOfWork = unitOfWork;
             _orderService = new OrderService(_unitOfWork);
+            _userDialogOrders = userDialogOrder;
 
         }
 
@@ -173,7 +338,7 @@ namespace Delivery.WPF.ViewModels
             //if (!order.PhoneNumber.Contains(OrdersFilter) &&
             //    !order.FirstName.Contains(OrdersFilter) &&
             //    !order.SecondName.Contains(OrdersFilter) &&
-            //    !order.CourierStatus.StatusName.Contains(OrdersFilter)
+            //    !order.OrderStatus.StatusName.Contains(OrdersFilter)
             //   )
             //    E.Accepted = false;
         }

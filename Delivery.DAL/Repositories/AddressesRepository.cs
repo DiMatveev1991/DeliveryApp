@@ -25,8 +25,9 @@ namespace Delivery.DAL.Repositories
 			_Set = db.Set<Address>();
 		}
 
-		public IQueryable<Address> Items => _Set;
-
+        public IQueryable<Address> Items => _Set
+            .AsNoTracking()
+            .Include(item => item.Clients);
 
 		public Address Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 
@@ -40,6 +41,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
@@ -49,6 +51,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 			return item;
 		}
 
@@ -58,6 +61,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public async Task UpdateAsync(Address item, CancellationToken cancel = default)
@@ -66,6 +70,7 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public void Remove(Guid id)
@@ -74,6 +79,7 @@ namespace Delivery.DAL.Repositories
 			_db.Remove(item);
 			if (AutoSaveChanges)
 				_db.SaveChanges();
+			_db.Entry(item).State = EntityState.Detached;
 		}
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)

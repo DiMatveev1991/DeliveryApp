@@ -43,7 +43,6 @@ namespace Delivery.WPF
             .AddDatabase(host.Configuration.GetSection("Database"))
             .AddServicesRegistrator()
             .AddViewModels()
-            .AddServicesRegistrator()
             .AddServicesDialog()
 
         ;

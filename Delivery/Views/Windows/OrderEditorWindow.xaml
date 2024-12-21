@@ -1,0 +1,66 @@
+﻿<Window x:Class="Delivery.WPF.Views.Windows.OrderEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Delivery.WPF.Views.Windows"
+        xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:viewModels="clr-namespace:Delivery.WPF.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewModels:OrderEditorViewModel, IsDesignTimeCreatable=True}" 
+        Title="OrderEditorWindow" Height="450" Width="800">
+    <Grid>
+        <Grid Background="DarkGray">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <GroupBox  Header="Список товаров в заказе">
+                <GroupBox.Resources>
+                    <CollectionViewSource x:Key="CourierView" 
+                                        Source="{Binding OrdersLinesView}">
+                    </CollectionViewSource>
+
+                </GroupBox.Resources>
+                <DockPanel>
+                    <DataGrid ItemsSource="{Binding OrdersLinesView}" SelectedItem="{Binding SelectedOrderLine}" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Продукт"  Binding="{Binding Path=ItemName}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </GroupBox>
+            <StackPanel  Grid.Column="1">
+                <GroupBox Header="Курьер">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Order.Courier.FirstName}"/>
+                        <TextBlock Text="{Binding Order.Courier.PhoneNumber}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Заказчик">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Order.Client.FirstName}"/>
+                        <TextBlock Text="{Binding Order.Client.PhoneNumber}"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Выбранный товар">
+                    <StackPanel>
+                        <TextBlock Text="Имя" />
+                        <TextBox Text="{Binding CachedSelectedOrderLine.ItemName}" />
+                        <TextBlock Text="Длина" />
+                        <TextBox Text="{Binding CachedSelectedOrderLine.Length}" />
+                        <TextBlock Text="Ширина" />
+                        <TextBox Text="{Binding CachedSelectedOrderLine.Width}" />
+                        <TextBlock Text="Вес" />
+                        <TextBox Text="{Binding CachedSelectedOrderLine.Weight}" />
+                        <DockPanel>
+                            <Button Command="{Binding UpdateOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
+                            <Button Command="{Binding RemoveOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Удалить товар</Button>
+                            <Button  Command="{Binding AddNewOrderLineCommand,UpdateSourceTrigger=PropertyChanged }" >Добавить товар</Button>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

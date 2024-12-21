@@ -18,43 +18,58 @@
     <Grid>
         <Grid Background="DarkGray">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <GroupBox  Header="Список добавленных курьеров">
+            <GroupBox  Header="Список добавленных курьеров" Grid.ColumnSpan="2" Margin="0,0,315,0">
                 <GroupBox.Resources>
                     <CollectionViewSource x:Key="ClientView" 
-                                            Source="{Binding Client}">
+                                            Source="{Binding Clients}">
                         <CollectionViewSource.SortDescriptions>
                             <cm:SortDescription PropertyName="FirstName"/>
                             <cm:SortDescription PropertyName="SecondName"/>
                         </CollectionViewSource.SortDescriptions>
                     </CollectionViewSource>
-
                 </GroupBox.Resources>
-                <DockPanel>
-                    <TextBox DockPanel.Dock="Top" Text="{Binding ClientsFilter, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGrid ItemsSource="{Binding ClientsView}" SelectedItem="{Binding SelectedClient}" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя"  Binding="{Binding FirstName}"/>
-                            <DataGridTextColumn Header="Фамилия"  Binding="{Binding SecondName}"/>
-                            <DataGridTextColumn Header="Телефон"  Binding="{Binding PhoneNumber}"/>
+                    <DockPanel>
+                        <TextBox DockPanel.Dock="Top" Text="{Binding ClientsFilter, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGrid ItemsSource="{Binding ClientsView}" SelectedItem="{Binding SelectedClient}" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Имя"  Binding="{Binding FirstName}"/>
+                                <DataGridTextColumn Header="Фамилия"  Binding="{Binding SecondName}"/>
+                                <DataGridTextColumn Header="Телефон"  Binding="{Binding PhoneNumber}"/>
+                                <DataGridTextColumn Header="Город"  Binding="{Binding Address.City}"/>
+                                <DataGridTextColumn Header="Улица"  Binding="{Binding Address.Street}"/>
+                                <DataGridTextColumn Header="Номер дома"  Binding="{Binding Address.HomeNumber}"/>
+                                <DataGridTextColumn Header="Номер квартиры"  Binding="{Binding Address.ApartmentNumber}"/>
                         </DataGrid.Columns>
-                    </DataGrid>
-                </DockPanel>
+                        </DataGrid>
+                    </DockPanel>
             </GroupBox>
-            <StackPanel  Grid.Column="1">
-                <TextBlock Text="Выбранный Курьер"/>
+            <StackPanel  Grid.Column="1" Margin="85,0,0,0">
+                <TextBlock Text="Выбранный Клиент"/>
                 <TextBlock Text="Имя" />
                 <TextBox Text="{Binding CachedSelectedClient.FirstName}" />
                 <TextBlock Text="Фамилия" />
                 <TextBox Text="{Binding CachedSelectedClient.SecondName}" />
-                <TextBlock Text="размерность" />
+                <TextBlock Text="Телефон" />
                 <TextBox Text="{Binding CachedSelectedClient.PhoneNumber}" />
+                <TextBlock Text="Адресс забора заказа"/>
+                <TextBlock Text="Город" />
+                <TextBox Text="{Binding CachedSelectedClient.Address.City}" />
+                <TextBlock Text="улица" />
+                <TextBox Text="{Binding CachedSelectedClient.Address.Street}" />
+                <TextBlock Text="Номер дома" />
+                <TextBox Text="{Binding CachedSelectedClient.Address.HomeNumber}" />
+                <TextBlock Text="Номер квартиры" />
+                <TextBox Text="{Binding CachedSelectedClient.Address.ApartmentNumber}" />
+                <TextBlock Text="корпус" />
+                <TextBox Text="{Binding CachedSelectedClient.Address.Corpus}" />
                 <DockPanel>
+
                     <Button Command="{Binding UpdateClientCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
                     <Button Command="{Binding RemoveClientCommand, UpdateSourceTrigger=PropertyChanged}">Удалить клиента</Button>
-                    <Button  Command="{Binding AddNewClientCommand,UpdateSourceTrigger=PropertyChanged }" >Нанять клиента</Button>
+                    <Button  Command="{Binding AddNewClientCommand,UpdateSourceTrigger=PropertyChanged }" >Добавить клиента</Button>
                 </DockPanel>
             </StackPanel>
         </Grid>

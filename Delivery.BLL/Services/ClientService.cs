@@ -60,11 +60,18 @@ namespace Delivery.BLL.Services
 		{
 			try
 			{
-				var order = await _unitOfWork.OrdersRepository.Items.FirstOrDefaultAsync(o =>
+				if(client.Address is null)
+					throw new ArgumentNullException(nameof(client.Address), "У клиента не указан адрес");
+
+				var order = await _unitOfWork.OrdersRepository.Items.AsNoTracking().FirstOrDefaultAsync(o =>
 					o.ClientId == client.Id && o.OrderStatus.StatusName == "Передано на выполнение");
 				if (order == null)
 				{
 					await _unitOfWork.ClientsRepository.UpdateAsync(client);
+                    if (client.AddressId.HasValue && client.Address != null)
+                    {
+                        await _unitOfWork.AddressRepository.UpdateAsync(client.Address);
+                    }
 					return client;
 				}
 				else

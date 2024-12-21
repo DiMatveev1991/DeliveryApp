@@ -183,8 +183,6 @@ namespace Delivery.WPF.ViewModels
         public ICommand AddNewCourierCommand => _AddNewCourierCommand
             ??= new LambdaCommandAsync(OnAddNewCourierCommandExecuted, CanAddNewCourierCommandExecute);
         private bool CanAddNewCourierCommandExecute() => true;
-
-        /// <summary>Логика выполнения - Добавление новой книги</summary>
         private async Task OnAddNewCourierCommandExecuted()
 		{
 			var new_courier = new Courier();
