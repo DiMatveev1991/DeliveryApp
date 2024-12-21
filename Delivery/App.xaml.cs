@@ -44,22 +44,21 @@ namespace Delivery.WPF
             .AddServicesRegistrator()
             .AddViewModels()
             .AddServicesDialog()
-
         ;
 
         private async void PreStart(object sender, StartupEventArgs e)
         {
-            //using var scope = Services.CreateScope();
-            //var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-            //await dbInitializer.InitializeAsync();
+        //    using var scope = Services.CreateScope();
+       //   var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+       // await dbInitializer.InitializeAsync();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
             IsDesignTime = false;
             var host = Host;
-            //using (var scope = Services.CreateAsyncScope())
-            //    await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
+         //   using (var scope = Services.CreateAsyncScope())
+             // await scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync();
             base.OnStartup(e);
             host.Start();
         }

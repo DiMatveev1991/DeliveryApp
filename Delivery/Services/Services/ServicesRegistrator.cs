@@ -11,6 +11,7 @@ namespace Delivery.WPF.Services
            .AddTransient<IUserDialogClients, UserDialogClientService>()
            .AddTransient<IUserDialogOrderLine, UserDialogOrderLine>()
            .AddTransient<IUserDialogOrder, UserDialogOrdersService>()
+           .AddTransient<IUserDialogCancelOrder, UserDialogCancelOrderService>()
 		;
     }
 }

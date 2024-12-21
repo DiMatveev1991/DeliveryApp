@@ -18,7 +18,8 @@ namespace Delivery.WPF.ViewModels
 	internal class MainWindowViewModel: ViewModel
 	{
         private readonly IUserDialogCouriers _userDialogCouriers;
-        private readonly IUserDialogClients _userDialogClients;
+        private readonly IUserDialogCancelOrder _userDialogCancelOrder;
+		private readonly IUserDialogClients _userDialogClients;
         private readonly IUserDialogOrder _userDialogOrder;
         private readonly IUserDialogOrderLine _dialogOrderLine;
 		private readonly IUnitOfWork _UnitOfWork;
@@ -61,7 +62,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowOrdersCommandExecute() => true;
 		private void OnShowOrdersCommandExecuted()
 		{
-			CurrentModel = new OrdersViewModel(_UnitOfWork, _userDialogOrder);
+			CurrentModel = new OrdersViewModel(_UnitOfWork, _userDialogOrder, _userDialogCancelOrder);
 		}
 		#endregion
 
@@ -76,7 +77,8 @@ namespace Delivery.WPF.ViewModels
 			                       IUserDialogCouriers userDialogCouriers, 
 			                       IUserDialogClients userDialogClients,
                                    IUserDialogOrder userDialogOrder,
-                                   IUserDialogOrderLine dialogOrderLine)
+                                   IUserDialogOrderLine dialogOrderLine,
+			                       IUserDialogCancelOrder userDialogCancelOrder)
 		{
 			_UnitOfWork=unitWork;
 			_ClientService = clientService;
@@ -86,6 +88,8 @@ namespace Delivery.WPF.ViewModels
             _userDialogClients = userDialogClients;
             _userDialogOrder = userDialogOrder;
             _dialogOrderLine = dialogOrderLine;
-        }
+			_userDialogCancelOrder = userDialogCancelOrder;
+
+		}
 	}
 }

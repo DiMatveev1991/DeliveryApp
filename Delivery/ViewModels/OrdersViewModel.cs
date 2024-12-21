@@ -26,7 +26,9 @@ namespace Delivery.WPF.ViewModels
         private readonly IOrderService _orderService;
         private ObservableCollection<Order> _orders;
         private CollectionViewSource _ordersViewSource;
-        public ICollectionView OrdersView => _ordersViewSource?.View;
+        private readonly IUserDialogCancelOrder _userCancelOrder;
+
+		public ICollectionView OrdersView => _ordersViewSource?.View;
 
         private ObservableCollection<OrderLine> _orderLines;
         private CollectionViewSource _ordersLinesViewSource;
@@ -45,10 +47,10 @@ namespace Delivery.WPF.ViewModels
                     {
                         Source = value,
                         SortDescriptions =
-                        {
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.FirstName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.SecondName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.PhoneNumber), ListSortDirection.Ascending),
+                        { new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Delivery.DAL.Models.Order.Client), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Delivery.DAL.Models.Order.Courier), ListSortDirection.Ascending),
+
                             //new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus.StatusName), ListSortDirection.Ascending)
                         }
                     };
@@ -62,7 +64,7 @@ namespace Delivery.WPF.ViewModels
         }
         #endregion
 
-        #region Orders : ObservableCollection<Order> - Коллекция курьеров
+        #region Orders : ObservableCollection<Order> - Коллекция заказов
 
         public ObservableCollection<OrderLine> OrdersLines
         {
@@ -107,7 +109,7 @@ namespace Delivery.WPF.ViewModels
         }
         #endregion
 
-        #region SelectedOrder : Order - Выбранный курьер
+        #region SelectedOrder : Order - Выбранный заказ
         private Order _selectedOrder;
         public Order SelectedOrder
         {
@@ -189,7 +191,7 @@ namespace Delivery.WPF.ViewModels
         public ICommand RemoveOrderCommand => _RemoveOrderCommand
             ??= new LambdaCommandAsync<Order>(OnRemoveOrderCommandExecuted, CanRemoveOrderCommandExecute);
 
-        //TODO проверка статуса
+       
         private bool CanRemoveOrderCommandExecute(Order p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatus.StatusName != "Готов к выполнению заказа";
 
         private async Task OnRemoveOrderCommandExecuted(Order? p)
@@ -198,8 +200,8 @@ namespace Delivery.WPF.ViewModels
 
             if (!_userDialogOrders.ConfirmWarning($"Вы хотите удалить заказа {OrderToRemove.Id}?", "Удаление заказа"))
                 return;
-            await _orderService.DeleteOrderAsync(OrderToRemove.Id);
-
+            if (OrderToRemove.OrderStatus.StatusName == "Передано на выполнение") {throw new ArgumentException("Удаление не может быть выполнено, активный заказ");}
+           await _orderService.DeleteOrderAsync(OrderToRemove.Id);
             _orders.Remove(OrderToRemove);
 
             if (ReferenceEquals(SelectedOrder, OrderToRemove))
@@ -214,7 +216,6 @@ namespace Delivery.WPF.ViewModels
             ??= new LambdaCommandAsync(OnAddNewOrderCommandExecuted, CanAddNewOrderCommandExecute);
         private bool CanAddNewOrderCommandExecute() => true;
 
-        /// <summary>Логика выполнения - Добавление новой книги</summary>
         private async Task OnAddNewOrderCommandExecuted()
         {
             var new_Order = new Order();
@@ -256,7 +257,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        #region Command CancelOrderCommand  - команда передачи заказа в работу
+        #region Command CancelOrderCommand  - команда отмены заказа
 
         private ICommand _CancelOrderCommand;
         public ICommand CancelOrderCommand => _CancelOrderCommand
@@ -269,9 +270,10 @@ namespace Delivery.WPF.ViewModels
             try
             {
                 var OrderToUpdate = p ?? CachedSelectedOrder;
-                //TODO сделать окошко с причиной отмены
-                //await _orderService.CancelOrderAsync(OrderToUpdate.Id);
-                await OnLoadDataCommandExecuted();
+
+                if (!_userCancelOrder.Edit(OrderToUpdate)) return;
+				await _orderService.CancelOrderAsync(OrderToUpdate.Id, OrderToUpdate.CancelReason);
+				await OnLoadDataCommandExecuted();
                 SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
                 _changedCommitted = true;
             }
@@ -310,11 +312,13 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        public OrdersViewModel(IUnitOfWork unitOfWork, IUserDialogOrder userDialogOrder)
+        public OrdersViewModel(IUnitOfWork unitOfWork, IUserDialogOrder userDialogOrder, IUserDialogCancelOrder userCancelOrder)
         {
             _unitOfWork = unitOfWork;
             _orderService = new OrderService(_unitOfWork);
             _userDialogOrders = userDialogOrder;
+            _userCancelOrder = userCancelOrder;
+
 
         }
 

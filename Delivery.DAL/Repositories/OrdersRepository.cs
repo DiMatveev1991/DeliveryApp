@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Delivery.DAL.Context;
 using Delivery.DAL.Models;
+using Delivery.DAL.Models.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
@@ -90,8 +92,13 @@ namespace Delivery.DAL.Repositories
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
 		{
-			//TODO сделать мягкое удаление 
-			_db.Remove(new Order { Id = id });
+		    Order order =	Get (id);
+		 //   order.ClientId = null;
+		//    order.CourierId = null;
+		//	order.FromAddressId = null;
+		//	order.TargetAddressId = null;
+			//order.OrderStatusId = null;
+			_db.Remove(order);
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 		}

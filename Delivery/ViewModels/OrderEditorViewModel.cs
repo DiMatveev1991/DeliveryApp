@@ -15,6 +15,7 @@ using Delivery.WPF.Services.Services.Interfaces;
 using MathCore.WPF.Commands;
 using System.Windows.Input;
 using Delivery.DAL.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.WPF.ViewModels
 {
@@ -64,7 +65,7 @@ namespace Delivery.WPF.ViewModels
 		public Order Order { get => _Order; set => Set(ref _Order, value); }
         #endregion
 
-        #region SelectedOrderLine : OrderLine - Выбранный курьер
+        #region SelectedOrderLine : OrderLine - Выбранная строка заказа
         private OrderLine _SelectedOrderLine;
         public OrderLine SelectedOrderLine
         {
@@ -180,6 +181,19 @@ namespace Delivery.WPF.ViewModels
 
         }
 
-        #endregion
-    }
+		#endregion
+
+		#region Command LoadDataCommand - Команда загрузки данных из репозитория
+
+		private ICommand _LoadDataCommand;
+		public ICommand LoadDataCommand => _LoadDataCommand
+			??= new LambdaCommandAsync(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
+		private bool CanLoadDataCommandExecute() => true;
+		private async Task OnLoadDataCommandExecuted()
+		{
+			OrdersLines = new ObservableCollection<OrderLine>(await _unitOfWork.OrderLinesRepository.Items.ToArrayAsync());
+			OnPropertyChanged(nameof(OrdersLines));
+		}
+		#endregion
+	}
 }

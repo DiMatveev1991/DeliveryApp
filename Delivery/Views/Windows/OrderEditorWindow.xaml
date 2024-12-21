@@ -6,11 +6,22 @@
         xmlns:local="clr-namespace:Delivery.WPF.Views.Windows"
         xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:viewModels="clr-namespace:Delivery.WPF.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewModels:OrderEditorViewModel, IsDesignTimeCreatable=True}" 
         Title="OrderEditorWindow" Height="450" Width="800">
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding LoadDataCommand, UpdateSourceTrigger=PropertyChanged}"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
     <Grid>
-        <Grid Background="DarkGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Background="DarkGray" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
@@ -25,18 +36,15 @@
                 <DockPanel>
                     <DataGrid ItemsSource="{Binding OrdersLinesView}" SelectedItem="{Binding SelectedOrderLine}" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Продукт"  Binding="{Binding Path=ItemName}"/>
+                            <DataGridTextColumn Header="Продукт"  Binding="{Binding Path=ItemName, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="вес"  Binding="{Binding Path=Weight,UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="длина"  Binding="{Binding Path=Length, UpdateSourceTrigger=PropertyChanged}"/>
+                            <DataGridTextColumn Header="ширина"  Binding="{Binding Path=Width, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </GroupBox>
             <StackPanel  Grid.Column="1">
-                <GroupBox Header="Курьер">
-                    <StackPanel>
-                        <TextBlock Text="{Binding Order.Courier.FirstName}"/>
-                        <TextBlock Text="{Binding Order.Courier.PhoneNumber}"/>
-                    </StackPanel>
-                </GroupBox>
                 <GroupBox Header="Заказчик">
                     <StackPanel>
                         <TextBlock Text="{Binding Order.Client.FirstName}"/>
@@ -53,13 +61,18 @@
                         <TextBox Text="{Binding CachedSelectedOrderLine.Width}" />
                         <TextBlock Text="Вес" />
                         <TextBox Text="{Binding CachedSelectedOrderLine.Weight}" />
-                        <DockPanel>
-                            <Button Command="{Binding UpdateOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
-                            <Button Command="{Binding RemoveOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Удалить товар</Button>
-                            <Button  Command="{Binding AddNewOrderLineCommand,UpdateSourceTrigger=PropertyChanged }" >Добавить товар</Button>
-                        </DockPanel>
                     </StackPanel>
                 </GroupBox>
+                <GroupBox Header="Кнопки управления">
+                    <StackPanel>
+                    <DockPanel>
+                        <Button Command="{Binding UpdateOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Сохранить изменения</Button>
+                        <Button Command="{Binding RemoveOrderLineCommand, UpdateSourceTrigger=PropertyChanged}">Удалить товар</Button>
+                        <Button  Command="{Binding AddNewOrderLineCommand,UpdateSourceTrigger=PropertyChanged }" >Добавить товар</Button>
+                    </DockPanel>
+                </StackPanel>
+                </GroupBox>
+
             </StackPanel>
         </Grid>
     </Grid>

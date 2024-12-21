@@ -42,10 +42,11 @@
                             <DataGridTextColumn Header="Дом"  Binding="{Binding Path=TargetAddress.HomeNumber}"/>
                             <DataGridTextColumn Header="квартира"  Binding="{Binding Path=TargetAddress.ApartmentNumber}"/>
                             <DataGridTextColumn Header="Дата и время забора заказа"  Binding="{Binding Path=TargetDateTime}"/>
-                            
-
-
-</DataGrid.Columns>
+                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=ForAddress.City}"/>
+                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=ForAddress.Street}"/>
+                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=ForAddress.HomeNumber}"/>
+                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=ForAddress.ApartmentNumber}"/>
+                        </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </GroupBox>
@@ -57,7 +58,7 @@
                </DockPanel>
                 <DockPanel>
                     <Button Command="{Binding CompleteOrderCommand}">Завершить</Button>
-                <Button Command="{Binding UpdateOrderCommand}">Отменить</Button>
+                    <Button Command="{Binding CancelOrderCommand}">Отменить</Button>
                 <Button Command="{Binding RemoveOrderCommand}">Удалить</Button>
                 </DockPanel>
                 <GroupBox Header="Курьер">

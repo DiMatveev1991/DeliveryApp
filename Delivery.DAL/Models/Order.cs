@@ -3,12 +3,14 @@ using System.Net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Delivery.DAL.Models;
+using Delivery.DAL.Interfaces;
 
 namespace Delivery.DAL.Models
 {
-	public class Order : Entity
+	public class Order : Entity, ISoftDeletable
 	{
+		public bool IsDeleted { get; set; }
+		public DateTime? DeletedOnUtc { get; set; }
 		public Guid? TargetAddressId { get; set; }
 		public Guid? FromAddressId { get; set; }
 		public DateTime TargetDateTime { get; set; }
