@@ -1,18 +1,14 @@
-﻿using Delivery.DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Delivery.WPF.ViewModels;
 
 namespace Delivery.WPF.Services.Services.Interfaces
 {
-    public interface IUserDialogOrderLine
+    internal interface IUserDialogOrderLine
     {
-        bool Edit(OrderLine order);
-
-        bool ConfirmInformation(string information, string caption);
+        bool Edit(OrderEditorAddViewModel orderEditorViewModel);
+        bool Edit(OrderEditorRedactorViewModel orderEditorViewModel);
+		bool ConfirmInformation(string information, string caption);
         bool ConfirmWarning(string warning, string caption);
         bool ConfirmError(string error, string caption);
+        void Close();
     }
 }

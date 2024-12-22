@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Delivery.DAL.Interfaces
+namespace Delivery.Models
 {
 	public interface ISoftDeletable
 	{

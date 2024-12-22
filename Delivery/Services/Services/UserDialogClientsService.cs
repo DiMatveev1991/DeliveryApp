@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Delivery.DAL.Models;
+using Delivery.Models;
 using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 using Delivery.WPF.Views.Windows;
@@ -12,7 +12,7 @@ using Delivery.WPF.Views.Windows;
 namespace Delivery.WPF.Services.Services
 {
 
-		internal class UserDialogClientService : IUserDialogClients
+    internal class UserDialogClientService : IUserDialogClients
 		{
 			public bool Edit(Client client)
 			{

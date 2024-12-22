@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Delivery.WPF.Views.Windows;
-using Delivery.DAL.Models;
+using Delivery.Models;
 using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 

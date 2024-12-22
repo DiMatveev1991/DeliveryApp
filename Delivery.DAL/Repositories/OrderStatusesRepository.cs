@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Delivery.DAL.Context;
 using Delivery.DAL.Models;
+using Delivery.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
@@ -24,7 +25,7 @@ namespace Delivery.DAL.Repositories
 			_Set = db.Set<OrderStatus>();
 		}
 
-		public IQueryable<OrderStatus> Items => _Set;
+		public IQueryable<OrderStatus> Items => _Set.AsNoTracking();
 
 		public OrderStatus Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
 

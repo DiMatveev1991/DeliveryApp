@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <GroupBox  Header="Список добавленных курьеров" Grid.ColumnSpan="2" Margin="0,0,315,0">
+            <GroupBox  Header="Список добавленных клиентов">
                 <GroupBox.Resources>
                     <CollectionViewSource x:Key="ClientView" 
                                             Source="{Binding Clients}">
@@ -46,7 +46,7 @@
                         </DataGrid>
                     </DockPanel>
             </GroupBox>
-            <StackPanel  Grid.Column="1" Margin="85,0,0,0">
+            <StackPanel  Grid.Column="1">
                 <TextBlock Text="Выбранный Клиент"/>
                 <TextBlock Text="Имя" />
                 <TextBox Text="{Binding CachedSelectedClient.FirstName}" />

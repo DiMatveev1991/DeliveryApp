@@ -10,7 +10,8 @@ using System.Windows.Input;
 using Delivery.BLL.Interfaces;
 using Delivery.BLL.Services;
 using Delivery.DAL.Interfaces;
-using Delivery.DAL.Models;
+using Delivery.DTOs;
+using Delivery.Models;
 using Delivery.WPF.Services.Services.Interfaces;
 using MathCore.WPF.Commands;
 using MathCore.WPF.ViewModels;
@@ -41,13 +42,13 @@ namespace Delivery.WPF.ViewModels
                         Source = value,
                         SortDescriptions =
                         {
-	                        new SortDescription(nameof(Delivery.DAL.Models.Client.FirstName), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.SecondName), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.PhoneNumber), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.City), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.Street), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.HomeNumber), ListSortDirection.Ascending),
-                            new SortDescription(nameof(Delivery.DAL.Models.Client.Address.ApartmentNumber), ListSortDirection.Ascending),
+	                        new SortDescription(nameof(Client.FirstName), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.SecondName), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.PhoneNumber), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.Address.City), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.Address.Street), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.Address.HomeNumber), ListSortDirection.Ascending),
+                            new SortDescription(nameof(Client.Address.ApartmentNumber), ListSortDirection.Ascending),
 						}
                     };
 
@@ -113,8 +114,8 @@ namespace Delivery.WPF.ViewModels
 
         #region Command LoadDataCommand - Команда загрузки данных из репозитория
 
-        private ICommand _LoadDataCommand;
-        public ICommand LoadDataCommand => _LoadDataCommand
+        private ICommand _loadDataCommand;
+        public ICommand LoadDataCommand => _loadDataCommand
             ??= new LambdaCommandAsync(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
         private bool CanLoadDataCommandExecute() => true;
         private async Task OnLoadDataCommandExecuted()
@@ -126,8 +127,8 @@ namespace Delivery.WPF.ViewModels
 
         #region Command UpdateClientCommand  - команда изменения данных клиента в БД
 
-        private ICommand _UpdateClientCommand;
-        public ICommand UpdateClientCommand => _UpdateClientCommand
+        private ICommand _updateClientCommand;
+        public ICommand UpdateClientCommand => _updateClientCommand
             ??= new LambdaCommandAsync<Client>(OnUpdateClientCommandExecuted, CanUpdateClientCommandExecute);
         //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
         private bool CanUpdateClientCommandExecute(Client p) => (p != null || SelectedClient != null);
@@ -136,7 +137,7 @@ namespace Delivery.WPF.ViewModels
             try
             {
                 var clientToUpdate = p ?? CachedSelectedClient;
-                await _clientService.UpdateClientAsync(clientToUpdate);
+                await _clientService.UpdateClientAsync(new ClientDto(clientToUpdate));
                 SelectedClient = Clients.Find(x => x.Id == clientToUpdate.Id);
                 await OnLoadDataCommandExecuted();
                 _changedCommitted = true;
@@ -150,9 +151,9 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
         #region Command RemoveClientCommand : Client - Удаление указанного клиента
-        private ICommand _RemoveClientCommand;
+        private ICommand _removeClientCommand;
 
-        public ICommand RemoveClientCommand => _RemoveClientCommand
+        public ICommand RemoveClientCommand => _removeClientCommand
             ??= new LambdaCommandAsync<Client>(OnRemoveClientCommandExecuted, CanRemoveClientCommandExecute);
 
         private bool CanRemoveClientCommandExecute(Client p) => (p != null || SelectedClient != null);
@@ -173,9 +174,9 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
         #region Command AddNewClientCommand - Добавление нового клиента
-        private ICommand _AddNewClientCommand;
+        private ICommand _addNewClientCommand;
 
-        public ICommand AddNewClientCommand => _AddNewClientCommand
+        public ICommand AddNewClientCommand => _addNewClientCommand
             ??= new LambdaCommandAsync(OnAddNewClientCommandExecuted, CanAddNewClientCommandExecute);
         private bool CanAddNewClientCommandExecute() => true;
 
@@ -185,7 +186,7 @@ namespace Delivery.WPF.ViewModels
             if (!_userDialogClients.Edit(newClient))
                 return;
             //TODO проверка полей адреса
-            newClient = await _clientService.AddClientAsync(newClient.FirstName, newClient.SecondName, newClient.PhoneNumber, newClient.Address);
+            newClient = (await _clientService.AddClientAsync(newClient.FirstName, newClient.SecondName, newClient.PhoneNumber, new AddressDto(newClient.Address))).ToModel();
             await OnLoadDataCommandExecuted();
             SelectedClient = newClient;
 

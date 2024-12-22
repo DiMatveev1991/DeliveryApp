@@ -1,47 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
+using Delivery.BLL.Interfaces;
 using Delivery.DAL.Interfaces;
-using Delivery.DAL.Models;
+using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 using Delivery.WPF.Views.Windows;
 
-namespace Delivery.WPF.Services.Services.Interfaces
+namespace Delivery.WPF.Services.Services
 {
-    internal class UserDialogOrdersService : IUserDialogOrder
+    internal class UserDialogAddOrdersService : IUserDialogAddOrder
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserDialogOrderLine _userDialogOrderLine;
+        private readonly IOrderService _orderService;
+        private OrderEditorAddWindow _orderEditorAddWindow;
 
-        public UserDialogOrdersService(IUnitOfWork unitOfWork, IUserDialogOrderLine userDialogOrderLine)
+        public UserDialogAddOrdersService(IUnitOfWork unitOfWork, IUserDialogOrderLine userDialogOrderLine, IOrderService orderService)
         {
             _unitOfWork = unitOfWork;
             _userDialogOrderLine = userDialogOrderLine;
+            _orderService = orderService;
         }
 
-        public bool Edit(Order order, bool addingState = false)
+        public bool Edit(OrdersViewModel orderViewModel)
         {
-            var orderEditorModel = new OrderEditorViewModel(order, _unitOfWork, _userDialogOrderLine, addingState)
+            var orderEditorModel = new OrderEditorAddViewModel(orderViewModel.SelectedOrder, _unitOfWork, _userDialogOrderLine, _orderService, this)
             {
                 WasChanged = false
             };
 
-            var orderEditorWindow = new OrderEditorWindow
+            _orderEditorAddWindow = new OrderEditorAddWindow
             {
                 DataContext = orderEditorModel
             };
-
-            return orderEditorWindow.ShowDialog() != true && orderEditorModel.WasChanged;
-            //списал, не очень понял для чего это
-            //order.Client = order_editor_model.Order.Client;
-            //order.FromAddress = order_editor_model.Order.FromAddress;
-            //order.TargetAddress = order_editor_model.Order.TargetAddress;
-            //order.OrderLines = order_editor_model.Order.OrderLines;
-
-            //return true;
+            return _orderEditorAddWindow.ShowDialog() != true && orderEditorModel.WasChanged;
         }
 
         public bool ConfirmInformation(string information, string caption) => MessageBox
@@ -64,6 +55,11 @@ namespace Delivery.WPF.Services.Services.Interfaces
                                                                           MessageBoxButton.YesNo,
                                                                           MessageBoxImage.Error)
                                                                   == MessageBoxResult.Yes;
+
+        public void Close()
+        {
+            _orderEditorAddWindow.Close();
+        }
     }
 }
 

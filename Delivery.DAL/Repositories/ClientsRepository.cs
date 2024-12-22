@@ -1,13 +1,11 @@
-﻿using Delivery.DAL.Interfaces;
+﻿using Delivery.DAL.Context;
+using Delivery.DAL.Interfaces;
+using Delivery.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Delivery.DAL.Context;
-using Delivery.DAL.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
@@ -48,7 +46,8 @@ namespace Delivery.DAL.Repositories
         public async Task<Client> AddAsync(Client item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            _db.Entry(item).State = EntityState.Added;
+            await _Set.AddAsync(item, cancel);
+            //_db.Entry(item).State = EntityState.Added;
             if (AutoSaveChanges)
                 await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
             _db.Entry(item).State = EntityState.Detached;

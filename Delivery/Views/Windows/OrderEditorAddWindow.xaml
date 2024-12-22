@@ -9,10 +9,10 @@
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:Views="clr-namespace:Delivery.WPF.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        x:Class="Delivery.WPF.Views.Windows.OrderEditorWindow"
+        x:Class="Delivery.WPF.Views.Windows.OrderEditorAddWindow"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type viewModels:OrderEditorViewModel}}" 
-        Title="OrderEditorWindow" Height="450" Width="800">
+        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type viewModels:OrderEditorAddViewModel}}" 
+        Title="OrderEditorAddWindow" Height="450" Width="800">
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
             <b:InvokeCommandAction Command="{Binding LoadDataCommand, UpdateSourceTrigger=PropertyChanged}"/>
@@ -49,9 +49,9 @@
             <StackPanel  Grid.Column="1">
                 <GroupBox Header="Заказчик">
                     <StackPanel>
-                        <TextBlock Text="{Binding Order.Client.FirstName}"/>
-                        <TextBlock Text="{Binding Order.Client.PhoneNumber}"/>
-                        <ComboBox ItemsSource="{Binding Clients}" SelectedItem="{Binding Order.Client}">
+                        <TextBlock Text="{Binding Order.ClientName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="{Binding Order.ClientPhone, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox ItemsSource="{Binding Clients}" SelectedItem="{Binding Client}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel>
@@ -65,9 +65,7 @@
                 </GroupBox>
                 <GroupBox Header="Адрес отправки">
                     <StackPanel>
-                        <TextBlock Text="{Binding Order.TargetAddress.City}"/>
-                        <TextBlock Text="{Binding Order.TargetAddress.Street}"/>
-                        <TextBlock Text="{Binding Order.TargetAddress.ApartmentNumber}"/>
+                        <TextBlock Text="{Binding Order.FullTargetAddress}"/>
                         <ComboBox ItemsSource="{Binding Addresses}" SelectedItem="{Binding Order.TargetAddress}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -81,26 +79,13 @@
                         </ComboBox>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Выбранный товар">
-                    <StackPanel>
-                        <TextBlock Text="Имя" />
-                        <TextBox Text="{Binding CachedSelectedOrderLine.ItemName}" />
-                        <TextBlock Text="Длина" />
-                        <TextBox Text="{Binding CachedSelectedOrderLine.Length}" />
-                        <TextBlock Text="Ширина" />
-                        <TextBox Text="{Binding CachedSelectedOrderLine.Width}" />
-                        <TextBlock Text="Вес" />
-                        <TextBox Text="{Binding CachedSelectedOrderLine.Weight}" />
-                    </StackPanel>
-                </GroupBox>
                 <GroupBox Header="Дата и время забора заказа">
                     <xctk:DateTimePicker Value="{Binding Order.TargetDateTime}"/>
                 </GroupBox>
                 <GroupBox Header="Кнопки управления">
                     <StackPanel>
                         <DockPanel>
-                            <Button Command="{Binding UpdateOrderLineCommand, UpdateSourceTrigger=PropertyChanged}" Content="Сохранить изменения"/>
-                            <Button Command="{Binding RemoveOrderLineCommand, UpdateSourceTrigger=PropertyChanged}" Content="Удалить товар"/>
+                            <Button Command="{Binding SaveCommand, UpdateSourceTrigger=PropertyChanged}" Content="Сохранить изменения"/>
                             <Button  Command="{Binding AddNewOrderLineCommand, UpdateSourceTrigger=PropertyChanged}" Content="Добавить товар" />
                         </DockPanel>
                     </StackPanel>

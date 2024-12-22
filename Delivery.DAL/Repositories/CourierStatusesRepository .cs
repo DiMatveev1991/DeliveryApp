@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Delivery.DAL.Context;
 using Delivery.DAL.Models;
+using Delivery.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories

@@ -1,14 +1,14 @@
-﻿using Delivery.DAL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Delivery.Models;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface IClientsRepository 
+    public interface IClientsRepository 
 	{
 		IQueryable<Client> Items { get; }
 		Client Get(Guid id);

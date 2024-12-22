@@ -15,6 +15,8 @@ using static System.Reflection.Metadata.BlobBuilder;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using Delivery.DTOs;
+using Delivery.Models;
 using Microsoft.EntityFrameworkCore;
 using Delivery.WPF.Services.Services.Interfaces;
 
@@ -43,10 +45,10 @@ namespace Delivery.WPF.ViewModels
 						Source = value,
 						SortDescriptions =
 						{
-							new SortDescription(nameof(Delivery.DAL.Models.Courier.FirstName), ListSortDirection.Ascending),
-							new SortDescription(nameof(Delivery.DAL.Models.Courier.SecondName), ListSortDirection.Ascending),
-							new SortDescription(nameof(Delivery.DAL.Models.Courier.PhoneNumber), ListSortDirection.Ascending),
-							new SortDescription(nameof(Delivery.DAL.Models.Courier.CourierStatus.StatusName), ListSortDirection.Ascending)
+							new SortDescription(nameof(Courier.FirstName), ListSortDirection.Ascending),
+							new SortDescription(nameof(Courier.SecondName), ListSortDirection.Ascending),
+							new SortDescription(nameof(Courier.PhoneNumber), ListSortDirection.Ascending),
+							new SortDescription(nameof(Courier.CourierStatus.StatusName), ListSortDirection.Ascending)
 						}
 					};
 
@@ -75,19 +77,19 @@ namespace Delivery.WPF.ViewModels
 		#endregion
 
 		#region SelectedCourier : Courier - Выбранный курьер
-		private Courier _SelectedCourier;
+		private Courier _selectedCourier;
 		public Courier SelectedCourier
 		{
-			get => _SelectedCourier;
+			get => _selectedCourier;
 			set
             {
                 if (value is null)
                 {
-                    _SelectedCourier = value;
+                    _selectedCourier = value;
 					return;
                 }
 
-				_SelectedCourier = value;
+				_selectedCourier = value;
 				CachedSelectedCourier = new Courier()
 				{
 					Id = value.Id,
@@ -97,7 +99,7 @@ namespace Delivery.WPF.ViewModels
 					CourierStatus = value.CourierStatus,
 					CourierStatusId = value.CourierStatusId,
 				};
-				Set(ref _SelectedCourier, value);
+				Set(ref _selectedCourier, value);
 				_changedCommitted = false;
 				_firstSelect = false;
 			}
@@ -112,8 +114,8 @@ namespace Delivery.WPF.ViewModels
 
 		#region Command LoadDataCommand - Команда загрузки данных из репозитория
 
-		private ICommand _LoadDataCommand;
-		public ICommand LoadDataCommand => _LoadDataCommand
+		private ICommand _loadDataCommand;
+		public ICommand LoadDataCommand => _loadDataCommand
 			??= new LambdaCommandAsync(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
 		private bool CanLoadDataCommandExecute() => true;
 		private async Task OnLoadDataCommandExecuted()
@@ -125,8 +127,8 @@ namespace Delivery.WPF.ViewModels
 
 		#region Command UpdateCourierCommand  - команда измененияданных курьера в БД
 
-		private ICommand _UpdateCourierCommand;
-		public ICommand UpdateCourierCommand => _UpdateCourierCommand
+		private ICommand _updateCourierCommand;
+		public ICommand UpdateCourierCommand => _updateCourierCommand
 			??= new LambdaCommandAsync<Courier>(OnUpdateCourierCommandExecuted, CanUpdateCourierCommandExecute);
 		//Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
 		private bool CanUpdateCourierCommandExecute(Courier p) => (p != null || SelectedCourier != null)&& SelectedCourier.CourierStatus.StatusName == "Готов к выполнению заказа";
@@ -136,7 +138,7 @@ namespace Delivery.WPF.ViewModels
 			try
 			{
 				var courierToUpdate = p ?? CachedSelectedCourier;
-				await _сourierService.UpdateCourierAsync(courierToUpdate);
+				await _сourierService.UpdateCourierAsync(new CourierDto(courierToUpdate));
 				SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
 				await OnLoadDataCommandExecuted();
 				_changedCommitted = true;
@@ -150,9 +152,9 @@ namespace Delivery.WPF.ViewModels
 		#endregion
 
 		#region Command RemoveCourierCommand : Courier - Удаление указанного курьера
-		private ICommand _RemoveCourierCommand;
+		private ICommand _removeCourierCommand;
 
-		public ICommand RemoveCourierCommand => _RemoveCourierCommand
+		public ICommand RemoveCourierCommand => _removeCourierCommand
 			??= new LambdaCommandAsync<Courier>(OnRemoveCourierCommandExecuted, CanRemoveCourierCommandExecute);
 
 		private bool CanRemoveCourierCommandExecute(Courier p) => (p != null || SelectedCourier != null) && SelectedCourier.CourierStatus.StatusName == "Готов к выполнению заказа";
@@ -173,9 +175,9 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
         #region Command AddNewCourierCommand - Добавление нового курьера
-        private ICommand _AddNewCourierCommand;
+        private ICommand _addNewCourierCommand;
 
-        public ICommand AddNewCourierCommand => _AddNewCourierCommand
+        public ICommand AddNewCourierCommand => _addNewCourierCommand
             ??= new LambdaCommandAsync(OnAddNewCourierCommandExecuted, CanAddNewCourierCommandExecute);
         private bool CanAddNewCourierCommandExecute() => true;
         private async Task OnAddNewCourierCommandExecuted()
@@ -183,7 +185,7 @@ namespace Delivery.WPF.ViewModels
 			var newCourier = new Courier();
 			if (!_userDialogCouriers.Edit(newCourier))
                 return;
-            newCourier = await _сourierService.AddCourierAsync(newCourier.FirstName, newCourier.SecondName, newCourier.PhoneNumber);
+            newCourier = (await _сourierService.AddCourierAsync(newCourier.FirstName, newCourier.SecondName, newCourier.PhoneNumber)).ToModel();
 			await OnLoadDataCommandExecuted();
                      SelectedCourier = newCourier;
 

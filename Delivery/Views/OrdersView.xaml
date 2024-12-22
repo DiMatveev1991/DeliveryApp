@@ -36,16 +36,10 @@
                     <TextBox DockPanel.Dock="Top" Text="{Binding OrdersFilter, UpdateSourceTrigger=PropertyChanged}"/>
                     <DataGrid ItemsSource="{Binding OrdersView}" SelectedItem="{Binding SelectedOrder}" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Статус"  Binding="{Binding Path=OrderStatus.StatusName}"/>
-                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=TargetAddress.City}"/>
-                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=TargetAddress.Street}"/>
-                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=TargetAddress.HomeNumber}"/>
-                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=TargetAddress.ApartmentNumber}"/>
+                            <DataGridTextColumn Header="Статус"  Binding="{Binding Path=OrderStatusName}"/>
+                            <DataGridTextColumn Header="Адрес отправления"  Binding="{Binding Path=FullFromAddress}"/>
                             <DataGridTextColumn Header="Дата и время забора заказа"  Binding="{Binding Path=TargetDateTime}"/>
-                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=FromAddress.City}"/>
-                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=FromAddress.Street}"/>
-                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=FromAddress.HomeNumber}"/>
-                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=FromAddress.ApartmentNumber}"/>
+                            <DataGridTextColumn Header="Адрес доставки"  Binding="{Binding Path=FullTargetAddress}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -63,16 +57,21 @@
                 </DockPanel>
                 <GroupBox Header="Курьер">
                     <StackPanel>
-                        <TextBlock Text="{Binding CachedSelectedOrder.Courier.FirstName}"/>
-                        <TextBlock Text="{Binding CachedSelectedOrder.Courier.PhoneNumber}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.CourierName}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.CourierPhone}"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Заказчик">
                         <StackPanel>
-                        <TextBlock Text="{Binding CachedSelectedOrder.Client.FirstName}"/>
-                        <TextBlock Text="{Binding CachedSelectedOrder.Client.PhoneNumber}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.ClientName}"/>
+                        <TextBlock Text="{Binding CachedSelectedOrder.ClientPhone}"/>
                         </StackPanel>
                     </GroupBox>
+                <GroupBox Header="Причина отмены">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CachedSelectedOrder.CancelReason, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </GroupBox>
                 <DockPanel>
                     <DataGrid ItemsSource="{Binding OrdersLinesView}" IsReadOnly="True" AutoGenerateColumns="False">
                         <DataGrid.Columns>

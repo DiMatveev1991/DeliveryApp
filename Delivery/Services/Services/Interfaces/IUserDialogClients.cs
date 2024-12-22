@@ -1,4 +1,4 @@
-﻿using Delivery.DAL.Models;
+﻿using Delivery.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Delivery.WPF.Services.Services.Interfaces
 {
-	public interface IUserDialogClients
+    public interface IUserDialogClients
 	{
 		bool Edit(Client client);
 

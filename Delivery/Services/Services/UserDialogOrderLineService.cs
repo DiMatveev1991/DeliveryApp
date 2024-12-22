@@ -1,32 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Delivery.DAL.Models;
-using Delivery.WPF.Services.Services.Interfaces;
+﻿using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 using Delivery.WPF.Views.Windows;
+using System.Windows;
 
 namespace Delivery.WPF.Services.Services
 {
-    public class UserDialogOrderLine : IUserDialogOrderLine
+    internal class UserDialogOrderLineService : IUserDialogOrderLine
     {
-        public bool Edit(OrderLine orderLine)
-        {
-            var orderLineEditorViewModel = new OrderLineEditorViewModel(orderLine);
+        private OrderLineEditorWindow _orderLineEditorWindow;
 
-            var orderLineEditorWindow = new OrderLineEditorWindow
+        public bool Edit(OrderEditorAddViewModel orderEditorViewModel)
+        {
+            var orderLineEditorViewModel = new OrderLineEditorViewModel(orderEditorViewModel.SelectedOrderLine);
+
+            _orderLineEditorWindow = new OrderLineEditorWindow
             {
                 DataContext = orderLineEditorViewModel
             };
 
-            return orderLineEditorWindow.ShowDialog() == true;
+            return _orderLineEditorWindow.ShowDialog() == true;
 
         }
+        public bool Edit(OrderEditorRedactorViewModel orderEditorViewModel)
+        {
+	        var orderLineEditorViewModel = new OrderLineEditorViewModel(orderEditorViewModel.SelectedOrderLine);
 
-        public bool ConfirmInformation(string information, string caption) => MessageBox
+	        var orderLineEditorWindow = new OrderLineEditorWindow
+	        {
+		        DataContext = orderLineEditorViewModel
+	        };
+
+	        return orderLineEditorWindow.ShowDialog() == true;
+
+        }
+		public bool ConfirmInformation(string information, string caption) => MessageBox
                                                                                   .Show(
                                                                                       information, caption,
                                                                                       MessageBoxButton.YesNo,
@@ -46,5 +53,10 @@ namespace Delivery.WPF.Services.Services
                                                                           MessageBoxButton.OK,
                                                                           MessageBoxImage.Error)
                                                                   == MessageBoxResult.Yes;
+
+        public void Close()
+        {
+            _orderLineEditorWindow.Close();
+        }
     }
 }

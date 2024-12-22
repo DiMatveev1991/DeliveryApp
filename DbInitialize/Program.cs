@@ -1,13 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using DbInitialize;
 using Delivery.BLL.ServicesRegistrator;
 using Delivery.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Delivery.WPF.Data;
 
 static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
     .AddDatabase(host.Configuration.GetSection("Database"))
+    .AddSingleton<DbInitializer>()
     .AddServicesRegistrator()
 
 ;

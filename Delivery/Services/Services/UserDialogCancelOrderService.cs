@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Delivery.DAL.Models;
+using Delivery.Models;
 using Delivery.WPF.Services.Services.Interfaces;
 using Delivery.WPF.ViewModels;
 using Delivery.WPF.Views.Windows;
 
 namespace Delivery.WPF.Services.Services
 {
-	internal class UserDialogCancelOrderService: IUserDialogCancelOrder
+    internal class UserDialogCancelOrderService: IUserDialogCancelOrder
 	{
-		public bool Edit(Order order)
+		public bool Edit(OrdersViewModel orderViewModel)
 		{
-			var orderEditorModel = new OrderEditorCancelViewModel(order);
+			var orderEditorModel = new OrderEditorCancelViewModel(orderViewModel.SelectedOrder);
 
 			var orderEditorWindow = new OrderCancelEditorWindow
 			{

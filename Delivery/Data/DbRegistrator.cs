@@ -10,30 +10,28 @@ using Delivery.DAL.Registrator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Delivery.WPF.Data;
-using Delivery.WPF.Services;
 
 namespace Delivery.Data
 {
     public static class DbRegistrator
     {
-	    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
+	    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration) => services
 		    .AddDbContext<DeliveryDbContext>(opt =>
 			    {
-					var type = Configuration["Type"];
+					var type = configuration["Type"];
 
 					switch (type)
 					{
 						case null: throw new InvalidOperationException("Не определен тип БД");
 						default: throw new InvalidOperationException($"Тип подключения {type} не поддерживается");
 						case "MSSQL":
-							opt.UseSqlServer(Configuration.GetConnectionString(type));
+							opt.UseSqlServer(configuration.GetConnectionString(type) ?? throw new InvalidOperationException());
+
 							break;
 					}
 			    }
 			    
-			    ).AddTransient<DbInitializer> ()
-		         .AddRepositoriesInDb()
+			    ).AddRepositoriesInDb()
                  ;
     }
 }

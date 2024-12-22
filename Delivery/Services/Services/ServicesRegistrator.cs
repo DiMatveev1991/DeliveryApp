@@ -9,9 +9,10 @@ namespace Delivery.WPF.Services
         public static IServiceCollection AddServicesDialog(this IServiceCollection services) => services
            .AddTransient<IUserDialogCouriers, UserDialogCouriersService>()
            .AddTransient<IUserDialogClients, UserDialogClientService>()
-           .AddTransient<IUserDialogOrderLine, UserDialogOrderLine>()
-           .AddTransient<IUserDialogOrder, UserDialogOrdersService>()
-           .AddTransient<IUserDialogCancelOrder, UserDialogCancelOrderService>()
+           .AddTransient<IUserDialogOrderLine, UserDialogOrderLineService>()
+           .AddTransient<IUserDialogAddOrder, UserDialogAddOrdersService>()
+           .AddTransient<IUserDialogRedactorOrder, UserDialogRedactorOrderService>()
+		   .AddTransient<IUserDialogCancelOrder, UserDialogCancelOrderService>()
 		;
     }
 }

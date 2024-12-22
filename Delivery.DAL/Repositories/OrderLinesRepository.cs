@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Delivery.DAL.Context;
 using Delivery.DAL.Models;
+using Delivery.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
@@ -48,7 +49,7 @@ namespace Delivery.DAL.Repositories
 		public async Task<OrderLine> AddAsync(OrderLine item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
-			_db.Entry(item).State = EntityState.Added;
+				_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 			_db.Entry(item).State = EntityState.Detached;
@@ -64,14 +65,15 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Detached;
 		}
 
-		public async Task UpdateAsync(OrderLine item, CancellationToken cancel = default)
+		public async Task<OrderLine> UpdateAsync(OrderLine item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 			_db.Entry(item).State = EntityState.Detached;
-		}
+            return item;
+        }
 
 		public void Remove(Guid id)
 		{

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Delivery.DAL.Models.Base
+namespace Delivery.Models.Base
 {
 	public abstract class PersonEntity : Entity
 	{

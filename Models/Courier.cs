@@ -1,13 +1,17 @@
-﻿using Delivery.DAL.Models.Base;
+﻿using Delivery.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Delivery.Models.Base;
+using System.ComponentModel.DataAnnotations;
 
-namespace Delivery.DAL.Models
+namespace Delivery.Models
 {
-	public class Courier: PersonEntity
+    public class Courier: PersonEntity
 	{
+
 		public Guid? CourierStatusId { get; set; }
+
 		public virtual CourierStatus? CourierStatus { get; set; }
 
 		//(несколько заказов могут быть назначены одному курьеру).

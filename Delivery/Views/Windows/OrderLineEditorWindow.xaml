@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Delivery.WPF.Views.Windows"
         xmlns:viewModels="clr-namespace:Delivery.WPF.ViewModels"
+        xmlns:validationRules="clr-namespace:Delivery.WPF.ValidationRules"
         mc:Ignorable="d"
         Title="OrderLineEditorWindow" Height="450" Width="800"
         d:DataContext="{d:DesignInstance viewModels:OrderLineEditorViewModel, IsDesignTimeCreatable=True}">
@@ -16,6 +17,7 @@
        Text="Заказ:" />
                 <UniformGrid Rows="1" DockPanel.Dock="Bottom" Margin="5" HorizontalAlignment="Right">
                     <Button Content="Ok" Margin="3" Padding="20,3" FontWeight="Bold" IsDefault="True"
+                            IsEnabled="{Binding UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType=Window}, Path=(Validation.HasError), Converter={x:Static validationRules:BoolInverter.Instance}}"
         Command="{StaticResource DialogResultCommand}"
         CommandParameter="True"/>
                     <Button Content="Cancel" Margin="3" Padding="20,3" IsCancel="True"
@@ -34,9 +36,16 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="Наименование заказа:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding OrderLine.ItemName}"/>
+                    <TextBox Grid.Column="1" Grid.Row="0">
+                        <Binding Path="OrderLine.ItemName"
+                                     UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" >
+                                <Binding.ValidationRules>
+                                    <validationRules:OrderLineValidationRule/>
+                                </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox>
                     <TextBlock Grid.Column="0" Grid.Row="1" Text="Длина:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OrderLine.Length}"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OrderLine.Length}"  />
                     <TextBlock Grid.Column="0" Grid.Row="2" Text="ширина:" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding OrderLine.Width}"/>
                     <TextBlock Grid.Column="0" Grid.Row="3" Text="вес:" Margin="0,0,5,0" VerticalAlignment="Center"/>

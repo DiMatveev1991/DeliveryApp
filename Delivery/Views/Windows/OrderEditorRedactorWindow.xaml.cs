@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Delivery.WPF.Views.Windows
 {
 	/// <summary>
-	/// Логика взаимодействия для OrderEditorWindow.xaml
+	/// Логика взаимодействия для OrderEditorRedactorWindow.xaml
 	/// </summary>
-	public partial class OrderEditorWindow : Window
+	public partial class OrderEditorRedactorWindow : Window
 	{
-		public OrderEditorWindow()
+		public OrderEditorRedactorWindow()
 		{
 			InitializeComponent();
 		}

@@ -4,6 +4,8 @@ using Delivery.DAL.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Delivery.DTOs;
+using Delivery.Models;
 
 namespace Delivery.BLL.Services
 {
@@ -17,7 +19,7 @@ namespace Delivery.BLL.Services
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Courier> AddCourierAsync(string fistName, string secondName, string phoneNumber)
+		public async Task<CourierDto> AddCourierAsync(string fistName, string secondName, string phoneNumber)
 		{
 
 			try
@@ -31,7 +33,7 @@ namespace Delivery.BLL.Services
 					CourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа")
 				});
 
-				return courier;
+				return new CourierDto(courier);
 			}
 
 			catch (ArgumentException)
@@ -54,17 +56,18 @@ namespace Delivery.BLL.Services
 			}
 		}
 
-		public async Task<Courier> UpdateCourierAsync(Courier courier)
+		public async Task<CourierDto> UpdateCourierAsync(CourierDto courier)
 		{
 			try
 			{
-				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courier.CourierStatus);
+				var existCourierStatus = await _unitOfWork.CourierStatusesRepository.GetStatusAsync(courier.CourierStatusName);
 				if (existCourierStatus.StatusName != "Выполняет заказ")
 				{
-					await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+					return new CourierDto(await _unitOfWork.CouriersRepository.UpdateAsync(courier.ToModel()));
 				}
-				return courier;
-			}
+
+                throw new Exception("Курьер выполняет заказ");
+            }
 			catch (Exception ex)
 			{
 				throw new Exception("Не удалось обновить, все курьеры на доставке");

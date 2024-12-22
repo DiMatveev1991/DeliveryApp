@@ -1,12 +1,11 @@
 ﻿using System;
-using Delivery.DAL.Models.Base;
 using System.ComponentModel.DataAnnotations;
-using Delivery.DAL.Interfaces;
+using Delivery.Models.Base;
 
-namespace Delivery.DAL.Models
+namespace Delivery.Models
 {
-	// реализация в абстрактном классе так как несколько однотипичных таблиц
-	public class OrderLine : Entity, ISoftDeletable
+    // реализация в абстрактном классе так как несколько однотипичных таблиц
+    public class OrderLine : Entity, ISoftDeletable
 	{
 		public Guid? OrderId { get; set; }
 		

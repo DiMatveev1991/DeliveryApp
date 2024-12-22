@@ -22,38 +22,34 @@ namespace Delivery.DAL
 
 		public IOrderStatusesRepository _orderStatusesRepository;
 
-		
+		public ICancelReasonRepository _cancelReasonRepository;
 		public UnitOfWork (IAddressesRepository addressRepository,
 			               ICouriersRepository couriersRepository, 
 			               ICourierStatusesRepository courierStatusesRepository, 
-			             
 						   IClientsRepository clientsRepository,
 						   IOrderLinesRepository orderLinesRepository,
 						   IOrdersRepository ordersRepository,
-						   IOrderStatusesRepository orderStatuses
+						   IOrderStatusesRepository orderStatusesRepository,
+						   ICancelReasonRepository cancelReasonRepository
 						   )
 		{
 			_addressRepository = addressRepository;
 			_clientsRepository = clientsRepository;
 			_orderLinesRepository = orderLinesRepository;
 			_ordersRepository = ordersRepository;
-			_orderStatusesRepository = orderStatuses;
+			_orderStatusesRepository = orderStatusesRepository;
 			_couriersRepository = couriersRepository;
 			_courierStatusesRepository = courierStatusesRepository;
+			_cancelReasonRepository = cancelReasonRepository;
 		}
 		public IAddressesRepository AddressRepository => _addressRepository;
 		public IClientsRepository ClientsRepository => _clientsRepository;
-
 		public ICouriersRepository CouriersRepository => _couriersRepository;
-
 		public ICourierStatusesRepository CourierStatusesRepository => _courierStatusesRepository;
-
-
 		public IOrderLinesRepository OrderLinesRepository => _orderLinesRepository;
-
 		public IOrdersRepository OrdersRepository => _ordersRepository;
-
 		public IOrderStatusesRepository OrderStatusesRepository => _orderStatusesRepository;
+		public ICancelReasonRepository CancelReasonRepository => _cancelReasonRepository;
 
 	}
 }

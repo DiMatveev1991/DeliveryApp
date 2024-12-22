@@ -7,11 +7,11 @@ using System.Threading;
 using Delivery.DAL.Context;
 using Delivery.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Delivery.DAL.Models;
+using Delivery.Models;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class AddressesRepository: IAddressesRepository
+    internal class AddressesRepository: IAddressesRepository
 
 	{
 		private readonly DeliveryDbContext _db;

@@ -1,15 +1,12 @@
-﻿using Delivery.DAL.Interfaces;
+﻿using Delivery.DAL.Context;
+using Delivery.DAL.Interfaces;
+using Delivery.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Delivery.DAL.Context;
-using Delivery.DAL.Models;
-using Delivery.DAL.Models.Base;
-using Microsoft.EntityFrameworkCore;
 
 namespace Delivery.DAL.Repositories
 {
@@ -29,13 +26,13 @@ namespace Delivery.DAL.Repositories
 
         public IQueryable<Order> Items => _Set
             .AsNoTracking()
-            .Include(item => item.OrderLines)
+            .Include(item => item.OrderLines).AsNoTracking()
             .Include(item => item.Courier)
-            .ThenInclude(item => item.CourierStatus)
-            .Include(item => item.FromAddress)
-            .Include(item => item.TargetAddress)
+            .Include(item => item.FromAddress).AsNoTracking()
+            .Include(item => item.TargetAddress).AsNoTracking()
             .Include(item => item.Client)
-            .Include(item => item.OrderStatus)
+            .Include(item => item.OrderStatus).AsNoTracking()
+            .Include(item => item.CancelReason)
         ;
 
         public Order Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
@@ -43,7 +40,7 @@ namespace Delivery.DAL.Repositories
         public async Task<Order> GetAsync(Guid id, CancellationToken cancel = default) => await Items
             .SingleOrDefaultAsync(item => item.Id == id, cancel)
             .ConfigureAwait(false);
-      
+
         // Начало написания фильтра на уровне бд
         public async Task<IEnumerable<Order>> GetFilteredAsync(string filter, CancellationToken cancel = default)
         {
@@ -68,11 +65,11 @@ namespace Delivery.DAL.Repositories
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
             item.IsDeleted = false;
-            _db.Entry(item).State = EntityState.Added;
+            await _Set.AddAsync(item, cancel);
             if (AutoSaveChanges)
                 await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-            _db.Entry(item).State = EntityState.Detached;
-            return item;
+            DetachOrderNavigationProps(item);
+            return await Items.FirstOrDefaultAsync(x => x.Id == item.Id, cancellationToken: cancel);
         }
 
         public void Update(Order item)
@@ -84,13 +81,18 @@ namespace Delivery.DAL.Repositories
             _db.Entry(item).State = EntityState.Detached;
         }
 
-        public async Task UpdateAsync(Order item, CancellationToken cancel = default)
+        public async Task<Order> UpdateAsync(Order item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            _db.Entry(item).State = EntityState.Modified;
+            var entriesBefore = _db.ChangeTracker.Entries().ToList();
+            _Set.Update(item);
             if (AutoSaveChanges)
                 await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-            _db.Entry(item).State = EntityState.Detached;
+
+            DetachOrderNavigationProps(item);
+
+            var entriesAfter = _db.ChangeTracker.Entries().ToList();
+            return await Items.FirstOrDefaultAsync(x => x.Id == item.Id, cancellationToken: cancel);
         }
 
         public void Remove(Guid id)
@@ -116,6 +118,38 @@ namespace Delivery.DAL.Repositories
         public async Task<OrderStatus> GetOrderStatusAsync(string statusName)
         {
             return await _db.OrderStatuses.FirstOrDefaultAsync(n => n.StatusName == statusName);
+        }
+
+        private void DetachOrderNavigationProps(Order item)
+        {
+            _db.Entry(item).State = EntityState.Detached;
+
+            if (item.FromAddress != null)
+            {
+                _db.Entry(item.FromAddress).State = EntityState.Detached;
+            }
+
+            if (item.TargetAddress != null)
+            {
+                _db.Entry(item.TargetAddress).State = EntityState.Detached;
+            }
+
+            if (item.Courier != null)
+            {
+                _db.Entry(item.Courier).State = EntityState.Detached;
+            }
+
+            if (item.Client != null)
+            {
+                _db.Entry(item.Client).State = EntityState.Detached;
+            }
+
+            if (item.OrderLines == null) return;
+
+            foreach (var orderLine in item.OrderLines)
+            {
+                _db.Entry(orderLine).State = EntityState.Detached;
+            }
         }
 
     }

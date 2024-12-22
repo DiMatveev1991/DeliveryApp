@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using Delivery.DAL.Context;
 using Delivery.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Delivery.Models;
 
 namespace Delivery.DAL.Repositories
 {
-	internal class CouriersRepository: ICouriersRepository
+    internal class CouriersRepository: ICouriersRepository
 	{
 		private readonly DeliveryDbContext _db;
 		private readonly DbSet<Courier> _Set;
@@ -71,14 +72,15 @@ namespace Delivery.DAL.Repositories
 			_db.Entry(item).State = EntityState.Detached;
 		}
 
-		public async Task UpdateAsync(Courier item, CancellationToken cancel = default)
+		public async Task<Courier> UpdateAsync(Courier item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
 			_db.Entry(item).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
 			_db.Entry(item).State = EntityState.Detached;
-		}
+            return item;
+        }
 
 		public void Remove(Guid id)
 		{

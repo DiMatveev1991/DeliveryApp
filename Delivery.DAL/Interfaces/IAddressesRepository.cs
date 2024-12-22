@@ -4,11 +4,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
-using Delivery.DAL.Models;
+using Delivery.Models;
 
 namespace Delivery.DAL.Interfaces
 {
-	public interface IAddressesRepository
+    public interface IAddressesRepository
 	{
 		IQueryable<Address> Items { get; }
 		Address Get(Guid id);

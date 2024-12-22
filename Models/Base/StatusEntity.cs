@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Delivery.DAL.Models.Base
+namespace Delivery.Models.Base
 {
-	public abstract class StatuseEntity : Entity
+	public abstract class StatusEntity : Entity
 	{
 		[MaxLength(256)]
 		public string? StatusName { get; set; }

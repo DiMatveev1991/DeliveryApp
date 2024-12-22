@@ -5,7 +5,6 @@ using System.Data;
 using System.Windows;
 using Delivery.BLL;
 using Delivery.Data;
-using Delivery.WPF.Data;
 using Delivery.BLL.ServicesRegistrator;
 using Delivery.WPF.ViewModels;
 using Delivery.WPF.Services;
