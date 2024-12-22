@@ -135,9 +135,9 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var ClientToUpdate = p ?? CachedSelectedClient;
-                await _clientService.UpdateClientAsync(ClientToUpdate);
-                SelectedClient = Clients.Find(x => x.Id == ClientToUpdate.Id);
+                var clientToUpdate = p ?? CachedSelectedClient;
+                await _clientService.UpdateClientAsync(clientToUpdate);
+                SelectedClient = Clients.Find(x => x.Id == clientToUpdate.Id);
                 await OnLoadDataCommandExecuted();
                 _changedCommitted = true;
             }
@@ -159,15 +159,15 @@ namespace Delivery.WPF.ViewModels
 
         private async Task OnRemoveClientCommandExecuted(Client? p)
         {
-            var ClientToRemove = p ?? SelectedClient;
+            var clientToRemove = p ?? SelectedClient;
 
-            if (!_userDialogClients.ConfirmWarning($"Вы хотите удалить клиента {ClientToRemove.FirstName}?", "Удаление клиента"))
+            if (!_userDialogClients.ConfirmWarning($"Вы хотите удалить клиента {clientToRemove.FirstName}?", "Удаление клиента"))
                 return;
-            await _clientService.DeleteClientAsync(ClientToRemove.Id);
+            await _clientService.DeleteClientAsync(clientToRemove.Id);
 
-            _clients.Remove(ClientToRemove);
+            _clients.Remove(clientToRemove);
 
-            if (ReferenceEquals(SelectedClient, ClientToRemove))
+            if (ReferenceEquals(SelectedClient, clientToRemove))
                 SelectedClient = null;
         }
         #endregion
@@ -181,13 +181,13 @@ namespace Delivery.WPF.ViewModels
 
         private async Task OnAddNewClientCommandExecuted()
         {
-            var new_Client = new Client();
-            if (!_userDialogClients.Edit(new_Client))
+            var newClient = new Client();
+            if (!_userDialogClients.Edit(newClient))
                 return;
             //TODO проверка полей адреса
-            new_Client = await _clientService.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
+            newClient = await _clientService.AddClientAsync(newClient.FirstName, newClient.SecondName, newClient.PhoneNumber, newClient.Address);
             await OnLoadDataCommandExecuted();
-            SelectedClient = new_Client;
+            SelectedClient = newClient;
 
         }
 

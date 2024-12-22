@@ -152,12 +152,12 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var OrderToUpdate = p ?? CachedSelectedOrder;
-                if (!_userDialogOrders.Edit(OrderToUpdate))
+                var orderToUpdate = p ?? CachedSelectedOrder;
+                if (!_userDialogOrders.Edit(orderToUpdate))
                     return;
-                await _orderService.UpdateOrderAsync(OrderToUpdate);
+                await _orderService.UpdateOrderAsync(orderToUpdate);
                 await OnLoadDataCommandExecuted();
-                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
                 _changedCommitted = true;
             }
             catch (Exception ex)
@@ -174,7 +174,7 @@ namespace Delivery.WPF.ViewModels
         public ICommand RemoveOrderCommand => _RemoveOrderCommand
             ??= new LambdaCommandAsync<Order>(OnRemoveOrderCommandExecuted, CanRemoveOrderCommandExecute);
 
-
+        //можно раскоментировать строку ниже для избежания попадания в эксепшен или вывести информацию об ошибке, сделать бы
         private bool CanRemoveOrderCommandExecute(Order p) => (p != null || SelectedOrder != null)
                                                               && SelectedOrder.OrderStatus.StatusName != "Готов к выполнению заказа"
                                                               //&& SelectedOrder.OrderStatus.StatusName != "Передано на выполнение"
@@ -182,21 +182,21 @@ namespace Delivery.WPF.ViewModels
 
         private async Task OnRemoveOrderCommandExecuted(Order? p)
         {
-            var OrderToRemove = p ?? SelectedOrder;
+            var orderToRemove = p ?? SelectedOrder;
 
-            if (!_userDialogOrders.ConfirmWarning($"Вы хотите удалить заказа {OrderToRemove.Id}?", "Удаление заказа"))
+            if (!_userDialogOrders.ConfirmWarning($"Вы хотите удалить заказа {orderToRemove.Id}?", "Удаление заказа"))
                 return;
-            if (OrderToRemove.OrderStatus.StatusName == "Передано на выполнение")
+            if (orderToRemove.OrderStatus.StatusName == "Передано на выполнение")
             {
 	            
 	            //if (!_userDialogOrders.ConfirmInformation($"Удаление не может быть выполнено, активный заказ", "Нельзя удалить."))
                 //    return;
                 throw new ArgumentException("Удаление не может быть выполнено, активный заказ");
             }
-            await _orderService.DeleteOrderAsync(OrderToRemove.Id);
-            _orders.Remove(OrderToRemove);
+            await _orderService.DeleteOrderAsync(orderToRemove.Id);
+            _orders.Remove(orderToRemove);
 
-            if (ReferenceEquals(SelectedOrder, OrderToRemove))
+            if (ReferenceEquals(SelectedOrder, orderToRemove))
                 SelectedOrder = null;
         }
         #endregion
@@ -210,12 +210,12 @@ namespace Delivery.WPF.ViewModels
 
         private async Task OnAddNewOrderCommandExecuted()
         {
-            var new_Order = new Order();
-            if (!_userDialogOrders.Edit(new_Order, true))
+            var newOrder = new Order();
+            if (!_userDialogOrders.Edit(newOrder, true))
                 return;
-            new_Order = await _orderService.AddOrderAsync(new_Order.Client, new_Order.Client.Address, new_Order.TargetAddress, new_Order.OrderLines, new_Order.TargetDateTime);
+            newOrder = await _orderService.AddOrderAsync(newOrder.Client, newOrder.Client.Address, newOrder.TargetAddress, newOrder.OrderLines, newOrder.TargetDateTime);
             await OnLoadDataCommandExecuted();
-            SelectedOrder = Orders.Find(x => x.Id == new_Order.Id);
+            SelectedOrder = Orders.Find(x => x.Id == newOrder.Id);
 
         }
 
@@ -233,12 +233,12 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var OrderToUpdate = p ?? CachedSelectedOrder;
+                var orderToUpdate = p ?? CachedSelectedOrder;
                 var courier = _unitOfWork.CouriersRepository.Items.FirstOrDefault(x => x.CourierStatus.StatusName == "Готов к выполнению заказа");
 
-                await _orderService.TakeInProgressAsync(OrderToUpdate.Id, courier.Id);
+                await _orderService.TakeInProgressAsync(orderToUpdate.Id, courier.Id);
                 await OnLoadDataCommandExecuted();
-                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
                 _changedCommitted = true;
             }
             catch (Exception ex)
@@ -261,12 +261,12 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var OrderToUpdate = p ?? CachedSelectedOrder;
+                var orderToUpdate = p ?? CachedSelectedOrder;
 
-                if (!_userCancelOrder.Edit(OrderToUpdate)) return;
-                await _orderService.CancelOrderAsync(OrderToUpdate.Id, OrderToUpdate.CancelReason);
+                if (!_userCancelOrder.Edit(orderToUpdate)) return;
+                await _orderService.CancelOrderAsync(orderToUpdate.Id, orderToUpdate.CancelReason);
                 await OnLoadDataCommandExecuted();
-                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
                 _changedCommitted = true;
             }
             catch (Exception ex)
@@ -289,10 +289,10 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var OrderToUpdate = p ?? CachedSelectedOrder;
-                await _orderService.CompleteOrderAsync(OrderToUpdate.Id);
+                var orderToUpdate = p ?? CachedSelectedOrder;
+                await _orderService.CompleteOrderAsync(orderToUpdate.Id);
                 await OnLoadDataCommandExecuted();
-                SelectedOrder = Orders.Find(x => x.Id == OrderToUpdate.Id);
+                SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
 
                 _changedCommitted = true;
             }
@@ -329,7 +329,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        private void OnOrdersFilter(object Sender, FilterEventArgs E)
+        private void OnOrdersFilter(object sender, FilterEventArgs E)
         {
             if (!(E.Item is Order order) || string.IsNullOrEmpty(OrdersFilter)) return;
 

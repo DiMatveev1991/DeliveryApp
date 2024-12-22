@@ -11,18 +11,18 @@ namespace Delivery.WPF.Services.Services
     {
         public bool Edit(Courier courier)
         {
-            var courier_editor_model = new CourierEditorViewModel(courier);
+            var courierEditorModel = new CourierEditorViewModel(courier);
 
-            var courier_editor_window = new CourierEditorWindow
+            var courierEditorWindow = new CourierEditorWindow
             {
-                DataContext = courier_editor_model
+                DataContext = courierEditorModel
             };
 
-            if (courier_editor_window.ShowDialog() != true) return false;
+            if (courierEditorWindow.ShowDialog() != true) return false;
 
-            courier.FirstName = courier_editor_model.FirstName;
-            courier.SecondName = courier_editor_model.SecondName;
-            courier.PhoneNumber = courier_editor_model.PhoneNumber;
+            courier.FirstName = courierEditorModel.FirstName;
+            courier.SecondName = courierEditorModel.SecondName;
+            courier.PhoneNumber = courierEditorModel.PhoneNumber;
             return true;
         }
 

@@ -167,10 +167,10 @@ namespace Delivery.WPF.ViewModels
         {
             try
             {
-                var OrderLineToUpdate = p ?? CachedSelectedOrderLine;
-                await _unitOfWork.OrderLinesRepository.UpdateAsync(OrderLineToUpdate);
+                var orderLineToUpdate = p ?? CachedSelectedOrderLine;
+                await _unitOfWork.OrderLinesRepository.UpdateAsync(orderLineToUpdate);
                 SelectedOrderLine = null;
-                SelectedOrderLine = OrderLineToUpdate;
+                SelectedOrderLine = orderLineToUpdate;
                 _changedCommitted = true;
                 if (!_addingState)
                 {
@@ -197,15 +197,15 @@ namespace Delivery.WPF.ViewModels
 
         private async Task OnRemoveOrderLineCommandExecuted(OrderLine? p)
         {
-            var OrderLineToRemove = p ?? SelectedOrderLine;
+            var orderLineToRemove = p ?? SelectedOrderLine;
 
-            if (!_userDialogOrderLine.ConfirmWarning($"Вы хотите удалить товар {OrderLineToRemove.ItemName}?", "Удаление товара"))
+            if (!_userDialogOrderLine.ConfirmWarning($"Вы хотите удалить товар {orderLineToRemove.ItemName}?", "Удаление товара"))
                 return;
-            await _unitOfWork.OrderLinesRepository.RemoveAsync(OrderLineToRemove.Id);
+            await _unitOfWork.OrderLinesRepository.RemoveAsync(orderLineToRemove.Id);
 
-            OrdersLines.Remove(OrderLineToRemove);
+            OrdersLines.Remove(orderLineToRemove);
 
-            if (ReferenceEquals(SelectedOrderLine, OrderLineToRemove))
+            if (ReferenceEquals(SelectedOrderLine, orderLineToRemove))
                 SelectedOrderLine = null;
 
             WasChanged = true;
@@ -220,17 +220,17 @@ namespace Delivery.WPF.ViewModels
         private bool CanAddNewOrderLineCommandExecute() => true;
         private async Task OnAddNewOrderLineCommandExecuted()
         {
-            var new_orderLine = new OrderLine();
-            if (!_userDialogOrderLine.Edit(new_orderLine))
+            var newOrderLine = new OrderLine();
+            if (!_userDialogOrderLine.Edit(newOrderLine))
                 return;
             if (!_addingState)
             {
-                new_orderLine.OrderId = Order.Id;
-                new_orderLine = await _unitOfWork.OrderLinesRepository.AddAsync(new_orderLine);
+                newOrderLine.OrderId = Order.Id;
+                newOrderLine = await _unitOfWork.OrderLinesRepository.AddAsync(newOrderLine);
             }
-            Order.OrderLines.Add(new_orderLine);
+            Order.OrderLines.Add(newOrderLine);
             OrdersLines = Order.OrderLines.ToObservableCollection();
-            SelectedOrderLine = new_orderLine;
+            SelectedOrderLine = newOrderLine;
             _ordersLinesViewSource.View.Refresh();
             OnPropertyChanged(nameof(OrdersLinesView));
             WasChanged = true;

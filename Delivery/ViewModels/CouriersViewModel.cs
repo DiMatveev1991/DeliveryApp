@@ -180,12 +180,12 @@ namespace Delivery.WPF.ViewModels
         private bool CanAddNewCourierCommandExecute() => true;
         private async Task OnAddNewCourierCommandExecuted()
 		{
-			var new_courier = new Courier();
-			if (!_userDialogCouriers.Edit(new_courier))
+			var newCourier = new Courier();
+			if (!_userDialogCouriers.Edit(newCourier))
                 return;
-            new_courier = await _сourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
+            newCourier = await _сourierService.AddCourierAsync(newCourier.FirstName, newCourier.SecondName, newCourier.PhoneNumber);
 			await OnLoadDataCommandExecuted();
-                     SelectedCourier = new_courier;
+                     SelectedCourier = newCourier;
 
         }
 

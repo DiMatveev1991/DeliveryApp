@@ -15,14 +15,14 @@ namespace Delivery.WPF.Services.Services
 	{
 		public bool Edit(Order order)
 		{
-			var order_editor_model = new OrderEditorCancelViewModel(order);
+			var orderEditorModel = new OrderEditorCancelViewModel(order);
 
-			var order_editor_window = new OrderCancelEditorWindow
+			var orderEditorWindow = new OrderCancelEditorWindow
 			{
-				DataContext = order_editor_model
+				DataContext = orderEditorModel
 			};
 
-			if (order_editor_window.ShowDialog() != true) return false;
+			if (orderEditorWindow.ShowDialog() != true) return false;
 
 			return true;
 		}

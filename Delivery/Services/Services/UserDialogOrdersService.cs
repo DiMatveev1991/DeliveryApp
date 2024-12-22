@@ -24,18 +24,18 @@ namespace Delivery.WPF.Services.Services.Interfaces
 
         public bool Edit(Order order, bool addingState = false)
         {
-            var order_editor_model = new OrderEditorViewModel(order, _unitOfWork, _userDialogOrderLine, addingState)
+            var orderEditorModel = new OrderEditorViewModel(order, _unitOfWork, _userDialogOrderLine, addingState)
             {
                 WasChanged = false
             };
 
-            var order_editor_window = new OrderEditorWindow
+            var orderEditorWindow = new OrderEditorWindow
             {
-                DataContext = order_editor_model
+                DataContext = orderEditorModel
             };
 
-            return order_editor_window.ShowDialog() != true && order_editor_model.WasChanged;
-
+            return orderEditorWindow.ShowDialog() != true && orderEditorModel.WasChanged;
+            //списал, не очень понял для чего это
             //order.Client = order_editor_model.Order.Client;
             //order.FromAddress = order_editor_model.Order.FromAddress;
             //order.TargetAddress = order_editor_model.Order.TargetAddress;
