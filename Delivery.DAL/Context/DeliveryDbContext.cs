@@ -36,6 +36,8 @@ namespace Delivery.DAL.Context
 		modelBuilder.Entity<CourierStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<OrderStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
 		modelBuilder.Entity<OrderLine>().Property(s => s.Id).HasDefaultValueSql("newid()");
-		}
+        modelBuilder.Entity<OrderLine>().HasQueryFilter(x => !x.IsDeleted);
+        modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
+    }
 	}
 }

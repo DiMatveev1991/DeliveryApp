@@ -23,22 +23,22 @@ namespace Delivery.WPF.ViewModels
 	internal class CouriersViewModel : ViewModel
 	{
         private readonly IUserDialogCouriers _userDialogCouriers;
-        private ICourierService _CourierService => new CourierService(_UnitOfWork);
-		private readonly IUnitOfWork _UnitOfWork;
-		private ObservableCollection<Courier> _Couriers;
-		private CollectionViewSource _CouriersViewSource;
-		public ICollectionView CouriersView => _CouriersViewSource?.View;
+        private ICourierService _сourierService => new CourierService(_unitOfWork);
+		private readonly IUnitOfWork _unitOfWork;
+		private ObservableCollection<Courier> _couriers;
+		private CollectionViewSource _couriersViewSource;
+		public ICollectionView CouriersView => _couriersViewSource?.View; 
 
 		#region Couriers : ObservableCollection<Courier> - Коллекция курьеров
 
 		public ObservableCollection<Courier> Couriers
 		{
-			get => _Couriers;
+			get => _couriers;
 			set
 			{
-				if (Set(ref _Couriers, value))
+				if (Set(ref _couriers, value))
 				{
-					_CouriersViewSource = new CollectionViewSource
+					_couriersViewSource = new CollectionViewSource
 					{
 						Source = value,
 						SortDescriptions =
@@ -50,8 +50,8 @@ namespace Delivery.WPF.ViewModels
 						}
 					};
 
-					_CouriersViewSource.Filter += OnCouriersFilter;
-					_CouriersViewSource.View.Refresh();
+					_couriersViewSource.Filter += OnCouriersFilter;
+					_couriersViewSource.View.Refresh();
 
 					OnPropertyChanged(nameof(CouriersView));
 				}
@@ -61,19 +61,18 @@ namespace Delivery.WPF.ViewModels
 
 		#region CouriersFilter : string - Искомое слово
 
-		private string _CouriersFilter;
+		private string _couriersFilter;
 		public string CouriersFilter
 		{
-			get => _CouriersFilter;
+			get => _couriersFilter;
 			set
 			{
-				if (Set(ref _CouriersFilter, value))
-					_CouriersViewSource.View.Refresh();
+				if (Set(ref _couriersFilter, value))
+					_couriersViewSource.View.Refresh();
 
 			}
 		}
 		#endregion
-
 
 		#region SelectedCourier : Courier - Выбранный курьер
 		private Courier _SelectedCourier;
@@ -87,11 +86,7 @@ namespace Delivery.WPF.ViewModels
                     _SelectedCourier = value;
 					return;
                 }
-				//Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
-				if (!_changedCommitted && !_firstSelect)
-				{
-					//Set(ref _SelectedCourier, _cachedSelectedCourier);
-				}
+
 				_SelectedCourier = value;
 				CachedSelectedCourier = new Courier()
 				{
@@ -123,7 +118,7 @@ namespace Delivery.WPF.ViewModels
 		private bool CanLoadDataCommandExecute() => true;
 		private async Task OnLoadDataCommandExecuted()
 		{
-			Couriers = new ObservableCollection<Courier>(await _UnitOfWork.CouriersRepository.Items.ToArrayAsync());
+			Couriers = new ObservableCollection<Courier>(await _unitOfWork.CouriersRepository.Items.ToArrayAsync());
 			OnPropertyChanged(nameof(Couriers));
 		}
 		#endregion
@@ -141,7 +136,7 @@ namespace Delivery.WPF.ViewModels
 			try
 			{
 				var courierToUpdate = p ?? CachedSelectedCourier;
-				await _CourierService.UpdateCourierAsync(courierToUpdate);
+				await _сourierService.UpdateCourierAsync(courierToUpdate);
 				SelectedCourier = Couriers.Find(x => x.Id == courierToUpdate.Id);
 				await OnLoadDataCommandExecuted();
 				_changedCommitted = true;
@@ -168,9 +163,9 @@ namespace Delivery.WPF.ViewModels
            
 			if (!_userDialogCouriers.ConfirmWarning($"Вы хотите удалить курьера {courierToRemove.FirstName}?", "Удаление курьера"))
                 return;
-            await _CourierService.DeleteCourierAsync(courierToRemove.Id);
+            await _сourierService.DeleteCourierAsync(courierToRemove.Id);
 
-			_Couriers.Remove(courierToRemove);
+			_couriers.Remove(courierToRemove);
 
 			if (ReferenceEquals(SelectedCourier, courierToRemove))
 				SelectedCourier = null;
@@ -188,7 +183,7 @@ namespace Delivery.WPF.ViewModels
 			var new_courier = new Courier();
 			if (!_userDialogCouriers.Edit(new_courier))
                 return;
-            new_courier = await _CourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
+            new_courier = await _сourierService.AddCourierAsync(new_courier.FirstName, new_courier.SecondName, new_courier.PhoneNumber);
 			await OnLoadDataCommandExecuted();
                      SelectedCourier = new_courier;
 
@@ -199,14 +194,14 @@ namespace Delivery.WPF.ViewModels
         #region Конструктор
         public CouriersViewModel(IUnitOfWork unitOfWork, IUserDialogCouriers userDialogCouriers)
 		{
-			_UnitOfWork = unitOfWork;
+			_unitOfWork = unitOfWork;
 			_userDialogCouriers = userDialogCouriers;
 
         }
 
 		#endregion
 
-		private void OnCouriersFilter(object Sender, FilterEventArgs E)
+		private void OnCouriersFilter(object sender, FilterEventArgs E)
 		{
 			if (!(E.Item is Courier courier) || string.IsNullOrEmpty(CouriersFilter)) return;
 

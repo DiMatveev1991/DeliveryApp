@@ -24,34 +24,26 @@ namespace Delivery.WPF.Services.Services
 
 			if (order_editor_window.ShowDialog() != true) return false;
 
-		//	order.OrderStatus= order_editor_model.OrderStatus;
-			//order.CancelReason = order_editor_model.CancelReason;
-		//	order.Client = order_editor_model.Client;
-		//	order.FromAddress = order_editor_model.FromAddress;
-		//	order.TargetAddress = order_editor_model.TargetAddress;
-		//	order.OrderLines = order_editor_model.OrderLines;
-		//	order.TargetDateTime = order_editor_model.TargetDateTime;
-		//	order.Courier = order_editor_model.Courier;
 			return true;
 		}
-		public bool ConfirmInformation(string Information, string Caption) => MessageBox
+		public bool ConfirmInformation(string information, string caption) => MessageBox
 			                                                                      .Show(
-				                                                                      Information, Caption,
+				                                                                      information, caption,
 				                                                                      MessageBoxButton.YesNo,
 				                                                                      MessageBoxImage.Information)
 		                                                                      == MessageBoxResult.Yes;
 
-		public bool ConfirmWarning(string Warning, string Caption) => MessageBox
+		public bool ConfirmWarning(string warning, string caption) => MessageBox
 			                                                              .Show(
-				                                                              Warning, Caption,
+				                                                              warning, caption,
 				                                                              MessageBoxButton.YesNo,
 				                                                              MessageBoxImage.Warning)
 		                                                              == MessageBoxResult.Yes;
 
-		public bool ConfirmError(string Error, string Caption) => MessageBox
+		public bool ConfirmError(string error, string caption) => MessageBox
 			                                                          .Show(
-				                                                          Error, Caption,
-				                                                          MessageBoxButton.YesNo,
+				                                                          error, caption,
+				                                                          MessageBoxButton.OK,
 				                                                          MessageBoxImage.Error)
 		                                                          == MessageBoxResult.Yes;
 	}

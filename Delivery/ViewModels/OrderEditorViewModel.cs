@@ -23,14 +23,78 @@ namespace Delivery.WPF.ViewModels
     {
         private readonly IUserDialogOrderLine _userDialogOrderLine;
         private readonly IUnitOfWork _unitOfWork;
+      //переключение представления
+        private readonly bool _addingState;
+        public bool WasChanged { get; set; }
 
-        #region  -  заказ
+        public OrderEditorViewModel(Order order, IUnitOfWork unitOfWork, IUserDialogOrderLine userDialogOrderLine, bool addingState = false)
+        {
+            _order = order;
+            _unitOfWork = unitOfWork;
+            _userDialogOrderLine = userDialogOrderLine;
+            _addingState = addingState;
+            if (addingState)
+            {
+                var currentDate = DateTime.UtcNow;
+                Order.TargetDateTime = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day);
+            }
+            Order.OrderLines ??= new List<OrderLine>();
+            OrdersLines = Order.OrderLines.ToObservableCollection();
+        }
 
+
+        #region Orders : ObservableCollection<Client> - Коллекция клиентов
+
+        private ObservableCollection<Client> _clients;
+        private CollectionViewSource _clientsViewSource;
+
+        public ObservableCollection<Client> Clients
+        {
+            get => _clients;
+            set
+            {
+                if (Set(ref _clients, value))
+                {
+                    _clientsViewSource = new CollectionViewSource
+                    {
+                        Source = value,
+                    };
+
+                    _clientsViewSource.View.Refresh();
+                }
+            }
+        }
+        #endregion
+
+        #region Addresses : ObservableCollection<Address> - Коллекция адресов
+
+        private ObservableCollection<Address> _addresses;
+        private CollectionViewSource _addressesViewSource;
+
+        public ObservableCollection<Address> Addresses
+        {
+            get => _addresses;
+            set
+            {
+                if (Set(ref _addresses, value))
+                {
+                    _addressesViewSource = new CollectionViewSource
+                    {
+                        Source = value,
+                    };
+
+                    _addressesViewSource.View.Refresh();
+                }
+            }
+        }
+        #endregion
+
+        #region  -  Строки заказа
         private ObservableCollection<OrderLine> _orderLines;
         private CollectionViewSource _ordersLinesViewSource;
         public ICollectionView OrdersLinesView => _ordersLinesViewSource?.View;
 
-        #region Orders : ObservableCollection<Order> - Коллекция строк заказа
+        #region Orders : ObservableCollection<OrderLine> - Коллекция строк заказа
 
         public ObservableCollection<OrderLine> OrdersLines
         {
@@ -42,16 +106,7 @@ namespace Delivery.WPF.ViewModels
                     _ordersLinesViewSource = new CollectionViewSource
                     {
                         Source = value,
-                        SortDescriptions =
-                        {
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.FirstName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.SecondName), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.PhoneNumber), ListSortDirection.Ascending),
-                            //new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus.StatusName), ListSortDirection.Ascending)
-                        }
                     };
-
-                    //_ordersViewSource.Filter += OnOrdersFilter;
                     _ordersLinesViewSource.View.Refresh();
 
                     OnPropertyChanged(nameof(OrdersLinesView));
@@ -61,8 +116,8 @@ namespace Delivery.WPF.ViewModels
         #endregion
 
 
-        private Order _Order;
-		public Order Order { get => _Order; set => Set(ref _Order, value); }
+        private Order _order;
+		public Order Order { get => _order; set => Set(ref _order, value); }
         #endregion
 
         #region SelectedOrderLine : OrderLine - Выбранная строка заказа
@@ -76,11 +131,6 @@ namespace Delivery.WPF.ViewModels
                 {
                     _SelectedOrderLine = value;
                     return;
-                }
-                //Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
-                if (!_changedCommitted && !_firstSelect)
-                {
-                    //Set(ref _SelectedOrderLine, _cachedSelectedOrderLine);
                 }
                 _SelectedOrderLine = value;
                 CachedSelectedOrderLine = new OrderLine()
@@ -105,21 +155,13 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        public OrderEditorViewModel (Order order, IUnitOfWork unitOfWork, IUserDialogOrderLine userDialogOrderLine)
-		{
-			_Order = order;
-            _unitOfWork = unitOfWork;
-            _userDialogOrderLine = userDialogOrderLine;
-            OrdersLines = order.OrderLines?.ToObservableCollection() ?? new ObservableCollection<OrderLine>();
-        }
-
-        #region Command UpdateOrderLineCommand  - команда измененияданных курьера в БД
+        #region Command UpdateOrderLineCommand  - команда изменения строки заказа в бд в БД
 
         private ICommand _UpdateOrderLineCommand;
         public ICommand UpdateOrderLineCommand => _UpdateOrderLineCommand
             ??= new LambdaCommandAsync<OrderLine>(OnUpdateOrderLineCommandExecuted, CanUpdateOrderLineCommandExecute);
         //Тут бы сделать валидацию вводимых данных, но как нибудь в другой раз
-        private bool CanUpdateOrderLineCommandExecute(OrderLine p) => p != null || SelectedOrderLine != null;
+        private bool CanUpdateOrderLineCommandExecute(OrderLine p) => p != null || SelectedOrderLine != null && !_addingState;
 
         private async Task OnUpdateOrderLineCommandExecuted(OrderLine? p)
         {
@@ -127,8 +169,15 @@ namespace Delivery.WPF.ViewModels
             {
                 var OrderLineToUpdate = p ?? CachedSelectedOrderLine;
                 await _unitOfWork.OrderLinesRepository.UpdateAsync(OrderLineToUpdate);
-                SelectedOrderLine = OrdersLines.Find(x => x.Id == OrderLineToUpdate.Id);
+                SelectedOrderLine = null;
+                SelectedOrderLine = OrderLineToUpdate;
                 _changedCommitted = true;
+                if (!_addingState)
+                {
+                    OrdersLines = new ObservableCollection<OrderLine>((await _unitOfWork.OrdersRepository.GetAsync(Order.Id)).OrderLines);
+                }
+
+                WasChanged = true;
             }
             catch (Exception ex)
             {
@@ -144,7 +193,7 @@ namespace Delivery.WPF.ViewModels
         public ICommand RemoveOrderLineCommand => _RemoveOrderLineCommand
             ??= new LambdaCommandAsync<OrderLine>(OnRemoveOrderLineCommandExecuted, CanRemoveOrderLineCommandExecute);
 
-        private bool CanRemoveOrderLineCommandExecute(OrderLine p) => p != null || SelectedOrderLine != null;
+        private bool CanRemoveOrderLineCommandExecute(OrderLine p) => p != null || SelectedOrderLine != null && !_addingState;
 
         private async Task OnRemoveOrderLineCommandExecuted(OrderLine? p)
         {
@@ -158,6 +207,8 @@ namespace Delivery.WPF.ViewModels
 
             if (ReferenceEquals(SelectedOrderLine, OrderLineToRemove))
                 SelectedOrderLine = null;
+
+            WasChanged = true;
         }
         #endregion
 
@@ -171,14 +222,20 @@ namespace Delivery.WPF.ViewModels
         /// <summary>Логика выполнения - Добавление новой книги</summary>
         private async Task OnAddNewOrderLineCommandExecuted()
         {
-            var new_OrderLine = new OrderLine();
-            if (!_userDialogOrderLine.Edit(new_OrderLine))
+            var new_orderLine = new OrderLine();
+            if (!_userDialogOrderLine.Edit(new_orderLine))
                 return;
-            new_OrderLine.OrderId = Order.Id;
-            new_OrderLine = await _unitOfWork.OrderLinesRepository.AddAsync(new_OrderLine);
-            OrdersLines.Add(new_OrderLine);
-            SelectedOrderLine = new_OrderLine;
-
+            if (!_addingState)
+            {
+                new_orderLine.OrderId = Order.Id;
+                new_orderLine = await _unitOfWork.OrderLinesRepository.AddAsync(new_orderLine);
+            }
+            Order.OrderLines.Add(new_orderLine);
+            OrdersLines = Order.OrderLines.ToObservableCollection();
+            SelectedOrderLine = new_orderLine;
+            _ordersLinesViewSource.View.Refresh();
+            OnPropertyChanged(nameof(OrdersLinesView));
+            WasChanged = true;
         }
 
 		#endregion
@@ -191,7 +248,12 @@ namespace Delivery.WPF.ViewModels
 		private bool CanLoadDataCommandExecute() => true;
 		private async Task OnLoadDataCommandExecuted()
 		{
-			OrdersLines = new ObservableCollection<OrderLine>(await _unitOfWork.OrderLinesRepository.Items.ToArrayAsync());
+            if (!_addingState)
+            {
+                OrdersLines = new ObservableCollection<OrderLine>((await _unitOfWork.OrdersRepository.GetAsync(Order.Id)).OrderLines);
+            }
+            Clients = new ObservableCollection<Client>(await _unitOfWork.ClientsRepository.Items.ToArrayAsync());
+            Addresses = new ObservableCollection<Address>(await _unitOfWork.AddressRepository.Items.ToArrayAsync());
 			OnPropertyChanged(nameof(OrdersLines));
 		}
 		#endregion

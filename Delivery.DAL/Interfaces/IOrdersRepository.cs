@@ -14,6 +14,8 @@ namespace Delivery.DAL.Interfaces
 		Order Get(Guid id);
 		Task<Order> GetAsync(Guid id, CancellationToken cancel = default);
 
+		Task<IEnumerable<Order>> GetFilteredAsync(string filter, CancellationToken cancel = default);
+
 		Order Add(Order items);
 		Task<Order> AddAsync(Order item, CancellationToken cancel = default);
 

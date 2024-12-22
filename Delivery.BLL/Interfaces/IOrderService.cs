@@ -7,8 +7,8 @@ namespace Delivery.BLL.Interfaces
 {
 	public interface IOrderService
 	{
-		Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress, IEnumerable<OrderLine> orderLines);
-		// перевести статус заказа - в работе
+		Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress,
+            IEnumerable<OrderLine> orderLines, DateTime targetDateTime);
 		Task TakeInProgressAsync(Guid orderId, Guid courierId);
 		Task CancelOrderAsync (Guid id, string reason);
 		Task CompleteOrderAsync (Guid id);

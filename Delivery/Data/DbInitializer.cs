@@ -51,7 +51,7 @@ namespace Delivery.WPF.Data
             await InitializerCourier();
             await InitializeStatusOrder();
             await InitializerClients();
-            await InicializerORder();
+            await InitializeOrders();
             Console.WriteLine("Init Finished");
 
             await _db.DisposeAsync();
@@ -125,13 +125,13 @@ namespace Delivery.WPF.Data
             Client client5 = await _clientService.AddClientAsync("Dmitry5", "Pupkin0", "89295501278", addressArray[4]);
         }
 
-        public async Task InicializerORder()
+        public async Task InitializeOrders()
         {
             OrderLine[] orderLines = new OrderLine[2];
             orderLines[0] = new OrderLine() { ItemName = "Компьютер" };
             orderLines[1] = new OrderLine() { ItemName = "Lopata" };
 
-            Order order1 = await _orderService.AddOrderAsync(await _unitOfWork.ClientsRepository.Items.FirstOrDefaultAsync(), addressArray[0], addressArray[3], orderLines);
+            Order order1 = await _orderService.AddOrderAsync(await _unitOfWork.ClientsRepository.Items.FirstOrDefaultAsync(), addressArray[0], addressArray[3], orderLines, DateTime.UtcNow.AddDays(5));
         }
     }
 

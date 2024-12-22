@@ -45,13 +45,13 @@ namespace Delivery.WPF
             .AddViewModels()
             .AddServicesDialog()
         ;
-
-        private async void PreStart(object sender, StartupEventArgs e)
-        {
+        //не смог разобраться с синхронной загрузкой вынес инициализацию в отдельный класс
+	           private async void PreStart(object sender, StartupEventArgs e)
+         {
         //    using var scope = Services.CreateScope();
        //   var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
        // await dbInitializer.InitializeAsync();
-        }
+         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {

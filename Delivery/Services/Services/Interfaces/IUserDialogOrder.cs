@@ -4,7 +4,7 @@ namespace Delivery.WPF.Services.Services.Interfaces;
 
 public interface IUserDialogOrder
 {
-	bool Edit(Order order);
+	bool Edit(Order order, bool addingState = false);
 
 	bool ConfirmInformation(string information, string caption);
 	bool ConfirmWarning(string warning, string caption);

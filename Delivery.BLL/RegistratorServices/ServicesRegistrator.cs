@@ -10,13 +10,11 @@ namespace Delivery.BLL.ServicesRegistrator
 {
     public static class ServicesRegistrator
     {
-        public static IServiceCollection AddServicesRegistrator (this IServiceCollection services)
-        {
-            return services
+        public static IServiceCollection AddServicesRegistrator (this IServiceCollection services) => services
             .AddTransient<IClientService, ClientService>()
             .AddTransient<ICourierService, CourierService>()
             .AddTransient<IOrderService, OrderService>()
                 ;
-        }
+        
     }
 }

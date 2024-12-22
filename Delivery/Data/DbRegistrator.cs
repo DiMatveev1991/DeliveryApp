@@ -34,7 +34,6 @@ namespace Delivery.Data
 			    
 			    ).AddTransient<DbInitializer> ()
 		         .AddRepositoriesInDb()
-		        
-        ;
+                 ;
     }
 }

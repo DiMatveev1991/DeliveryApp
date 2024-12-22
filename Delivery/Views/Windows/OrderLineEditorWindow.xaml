@@ -13,7 +13,7 @@
             <DockPanel Margin="3">
                 <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center"
        Margin="0,15,0,10" 
-       Text="Курьер:" />
+       Text="Заказ:" />
                 <UniformGrid Rows="1" DockPanel.Dock="Bottom" Margin="5" HorizontalAlignment="Right">
                     <Button Content="Ok" Margin="3" Padding="20,3" FontWeight="Bold" IsDefault="True"
         Command="{StaticResource DialogResultCommand}"
@@ -33,13 +33,13 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Имя:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Наименование заказа:" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding OrderLine.ItemName}"/>
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Фамилия:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Длина:" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding OrderLine.Length}"/>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Телефон:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="ширина:" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding OrderLine.Width}"/>
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Город:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="вес:" Margin="0,0,5,0" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding OrderLine.Weight}"/>
                 </Grid>
             </DockPanel>

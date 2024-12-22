@@ -23,28 +23,27 @@ namespace Delivery.WPF.Services.Services
             };
 
             return orderLineEditorWindow.ShowDialog() == true;
-            //orderLine.Id = orderLineEditorViewModel.OrderLine.Id;
-            //orderLine.Id = orderLineEditorViewModel.OrderLine.Id
+
         }
 
-        public bool ConfirmInformation(string Information, string Caption) => MessageBox
+        public bool ConfirmInformation(string information, string caption) => MessageBox
                                                                                   .Show(
-                                                                                      Information, Caption,
+                                                                                      information, caption,
                                                                                       MessageBoxButton.YesNo,
                                                                                       MessageBoxImage.Information)
                                                                               == MessageBoxResult.Yes;
 
-        public bool ConfirmWarning(string Warning, string Caption) => MessageBox
+        public bool ConfirmWarning(string warning, string caption) => MessageBox
                                                                           .Show(
-                                                                              Warning, Caption,
+                                                                              warning, caption,
                                                                               MessageBoxButton.YesNo,
                                                                               MessageBoxImage.Warning)
                                                                       == MessageBoxResult.Yes;
 
-        public bool ConfirmError(string Error, string Caption) => MessageBox
+        public bool ConfirmError(string error, string caption) => MessageBox
                                                                       .Show(
-                                                                          Error, Caption,
-                                                                          MessageBoxButton.YesNo,
+                                                                          error, caption,
+                                                                          MessageBoxButton.OK,
                                                                           MessageBoxImage.Error)
                                                                   == MessageBoxResult.Yes;
     }

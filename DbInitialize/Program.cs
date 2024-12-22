@@ -21,11 +21,11 @@ try
 {
     var host = CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
 
-    var Services = host.Services;
+    var services = host.Services;
 
 
     Console.WriteLine("Initialize Started");
-    using var scope = Services.CreateScope();
+    using var scope = services.CreateScope();
     var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
     await dbInitializer.InitializeAsync();
 

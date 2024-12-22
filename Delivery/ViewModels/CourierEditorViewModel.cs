@@ -6,38 +6,27 @@ namespace Delivery.WPF.ViewModels
 {
     internal class CourierEditorViewModel : ViewModel
     {
-        #region CourierId : - Идентификатор Courier
 
-      //  public Guid CourierId { get; }
-      //  public Guid? CourierStatusId{ get; }
 
-        #endregion
+        #region данные курьера
 
-        #region Name : string - Название книги
-
-        private string _FirstName;
-        public string FirstName { get => _FirstName; set => Set(ref _FirstName, value); }
+        private string _firstName;
+        public string FirstName { get => _firstName; set => Set(ref _firstName, value); }
        
-        private string _SecondName;
-        public string SecondName { get => _SecondName; set => Set(ref _SecondName, value); }
+        private string _secondName;
+        public string SecondName { get => _secondName; set => Set(ref _secondName, value); }
 
-        private string _PhoneNumber;
-        public string PhoneNumber { get => _PhoneNumber; set => Set(ref _PhoneNumber, value); }
-
-     //   private CourierStatus _CourierStatus;
-      //  public CourierStatus CourierStatus { get => _CourierStatus; set => Set(ref _CourierStatus, value); }
+        private string _phoneNumber;
+        public string PhoneNumber { get => _phoneNumber; set => Set(ref _phoneNumber, value); }
         #endregion
 
 
 
         public CourierEditorViewModel (Courier courier)
         {
-           // CourierId = courier.Id;
-          //  CourierStatusId = courier.CourierStatusId;
-            _FirstName = courier.FirstName;
-            _SecondName = courier.SecondName;
-            _PhoneNumber = courier.PhoneNumber;
-            //_CourierStatus = courier.CourierStatus;
+            _firstName = courier.FirstName;
+            _secondName = courier.SecondName;
+            _phoneNumber = courier.PhoneNumber;
         }
     }
 }

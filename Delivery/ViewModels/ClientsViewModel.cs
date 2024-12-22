@@ -20,23 +20,23 @@ namespace Delivery.WPF.ViewModels
 {
     internal class ClientsViewModel : ViewModel
     {
-        private readonly IUserDialogClients _UserDialogClients;
-        private readonly IUnitOfWork _UnitOfWork;
-        private IClientService _ClientService => new ClientService(_UnitOfWork);
-        private ObservableCollection<Client> _Clients;
-        private CollectionViewSource _ClientsViewSource;
-        public ICollectionView ClientsView => _ClientsViewSource?.View;
+        private readonly IUserDialogClients _userDialogClients;
+        private readonly IUnitOfWork _unitOfWork;
+        private IClientService _clientservice => new ClientService(_unitOfWork);
+        private ObservableCollection<Client> _clients;
+        private CollectionViewSource _clientsViewSource;
+        public ICollectionView ClientsView => _clientsViewSource?.View;
 
         #region Clients : ObservableCollection<Client> - Коллекция курьеров
 
         public ObservableCollection<Client> Clients
         {
-            get => _Clients;
+            get => _clients;
             set
             {
-                if (Set(ref _Clients, value))
+                if (Set(ref _clients, value))
                 {
-                    _ClientsViewSource = new CollectionViewSource
+                    _clientsViewSource = new CollectionViewSource
                     {
                         Source = value,
                         SortDescriptions =
@@ -51,8 +51,8 @@ namespace Delivery.WPF.ViewModels
 						}
                     };
 
-                    _ClientsViewSource.Filter += OnClientsFilter;
-                    _ClientsViewSource.View.Refresh();
+                    _clientsViewSource.Filter += OnClientsFilter;
+                    _clientsViewSource.View.Refresh();
 
                     OnPropertyChanged(nameof(ClientsView));
                 }
@@ -62,38 +62,33 @@ namespace Delivery.WPF.ViewModels
 
         #region ClientsFilter : string - Искомое слово
 
-        private string _ClientsFilter;
+        private string _clientsFilter;
         public string ClientsFilter
         {
-            get => _ClientsFilter;
+            get => _clientsFilter;
             set
             {
-                if (Set(ref _ClientsFilter, value))
-                    _ClientsViewSource.View.Refresh();
+                if (Set(ref _clientsFilter, value))
+                    _clientsViewSource.View.Refresh();
 
             }
         }
         #endregion
 
 
-        #region SelectedClient : Client - Выбранный курьер
-        private Client _SelectedClient;
+        #region SelectedClient : Client - Выбранный клиент
+        private Client _selectedClient;
         public Client SelectedClient
         {
-            get => _SelectedClient;
+            get => _selectedClient;
             set
             {
                 if (value is null)
                 {
-                    _SelectedClient = value;
+                    _selectedClient = value;
                     return;
                 }
-                //Если изменения не были сохранены в базе, то сбрасываем на значения из кеша
-                if (!_changedCommitted && !_firstSelect)
-                {
-                    //Set(ref _SelectedClient, _cachedSelectedClient);
-                }
-                _SelectedClient = value;
+                _selectedClient = value;
                 CachedSelectedClient = new Client()
                 {
                     Id = value.Id,
@@ -103,7 +98,7 @@ namespace Delivery.WPF.ViewModels
                     AddressId = value.AddressId,
                     Address = value.Address,    
                 };
-                Set(ref _SelectedClient, value);
+                Set(ref _selectedClient, value);
                 _changedCommitted = false;
                 _firstSelect = false;
             }
@@ -124,7 +119,7 @@ namespace Delivery.WPF.ViewModels
         private bool CanLoadDataCommandExecute() => true;
         private async Task OnLoadDataCommandExecuted()
         {
-	        Clients = new ObservableCollection<Client>(await _UnitOfWork.ClientsRepository.Items.ToArrayAsync());
+	        Clients = new ObservableCollection<Client>(await _unitOfWork.ClientsRepository.Items.ToArrayAsync());
             OnPropertyChanged(nameof(Clients));
         }
         #endregion
@@ -141,7 +136,7 @@ namespace Delivery.WPF.ViewModels
             try
             {
                 var ClientToUpdate = p ?? CachedSelectedClient;
-                await _ClientService.UpdateClientAsync(ClientToUpdate);
+                await _clientservice.UpdateClientAsync(ClientToUpdate);
                 SelectedClient = Clients.Find(x => x.Id == ClientToUpdate.Id);
                 await OnLoadDataCommandExecuted();
                 _changedCommitted = true;
@@ -166,11 +161,11 @@ namespace Delivery.WPF.ViewModels
         {
             var ClientToRemove = p ?? SelectedClient;
 
-            if (!_UserDialogClients.ConfirmWarning($"Вы хотите удалить клиента {ClientToRemove.FirstName}?", "Удаление клиента"))
+            if (!_userDialogClients.ConfirmWarning($"Вы хотите удалить клиента {ClientToRemove.FirstName}?", "Удаление клиента"))
                 return;
-            await _ClientService.DeleteClientAsync(ClientToRemove.Id);
+            await _clientservice.DeleteClientAsync(ClientToRemove.Id);
 
-            _Clients.Remove(ClientToRemove);
+            _clients.Remove(ClientToRemove);
 
             if (ReferenceEquals(SelectedClient, ClientToRemove))
                 SelectedClient = null;
@@ -187,10 +182,10 @@ namespace Delivery.WPF.ViewModels
         private async Task OnAddNewClientCommandExecuted()
         {
             var new_Client = new Client();
-            if (!_UserDialogClients.Edit(new_Client))
+            if (!_userDialogClients.Edit(new_Client))
                 return;
             //TODO проверка полей адреса
-            new_Client = await _ClientService.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
+            new_Client = await _clientservice.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
             await OnLoadDataCommandExecuted();
             SelectedClient = new_Client;
 
@@ -201,8 +196,8 @@ namespace Delivery.WPF.ViewModels
         #region Конструктор
         public ClientsViewModel(IUnitOfWork unitOfWork, IUserDialogClients userDialogClients)
         {
-            _UnitOfWork = unitOfWork;
-            _UserDialogClients = userDialogClients;
+            _unitOfWork = unitOfWork;
+            _userDialogClients = userDialogClients;
 
         }
 

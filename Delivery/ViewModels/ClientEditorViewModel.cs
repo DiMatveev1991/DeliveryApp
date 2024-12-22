@@ -9,14 +9,14 @@ namespace Delivery.WPF.ViewModels
 	{
 		#region Name : string - Название клиента
 
-		private string _FirstName;
-		public string FirstName { get => _FirstName; set => Set(ref _FirstName, value); }
+		private string _firstName;
+		public string FirstName { get => _firstName; set => Set(ref _firstName, value); }
 
-		private string _SecondName;
-		public string SecondName { get => _SecondName; set => Set(ref _SecondName, value); }
+		private string _secondName;
+		public string SecondName { get => _secondName; set => Set(ref _secondName, value); }
 
-		private string _PhoneNumber;
-		public string PhoneNumber { get => _PhoneNumber; set => Set(ref _PhoneNumber, value); }
+		private string _phoneNumber;
+		public string PhoneNumber { get => _phoneNumber; set => Set(ref _phoneNumber, value); }
 
 		private Address _Address;
 		public Address ClientAddress { get => _Address; set => Set(ref _Address, value); }
@@ -33,9 +33,9 @@ namespace Delivery.WPF.ViewModels
             client.Address ??= new Address();
             ClientAddress = client.Address;
 
-            _FirstName = Client.FirstName;
-			_SecondName = Client.SecondName;
-			_PhoneNumber = Client.PhoneNumber;
+            _firstName = Client.FirstName;
+			_secondName = Client.SecondName;
+			_phoneNumber = Client.PhoneNumber;
 		}
 	}
 }

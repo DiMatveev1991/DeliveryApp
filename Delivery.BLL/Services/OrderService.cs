@@ -7,184 +7,190 @@ using System.Threading.Tasks;
 
 namespace Delivery.BLL.Services
 {
-	public class OrderService : IOrderService
-	{
+    public class OrderService : IOrderService
+    {
 
-		private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-		public OrderService(IUnitOfWork unitOfWork)
-		{
-			_unitOfWork = unitOfWork;
-		}
+        public OrderService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
-		public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress,
-			IEnumerable<OrderLine> orderLines)
-		{
-			try
-			{
-				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Новая");
+        public async Task<Order> AddOrderAsync(Client client, Address fromAddress, Address targetAddress,
+            IEnumerable<OrderLine> orderLines, DateTime targetDateTime)
+        {
+            try
+            {
+                var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Новая");
 
-				var order = await _unitOfWork.OrdersRepository.AddAsync(new Order()
-				{
-					Client = client,
-					FromAddress = fromAddress,
-					TargetAddress = targetAddress,
-					OrderStatus = orderStatus
-				});
+                var order = await _unitOfWork.OrdersRepository.AddAsync(new Order()
+                {
+                    Client = client,
+                    FromAddress = fromAddress,
+                    TargetAddress = targetAddress,
+                    OrderStatus = orderStatus,
+                    TargetDateTime = targetDateTime
+                });
 
-				foreach (var orderLine in orderLines)
-				{
-					orderLine.Order = order;
-					await _unitOfWork.OrderLinesRepository.AddAsync(orderLine);
-				}
+                foreach (var orderLine in orderLines)
+                {
+                    orderLine.Order = order;
+                    await _unitOfWork.OrderLinesRepository.AddAsync(orderLine);
+                }
 
-				return order;
-			}
-			catch (Exception)
-			{
-				throw new Exception("В БД нет статуса заказа Новая");
-			}
-		}
+                return order;
+            }
+            catch (Exception)
+            {
+                throw new Exception("В БД нет статуса заказа Новая");
+            }
+        }
 
-		public async Task CancelOrderAsync(Guid id, string reason)
-		{
-			try
-			{
-				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-				if (order is null) { throw new Exception("Такого заказа нет");}
+        public async Task CancelOrderAsync(Guid id, string reason)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+                if (order is null) { throw new Exception("Такого заказа нет"); }
 
-				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Отменена");
-				if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
+                var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Отменена");
+                if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
 
-				if (order.CourierId.HasValue)
-				{
-					var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
-					if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
-					var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
-					if (courier is null) { throw new Exception("В бд отсутствуют курьеры или нет свободных курьеров"); }
-					courier.CourierStatus = statusCourier;
-					await _unitOfWork.CouriersRepository.UpdateAsync(courier);
-				}
+                if (order.CourierId.HasValue)
+                {
+                    var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
+                    if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
+                    var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
+                    if (courier is null) { throw new Exception("В бд отсутствуют курьеры или нет свободных курьеров"); }
+                    courier.CourierStatus = statusCourier;
+                    await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+                }
 
-				order.CancelReason = reason;
-				order.OrderStatus = orderStatus;
-				await _unitOfWork.OrdersRepository.UpdateAsync(order);
-				
-
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-
-		}
-
-		public async Task CompleteOrderAsync(Guid id)
-		{
-			try
-			{
-				var order = await _unitOfWork.OrdersRepository.GetAsync(id);
-				if (order is null) { throw new Exception("Такого заказа нет"); }
+                order.CancelReason = reason;
+                order.OrderStatus = orderStatus;
+                await _unitOfWork.OrdersRepository.UpdateAsync(order);
 
 
-				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
-				if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
 
-				var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
-				if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
+        }
 
-				if (!order.CourierId.HasValue) throw new Exception("Отсутствует курьер");
-				var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
+        public async Task CompleteOrderAsync(Guid id)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+                if (order is null) { throw new Exception("Такого заказа нет"); }
 
-				courier.CourierStatus = statusCourier;
-				order.OrderStatus = orderStatus;
-				
-				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
-				await _unitOfWork.OrdersRepository.UpdateAsync(order);
-			}
-			catch (Exception)
-			{
-				throw new Exception("По данному Id заказ не найден");
-			}
-		}
 
-		public async Task DeleteOrderAsync(Guid id)
-		{
-			var order = await _unitOfWork.OrdersRepository.GetAsync(id);
+                var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Выполнено");
+                if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
 
-			if (order is null)
-			{
-				throw new Exception("По данному Id заказ не найден");
-			}
+                var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
+                if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
 
-			var orderStatusComplete = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
-			if (orderStatusComplete is null)
-			{
-				throw new Exception("Такого статуса нет в БД");
-			}
+                if (!order.CourierId.HasValue) throw new Exception("Отсутствует курьер");
+                var courier = await _unitOfWork.CouriersRepository.GetAsync(order.CourierId.Value);
 
-			if (order.OrderStatus.Id != orderStatusComplete.Id)
-			{
-				await _unitOfWork.OrdersRepository.RemoveAsync(order.Id);
-			}
-			else
-			{
-				throw new Exception("Заказ нельзя удалить, т.к. он в работе");
-			}
-		}
+                courier.CourierStatus = statusCourier;
+                order.OrderStatus = orderStatus;
 
-		public async Task TakeInProgressAsync(Guid orderId, Guid courierId)
-		{
-			try
-			{
-				var order = await _unitOfWork.OrdersRepository.GetAsync(orderId);
+                await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+                await _unitOfWork.OrdersRepository.UpdateAsync(order);
+            }
+            catch (Exception)
+            {
+                throw new Exception("По данному Id заказ не найден");
+            }
+        }
 
-				if (order is null)
-				{
-					throw new Exception("По данному Id заказ не найден");
-				}
+        public async Task DeleteOrderAsync(Guid id)
+        {
+            var order = await _unitOfWork.OrdersRepository.GetAsync(id);
 
-				var courier = await _unitOfWork.CouriersRepository.GetAsync(courierId);
+            if (order is null)
+            {
+                throw new Exception("По данному Id заказ не найден");
+            }
 
-				if (courier is null)
-				{
-					throw new Exception("Такого курьера не существует");
-				}
+            var orderStatusComplete = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+            if (orderStatusComplete is null)
+            {
+                throw new Exception("Такого статуса нет в БД");
+            }
 
-				var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
-				order.OrderStatus = orderStatus;
+            if (order.OrderStatus.Id != orderStatusComplete.Id)
+            {
+                await _unitOfWork.OrdersRepository.RemoveAsync(order.Id);
+                var orderLines = order.OrderLines;
+                foreach (var orderLine in orderLines)
+                {
+                    await _unitOfWork.OrderLinesRepository.RemoveAsync(orderLine.Id);
+                }
+            }
+            else
+            {
+                throw new Exception("Заказ нельзя удалить, т.к. он в работе");
+            }
+        }
 
-				var courierStatus = await _unitOfWork.CouriersRepository.GetCourierStatusAsync("Выполняет заказ");
-				order.Courier = courier;
-				order.CourierId = courier.Id;
-				courier.CourierStatus = courierStatus;
-				await _unitOfWork.OrdersRepository.UpdateAsync(order);
-				await _unitOfWork.CouriersRepository.UpdateAsync(courier);
-			}
-			catch (Exception e) 
-			{
-				throw new Exception(e.Message);
-			}
-		}
+        public async Task TakeInProgressAsync(Guid orderId, Guid courierId)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrdersRepository.GetAsync(orderId);
 
-		public async Task<Order> UpdateOrderAsync(Order order)
-		{
-			try
-			{
-				if (!order.OrderStatusId.HasValue) throw new Exception("Отсутствует статус заказа");
-				var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync(order.OrderStatusId.Value);
-				if (orderStatus.StatusName == "Новая")
-				{
-					await _unitOfWork.OrdersRepository.UpdateAsync(order);
-				}
-				//TODO переделать на обновление через EntryState
-				return order;
+                if (order is null)
+                {
+                    throw new Exception("По данному Id заказ не найден");
+                }
 
-			}
-			catch (Exception e)
-			{
-				throw new Exception(e.Message);
-			}
-		}
-	}
+                var courier = await _unitOfWork.CouriersRepository.GetAsync(courierId);
+
+                if (courier is null)
+                {
+                    throw new Exception("Такого курьера не существует");
+                }
+
+                var orderStatus = await _unitOfWork.OrdersRepository.GetOrderStatusAsync("Передано на выполнение");
+                order.OrderStatus = orderStatus;
+
+                var courierStatus = await _unitOfWork.CouriersRepository.GetCourierStatusAsync("Выполняет заказ");
+                order.Courier = courier;
+                order.CourierId = courier.Id;
+                courier.CourierStatus = courierStatus;
+                await _unitOfWork.OrdersRepository.UpdateAsync(order);
+                await _unitOfWork.CouriersRepository.UpdateAsync(courier);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Order> UpdateOrderAsync(Order order)
+        {
+            try
+            {
+                if (!order.OrderStatusId.HasValue) throw new Exception("Отсутствует статус заказа");
+                var orderStatus = await _unitOfWork.OrderStatusesRepository.GetAsync(order.OrderStatusId.Value);
+                if (orderStatus.StatusName == "Новая")
+                {
+                    await _unitOfWork.OrdersRepository.UpdateAsync(order);
+                }
+
+                return order;
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+    }
 }

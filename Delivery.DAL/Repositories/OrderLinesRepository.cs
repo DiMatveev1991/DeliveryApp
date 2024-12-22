@@ -24,7 +24,9 @@ namespace Delivery.DAL.Repositories
 			_Set = db.Set<OrderLine>();
 		}
 
-		public IQueryable<OrderLine> Items => _Set.AsNoTracking()
+		public IQueryable<OrderLine> Items => _Set
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted)
 		;
 
 		public OrderLine Get(Guid id) => Items.SingleOrDefault(item => item.Id == id);
@@ -81,10 +83,14 @@ namespace Delivery.DAL.Repositories
 		}
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
-		{
-			_db.Remove(new OrderLine { Id = id });
-			if (AutoSaveChanges)
+        {
+            var item = await _db.OrderLines.FindAsync(id);
+			item.IsDeleted = true;
+			item.DeletedOnUtc = DateTime.UtcNow;
+            _db.Entry(item).State = EntityState.Modified;
+            if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-		}
+            _db.Entry(item).State = EntityState.Detached;
+        }
 	}
 }

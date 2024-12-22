@@ -42,10 +42,10 @@
                             <DataGridTextColumn Header="Дом"  Binding="{Binding Path=TargetAddress.HomeNumber}"/>
                             <DataGridTextColumn Header="квартира"  Binding="{Binding Path=TargetAddress.ApartmentNumber}"/>
                             <DataGridTextColumn Header="Дата и время забора заказа"  Binding="{Binding Path=TargetDateTime}"/>
-                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=ForAddress.City}"/>
-                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=ForAddress.Street}"/>
-                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=ForAddress.HomeNumber}"/>
-                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=ForAddress.ApartmentNumber}"/>
+                            <DataGridTextColumn Header="Город"  Binding="{Binding Path=FromAddress.City}"/>
+                            <DataGridTextColumn Header="Улица"  Binding="{Binding Path=FromAddress.Street}"/>
+                            <DataGridTextColumn Header="Дом"  Binding="{Binding Path=FromAddress.HomeNumber}"/>
+                            <DataGridTextColumn Header="квартира"  Binding="{Binding Path=FromAddress.ApartmentNumber}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

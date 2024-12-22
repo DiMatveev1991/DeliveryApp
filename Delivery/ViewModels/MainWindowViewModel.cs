@@ -22,10 +22,10 @@ namespace Delivery.WPF.ViewModels
 		private readonly IUserDialogClients _userDialogClients;
         private readonly IUserDialogOrder _userDialogOrder;
         private readonly IUserDialogOrderLine _dialogOrderLine;
-		private readonly IUnitOfWork _UnitOfWork;
-		private readonly IClientService _ClientService;
-		private readonly ICourierService _CourierService;
-		private readonly IOrderService _OrderService;
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IClientService _clientService;
+		private readonly ICourierService _courierService;
+		private readonly IOrderService _orderService;
 
 		#region CurrentModel: ViewModel - текущая дочерняя модель-представления
 		private ViewModel _currentModel;
@@ -39,7 +39,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowClientsCommandExecute() => true;
 		private void OnShowClientsCommandExecuted()
 		{
-			CurrentModel = new ClientsViewModel(_UnitOfWork, _userDialogClients);
+			CurrentModel = new ClientsViewModel(_unitOfWork, _userDialogClients);
 		}
 		#endregion
 
@@ -50,7 +50,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowCouriersCommandExecute() => true;
 		private void OnShowCouriersCommandExecuted()
 		{
-			CurrentModel = new CouriersViewModel(_UnitOfWork, _userDialogCouriers);
+			CurrentModel = new CouriersViewModel(_unitOfWork, _userDialogCouriers);
 		}
 		#endregion
 
@@ -62,7 +62,7 @@ namespace Delivery.WPF.ViewModels
 		public bool CanShowOrdersCommandExecute() => true;
 		private void OnShowOrdersCommandExecuted()
 		{
-			CurrentModel = new OrdersViewModel(_UnitOfWork, _userDialogOrder, _userDialogCancelOrder);
+			CurrentModel = new OrdersViewModel(_unitOfWork, _userDialogOrder, _userDialogCancelOrder);
 		}
 		#endregion
 
@@ -80,10 +80,10 @@ namespace Delivery.WPF.ViewModels
                                    IUserDialogOrderLine dialogOrderLine,
 			                       IUserDialogCancelOrder userDialogCancelOrder)
 		{
-			_UnitOfWork=unitWork;
-			_ClientService = clientService;
-			_CourierService = courierService;
-			_OrderService=orderService;
+			_unitOfWork=unitWork;
+			_clientService = clientService;
+			_courierService = courierService;
+			_orderService=orderService;
             _userDialogCouriers = userDialogCouriers;
             _userDialogClients = userDialogClients;
             _userDialogOrder = userDialogOrder;
