@@ -22,7 +22,7 @@ namespace Delivery.WPF.ViewModels
     {
         private readonly IUserDialogClients _userDialogClients;
         private readonly IUnitOfWork _unitOfWork;
-        private IClientService _clientservice => new ClientService(_unitOfWork);
+        private IClientService _clientService => new ClientService(_unitOfWork);
         private ObservableCollection<Client> _clients;
         private CollectionViewSource _clientsViewSource;
         public ICollectionView ClientsView => _clientsViewSource?.View;
@@ -136,7 +136,7 @@ namespace Delivery.WPF.ViewModels
             try
             {
                 var ClientToUpdate = p ?? CachedSelectedClient;
-                await _clientservice.UpdateClientAsync(ClientToUpdate);
+                await _clientService.UpdateClientAsync(ClientToUpdate);
                 SelectedClient = Clients.Find(x => x.Id == ClientToUpdate.Id);
                 await OnLoadDataCommandExecuted();
                 _changedCommitted = true;
@@ -163,7 +163,7 @@ namespace Delivery.WPF.ViewModels
 
             if (!_userDialogClients.ConfirmWarning($"Вы хотите удалить клиента {ClientToRemove.FirstName}?", "Удаление клиента"))
                 return;
-            await _clientservice.DeleteClientAsync(ClientToRemove.Id);
+            await _clientService.DeleteClientAsync(ClientToRemove.Id);
 
             _clients.Remove(ClientToRemove);
 
@@ -185,7 +185,7 @@ namespace Delivery.WPF.ViewModels
             if (!_userDialogClients.Edit(new_Client))
                 return;
             //TODO проверка полей адреса
-            new_Client = await _clientservice.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
+            new_Client = await _clientService.AddClientAsync(new_Client.FirstName, new_Client.SecondName, new_Client.PhoneNumber, new_Client.Address);
             await OnLoadDataCommandExecuted();
             SelectedClient = new_Client;
 
