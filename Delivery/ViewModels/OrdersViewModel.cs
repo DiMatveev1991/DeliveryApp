@@ -334,6 +334,7 @@ namespace Delivery.WPF.ViewModels
         {
             if (!(E.Item is Order order) || string.IsNullOrEmpty(OrdersFilter)) return;
 
+            //подключить все необходимые поля фильтрации
             if (!order.Client.FirstName.Contains(OrdersFilter) &&
                 !order.FromAddress.City.Contains(OrdersFilter) &&
                 !order.FromAddress.Street.Contains(OrdersFilter) &&
