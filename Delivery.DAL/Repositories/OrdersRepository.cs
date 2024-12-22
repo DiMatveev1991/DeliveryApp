@@ -43,7 +43,8 @@ namespace Delivery.DAL.Repositories
         public async Task<Order> GetAsync(Guid id, CancellationToken cancel = default) => await Items
             .SingleOrDefaultAsync(item => item.Id == id, cancel)
             .ConfigureAwait(false);
-
+      
+        // Начало написания фильтра на уровне бд
         public async Task<IEnumerable<Order>> GetFilteredAsync(string filter, CancellationToken cancel = default)
         {
             return await Items
