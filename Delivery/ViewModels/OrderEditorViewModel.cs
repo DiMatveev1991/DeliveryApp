@@ -23,7 +23,7 @@ namespace Delivery.WPF.ViewModels
     {
         private readonly IUserDialogOrderLine _userDialogOrderLine;
         private readonly IUnitOfWork _unitOfWork;
-      //переключение представления
+      //переключение представления не очень правильно но по другому не успевал
         private readonly bool _addingState;
         public bool WasChanged { get; set; }
 
