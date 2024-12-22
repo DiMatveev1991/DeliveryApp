@@ -67,14 +67,10 @@ namespace Delivery.WPF.ViewModels
                 {
                     _ordersLinesViewSource = new CollectionViewSource
                     {
-                        Source = value,
-                        SortDescriptions =
-                        {
-                            new SortDescription(nameof(Delivery.DAL.Models.Order.OrderStatus.StatusName), ListSortDirection.Ascending)
-                        }
+                       //Настройка фильтра
+	                    Source = value,
                     };
 
-                    //_ordersViewSource.Filter += OnOrdersFilter;
                     _ordersLinesViewSource.View.Refresh();
 
                     OnPropertyChanged(nameof(OrdersLinesView));
@@ -192,7 +188,8 @@ namespace Delivery.WPF.ViewModels
                 return;
             if (OrderToRemove.OrderStatus.StatusName == "Передано на выполнение")
             {
-                //if (!_userDialogOrders.ConfirmInformation($"Удаление не может быть выполнено, активный заказ", "Нельзя удалить."))
+	            
+	            //if (!_userDialogOrders.ConfirmInformation($"Удаление не может быть выполнено, активный заказ", "Нельзя удалить."))
                 //    return;
                 throw new ArgumentException("Удаление не может быть выполнено, активный заказ");
             }
@@ -323,11 +320,13 @@ namespace Delivery.WPF.ViewModels
         public ICommand LoadDataCommand => _LoadDataCommand
             ??= new LambdaCommandAsync(OnLoadDataCommandExecuted, CanLoadDataCommandExecute);
         private bool CanLoadDataCommandExecute() => true;
+
         private async Task OnLoadDataCommandExecuted()
         {
-            Orders = new ObservableCollection<Order>(await _unitOfWork.OrdersRepository.Items.ToArrayAsync());
-            OnPropertyChanged(nameof(Orders));
+	        Orders = new ObservableCollection<Order>(await _unitOfWork.OrdersRepository.Items.ToArrayAsync());
+	        OnPropertyChanged(nameof(Orders));
         }
+
         #endregion
 
         private void OnOrdersFilter(object Sender, FilterEventArgs E)
@@ -336,11 +335,17 @@ namespace Delivery.WPF.ViewModels
 
             //подключить все необходимые поля фильтрации
             if (!order.Client.FirstName.Contains(OrdersFilter) &&
-                !order.FromAddress.City.Contains(OrdersFilter) &&
-                !order.FromAddress.Street.Contains(OrdersFilter) &&
-                !order.TargetAddress.City.Contains(OrdersFilter) &&
-                !order.TargetAddress.Street.Contains(OrdersFilter) &&
-                !order.OrderStatus.StatusName.Contains(OrdersFilter)
+                !order.Client.PhoneNumber.Contains(OrdersFilter) && 
+				 !order.FromAddress.City.Contains(OrdersFilter) &&
+                 !order.FromAddress.Street.Contains(OrdersFilter) &&
+                !order.FromAddress.HomeNumber.ToString().Contains(OrdersFilter) &&
+                !order.FromAddress.ApartmentNumber.ToString().Contains(OrdersFilter) &&
+				 !order.TargetAddress.City.Contains(OrdersFilter) &&
+                 !order.TargetAddress.Street.Contains(OrdersFilter) &&
+                !order.TargetAddress.HomeNumber.Contains(OrdersFilter) &&
+                !order.TargetAddress.ApartmentNumber.Contains(OrdersFilter) && 
+                !order.TargetDateTime.ToString().Contains(OrdersFilter) &&
+				 !order.OrderStatus.StatusName.Contains(OrdersFilter)
                )
                 E.Accepted = false;
         }

@@ -218,8 +218,6 @@ namespace Delivery.WPF.ViewModels
         public ICommand AddNewOrderLineCommand => _AddNewOrderLineCommand
             ??= new LambdaCommandAsync(OnAddNewOrderLineCommandExecuted, CanAddNewOrderLineCommandExecute);
         private bool CanAddNewOrderLineCommandExecute() => true;
-
-        /// <summary>Логика выполнения - Добавление новой книги</summary>
         private async Task OnAddNewOrderLineCommandExecuted()
         {
             var new_orderLine = new OrderLine();

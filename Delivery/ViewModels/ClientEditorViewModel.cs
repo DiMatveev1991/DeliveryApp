@@ -18,20 +18,20 @@ namespace Delivery.WPF.ViewModels
 		private string _phoneNumber;
 		public string PhoneNumber { get => _phoneNumber; set => Set(ref _phoneNumber, value); }
 
-		private Address _Address;
-		public Address ClientAddress { get => _Address; set => Set(ref _Address, value); }
+		private Address _address;
+		public Address ClientAddress { get => _address; set => Set(ref _address, value); }
 		
-		private Client _Client;
-		public Client Client { get => _Client; set => Set(ref _Client, value); }
+		private Client _сlient;
+		public Client Client { get => _сlient; set => Set(ref _сlient, value); }
 
 		#endregion
 
 		public ClientEditorViewModel(Client client)
 		{
-			Client = client;
+			_сlient = client;
 
             client.Address ??= new Address();
-            ClientAddress = client.Address;
+            _address = client.Address;
 
             _firstName = Client.FirstName;
 			_secondName = Client.SecondName;
