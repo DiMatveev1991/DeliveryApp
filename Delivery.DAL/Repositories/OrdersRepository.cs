@@ -84,14 +84,12 @@ namespace Delivery.DAL.Repositories
         public async Task<Order> UpdateAsync(Order item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            var entriesBefore = _db.ChangeTracker.Entries().ToList();
+          //  var entriesBefore = _db.ChangeTracker.Entries().ToList();
             _Set.Update(item);
             if (AutoSaveChanges)
                 await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-
             DetachOrderNavigationProps(item);
-
-            var entriesAfter = _db.ChangeTracker.Entries().ToList();
+	            //var entriesAfter = _db.ChangeTracker.Entries().ToList();
             return await Items.FirstOrDefaultAsync(x => x.Id == item.Id, cancellationToken: cancel);
         }
 
@@ -143,8 +141,11 @@ namespace Delivery.DAL.Repositories
             {
                 _db.Entry(item.Client).State = EntityState.Detached;
             }
-
-            if (item.OrderLines == null) return;
+            if (item.CancelReason != null)
+            {
+	            _db.Entry(item.CancelReason).State = EntityState.Detached;
+            }
+			if (item.OrderLines == null) return;
 
             foreach (var orderLine in item.OrderLines)
             {

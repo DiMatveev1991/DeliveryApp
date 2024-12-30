@@ -56,7 +56,18 @@ namespace Delivery.DTOs
 
         public Order ToModel()
         {
-            return new Order
+	        CancelReason Reason;
+
+	        if (CancelReason != null)
+	        {
+		        Reason = new CancelReason { ReasonCancel = this.CancelReason };
+	        }
+	        else
+	        {
+		        Reason = null;
+	        }
+        
+        return new Order
             {
                 Id = Id,
                 TargetAddressId = TargetAddressId,
@@ -67,7 +78,7 @@ namespace Delivery.DTOs
                 FromAddress = FromAddress.ToModel(),
                 TargetAddress = TargetAddress.ToModel(),
                 OrderLines = OrderLines.Select(x => x.ToModel()).ToList(),
-                CancelReason = new CancelReason() {ReasonCancel = CancelReason }
+                CancelReason = Reason
             };
         }
     }
