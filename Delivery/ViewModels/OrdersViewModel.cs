@@ -172,10 +172,9 @@ namespace Delivery.WPF.ViewModels
             ??= new LambdaCommandAsync<OrderDto>(OnRemoveOrderCommandExecuted, CanRemoveOrderCommandExecute);
 
         //можно раскоментировать строку ниже для избежания попадания в эксепшен или вывести информацию об ошибке, сделать бы
-        private bool CanRemoveOrderCommandExecute(OrderDto p) => (p != null || SelectedOrder != null)
-                                                              && SelectedOrder.OrderStatusName != "Готов к выполнению заказа"
-                                                              //&& SelectedOrder.OrderStatus.StatusName != "Передано на выполнение"
-                                                              ;
+        private bool CanRemoveOrderCommandExecute(OrderDto p) => (p != null || SelectedOrder != null) && SelectedOrder.OrderStatusName != "Передано на выполнение"
+															  //&& SelectedOrder.OrderStatus.StatusName != "Передано на выполнение"
+															  ;
 
         private async Task OnRemoveOrderCommandExecuted(OrderDto? p)
         {
