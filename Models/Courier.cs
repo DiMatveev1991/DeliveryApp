@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Delivery.Models
 {
-    public class Courier: PersonEntity
+    public class Courier: PersonEntity, ISoftDeletable
 	{
 
 		public Guid? CourierStatusId { get; set; }
@@ -16,5 +16,7 @@ namespace Delivery.Models
 
 		//(несколько заказов могут быть назначены одному курьеру).
 		public virtual ICollection<Order>? Orders { get; set; }
+		public bool IsDeleted { get; set; }
+		public DateTime? DeletedOnUtc { get; set; }
 	}
 }

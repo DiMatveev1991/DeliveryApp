@@ -7,8 +7,8 @@ using Delivery.Models.Base;
 
 namespace Delivery.Models
 {
-    public class Client : PersonEntity
-    {
+    public class Client : PersonEntity, ISoftDeletable
+	{
 
 		public Guid? AddressId { get; set; }
 
@@ -17,5 +17,7 @@ namespace Delivery.Models
 		//(один клиент может сделать несколько заказов)
 		public virtual ICollection<Order>? Orders { get; set; }
 
-    }
+		public bool IsDeleted { get; set; }
+		public DateTime? DeletedOnUtc { get; set; }
+	}
 }

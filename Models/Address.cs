@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
@@ -6,8 +7,8 @@ using Delivery.Models.Base;
 
 namespace Delivery.Models
 {
-    public class Address : Entity
-    {
+    public class Address : Entity, ISoftDeletable
+	{
         [MaxLength(256)]
         public string? City { get; set; }
 
@@ -37,5 +38,7 @@ namespace Delivery.Models
 		public virtual ICollection<Order>? FromOrders { get; set; }
 
 		public virtual ICollection<Order>? TargetOrders { get; set; }
-    }
+		public bool IsDeleted { get; set; }
+		public DateTime? DeletedOnUtc { get; set; }
+	}
 }

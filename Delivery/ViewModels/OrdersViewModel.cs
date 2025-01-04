@@ -114,7 +114,7 @@ namespace Delivery.WPF.ViewModels
 		                ClientName = value.ClientName,
 		                ClientPhone = value.ClientPhone,
 		                ClientId = value.ClientId,
-		                CourierName = value.ClientName,
+		                CourierName = value.CourierName,
 		                CourierId = value.CourierId,
 		                FromAddress = value.FromAddress,
 		                TargetAddress = value.TargetAddress,
@@ -137,7 +137,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        #region Command UpdateOrderCommand  - команда измененияданных курьера в БД
+        #region Command UpdateOrderCommand  - команда изменения данных курьера в БД
 
         private ICommand _updateOrderCommand;
         public ICommand UpdateOrderCommand => _updateOrderCommand

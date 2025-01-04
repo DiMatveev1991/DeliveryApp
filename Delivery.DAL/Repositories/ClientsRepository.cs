@@ -36,7 +36,8 @@ namespace Delivery.DAL.Repositories
         public Client Add(Client item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-            _db.Entry(item).State = EntityState.Added;
+            item.IsDeleted = false;
+			_db.Entry(item).State = EntityState.Added;
             if (AutoSaveChanges)
                 _db.SaveChanges();
             _db.Entry(item).State = EntityState.Detached;
@@ -46,6 +47,7 @@ namespace Delivery.DAL.Repositories
         public async Task<Client> AddAsync(Client item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
+            item.IsDeleted = false;
             await _Set.AddAsync(item, cancel);
             //_db.Entry(item).State = EntityState.Added;
             if (AutoSaveChanges)
@@ -75,7 +77,8 @@ namespace Delivery.DAL.Repositories
         public void Remove(Guid id)
         {
             var item = _Set.Local.FirstOrDefault(i => i.Id == id) ?? new Client { Id = id };
-            _db.Remove(item);
+            item.IsDeleted = true;
+			_db.Remove(item);
             if (AutoSaveChanges)
                 _db.SaveChanges();
             _db.Entry(item).State = EntityState.Detached;
@@ -83,9 +86,13 @@ namespace Delivery.DAL.Repositories
 
         public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
         {
-            _db.Remove(new Client { Id = id });
-            if (AutoSaveChanges)
-                await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
-        }
+			var client = await GetAsync(id, cancel);
+			client.IsDeleted = true;
+			client.DeletedOnUtc = DateTime.UtcNow;
+			_db.Entry(client).State = EntityState.Modified;
+			if (AutoSaveChanges)
+				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(client).State = EntityState.Detached;
+		}
     }
 }

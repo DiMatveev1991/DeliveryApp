@@ -34,8 +34,11 @@ namespace Delivery.DAL.Context
             modelBuilder.Entity<OrderStatus>().Property(s => s.Id).HasDefaultValueSql("newid()");
             modelBuilder.Entity<OrderLine>().Property(s => s.Id).HasDefaultValueSql("newid()");
             modelBuilder.Entity<OrderLine>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<Order>()
+            modelBuilder.Entity<Courier>().HasQueryFilter(x => !x.IsDeleted);
+			modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
+			modelBuilder.Entity<Client>().HasQueryFilter(x => !x.IsDeleted);
+			modelBuilder.Entity<Address>().HasQueryFilter(x => !x.IsDeleted);
+			modelBuilder.Entity<Order>()
                 .HasOne(e => e.CancelReason)
                 .WithOne(e => e.Order)
                 .HasForeignKey<CancelReason>(e => e.OrderId)

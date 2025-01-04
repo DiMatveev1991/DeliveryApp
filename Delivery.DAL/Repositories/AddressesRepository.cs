@@ -38,6 +38,7 @@ namespace Delivery.DAL.Repositories
 		public Address Add(Address item)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
+			item.IsDeleted = false;
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				_db.SaveChanges();
@@ -48,6 +49,7 @@ namespace Delivery.DAL.Repositories
 		public async Task<Address> AddAsync(Address item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
+			item.IsDeleted = false;
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
@@ -76,6 +78,7 @@ namespace Delivery.DAL.Repositories
 		public void Remove(Guid id)
 		{
 			var item = _Set.Local.FirstOrDefault(i => i.Id == id) ?? new Address { Id = id };
+			item.IsDeleted = true;
 			_db.Remove(item);
 			if (AutoSaveChanges)
 				_db.SaveChanges();
@@ -84,9 +87,13 @@ namespace Delivery.DAL.Repositories
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
 		{
-			_db.Remove(new Address { Id = id });
+			var address = await GetAsync(id, cancel);
+			address.IsDeleted = true;
+			address.DeletedOnUtc = DateTime.UtcNow;
+			_db.Entry(address).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(address).State = EntityState.Detached;
 		}
 
 		public async Task<Address> GetByAddressAsync (Address address)

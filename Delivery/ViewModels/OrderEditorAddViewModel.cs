@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using MathCore.WPF.Converters;
 
 namespace Delivery.WPF.ViewModels
 {
@@ -209,7 +210,7 @@ namespace Delivery.WPF.ViewModels
 
         public ICommand SaveCommand => _saveCommand
             ??= new LambdaCommandAsync(OnSaveCommandExecuted, CanSaveCommandExecute);
-        private bool CanSaveCommandExecute() => true;
+        private bool CanSaveCommandExecute() => SelectedOrderLine != null;
         private async Task OnSaveCommandExecuted()
         {
             _userDialogAddOrder.Close();

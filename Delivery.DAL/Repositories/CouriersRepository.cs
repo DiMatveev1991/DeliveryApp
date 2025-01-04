@@ -55,6 +55,7 @@ namespace Delivery.DAL.Repositories
 		public async Task<Courier> AddAsync(Courier item, CancellationToken cancel = default)
 		{
 			if (item is null) throw new ArgumentNullException(nameof(item));
+			item.IsDeleted = false;
 			_db.Entry(item).State = EntityState.Added;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
@@ -85,6 +86,7 @@ namespace Delivery.DAL.Repositories
 		public void Remove(Guid id)
 		{
 			var item = _Set.Local.FirstOrDefault(i => i.Id == id) ?? new Courier { Id = id };
+			item.IsDeleted = true;
 			_db.Remove(item);
 			if (AutoSaveChanges)
 				_db.SaveChanges();
@@ -92,10 +94,13 @@ namespace Delivery.DAL.Repositories
 
 		public async Task RemoveAsync(Guid id, CancellationToken cancel = default)
 		{
-			var item = _Set.Local.FirstOrDefault(i => i.Id == id) ?? new Courier { Id = id };
-			_db.Remove(item);
+			var order = await GetAsync(id, cancel);
+			order.IsDeleted = true;
+			order.DeletedOnUtc = DateTime.UtcNow;
+			_db.Entry(order).State = EntityState.Modified;
 			if (AutoSaveChanges)
 				await _db.SaveChangesAsync(cancel).ConfigureAwait(false);
+			_db.Entry(order).State = EntityState.Detached;
 		}
 
 		public async Task<IEnumerable<Order>> GetActiveOrdersAsync(Guid courierId)
