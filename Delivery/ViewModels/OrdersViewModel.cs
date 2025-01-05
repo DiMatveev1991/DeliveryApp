@@ -152,7 +152,6 @@ namespace Delivery.WPF.ViewModels
                 var orderToUpdate = p ?? CachedSelectedOrder;
                 if (!_userDialogRedactorOrder.Edit(this))
                     return;
-                await _orderService.UpdateOrderAsync(SelectedOrder);
                 await OnLoadDataCommandExecuted();
                 SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
                 _changedCommitted = true;
