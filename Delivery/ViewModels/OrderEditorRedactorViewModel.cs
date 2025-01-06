@@ -117,7 +117,11 @@ namespace Delivery.WPF.ViewModels
         public OrderDto Order
         {
             get => _order;
-            set => Set(ref _order, value);
+            set
+            {
+	            Set(ref _order, value);
+                OnPropertyChanged(nameof(OrdersLines));
+			}
         }
 
         #endregion
@@ -132,8 +136,6 @@ namespace Delivery.WPF.ViewModels
                 Set(ref _client, value);
                 Order.ClientName = value.FirstName + " " + value.SecondName;
                 Order.ClientPhone = value.PhoneNumber;
-                Order.ClientId = value.Id;
-                Order.FromAddress = value.Address;
                 OnPropertyChanged(nameof(Order));
             }
         }
@@ -198,17 +200,17 @@ namespace Delivery.WPF.ViewModels
             {
                 var orderLineToUpdate = p ?? CachedSelectedOrderLine;
                 await _orderService.UpdateOrderLine(orderLineToUpdate);
-                SelectedOrderLine = null;
-                SelectedOrderLine = orderLineToUpdate;
+                SelectedOrderLine.OrderId = Order.Id;
+				SelectedOrderLine = orderLineToUpdate;
                 _changedCommitted = true;
-
+              
                 var orderLines = (await _unitOfWork.OrdersRepository
                     .GetAsync(Order.Id)).OrderLines;
-
                 if (orderLines != null)
                     OrdersLines = new ObservableCollection<OrderLineDto>(orderLines
                         .Select(x => new OrderLineDto(x)).ToList());
-
+                Order.OrderLines = OrdersLines.ToList();
+				OnPropertyChanged(nameof(OrdersLinesView));
                 WasChanged = true;
             }
             catch (Exception ex)
@@ -219,7 +221,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        #region Command RemoveOrderLineCommand : OrderLineDto - Удаление указанного курьера
+        #region Command RemoveOrderLineCommand : OrderLineDto - Удаление указанной строки заказа
 
         private ICommand _removeOrderLineCommand;
 
@@ -250,7 +252,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        #region Command AddNewOrderLineCommand - Добавление нового курьера
+        #region Command AddNewOrderLineCommand - Добавление новой строки заказа
 
         private ICommand _addNewOrderLineCommand;
 

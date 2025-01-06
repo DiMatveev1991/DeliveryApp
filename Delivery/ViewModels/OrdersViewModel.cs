@@ -137,7 +137,7 @@ namespace Delivery.WPF.ViewModels
 
         #endregion
 
-        #region Command UpdateOrderCommand  - команда изменения данных курьера в БД
+        #region Command UpdateOrderCommand  - команда изменения данных в БД
 
         private ICommand _updateOrderCommand;
         public ICommand UpdateOrderCommand => _updateOrderCommand
@@ -152,6 +152,7 @@ namespace Delivery.WPF.ViewModels
                 var orderToUpdate = p ?? CachedSelectedOrder;
                 if (!_userDialogRedactorOrder.Edit(this))
                     return;
+                await _unitOfWork.OrdersRepository.UpdateAsync(SelectedOrder.ToModel());
                 await OnLoadDataCommandExecuted();
                 SelectedOrder = Orders.Find(x => x.Id == orderToUpdate.Id);
                 _changedCommitted = true;
