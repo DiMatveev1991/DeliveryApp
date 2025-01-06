@@ -54,8 +54,7 @@ namespace Delivery.BLL.Services
                 if (orderStatus is null) { throw new Exception("Статус заказа отсутствует"); }
                 var statusCourier = await _unitOfWork.CourierStatusesRepository.GetStatusAsync("Готов к выполнению заказа");
                 if (statusCourier is null) { throw new Exception("Статус курьера отсутствует"); }
-				if (order.Courier is null) { throw new Exception("курьер отсутствует"); }
-				order.Courier.CourierStatusId = statusCourier.Id;
+				if (order.Courier != null) order.Courier.CourierStatusId = statusCourier.Id;
 	          
 				order.CancelReason = new CancelReason()
                 {
