@@ -18,7 +18,7 @@ namespace Delivery.WPF.ViewModels
             {
                 if (Set(ref _orderLine, value))
                 {
-                    // Подписка на события изменения свойств
+
                     if (_orderLine != null)
                     {
                         _orderLine.PropertyChanged += OrderLine_PropertyChanged;
@@ -36,12 +36,13 @@ namespace Delivery.WPF.ViewModels
 
         public OrderLineEditorViewModel(OrderLineDto orderLine)
         {
-            OrderLine = orderLine;
+	        OrderLine = orderLine;
+	        _orderLine = orderLine;
         }
 
         private void OrderLine_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Проверка валидности при изменении любого свойства
+            
             CheckAndUpdateValidity();
         }
 
