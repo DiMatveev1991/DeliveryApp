@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConstantProperty\ConstantProperty.csproj" />
+    <ProjectReference Include="..\Delivery.DAL\Delivery.DAL.csproj" />
+    <ProjectReference Include="..\DTOs\Delivery.DTOs.csproj" />
+  </ItemGroup>
+
+</Project>
